@@ -40,7 +40,7 @@
         "$value": "#475569"
       },
       "accent": {
-        "$value": "#e2e8f0"
+        "$value": "#edf2fb"
       },
       "accent-foreground": {
         "$value": "#0c1220"
@@ -55,7 +55,7 @@
         "$value": "rgba(15, 23, 42, 0.28)"
       },
       "ring": {
-        "$value": "rgba(37, 99, 235, 0.32)"
+        "$value": "#2563eb"
       },
       "success": {
         "$value": "#167340"
@@ -74,6 +74,42 @@
       },
       "info-foreground": {
         "$value": "#f8fafc"
+      },
+      "success-soft": {
+        "$value": "#dbe8e4"
+      },
+      "success-soft-foreground": {
+        "$value": "#167340"
+      },
+      "success-line": {
+        "$value": "#4e956f"
+      },
+      "warning-soft": {
+        "$value": "#eae6dc"
+      },
+      "warning-soft-foreground": {
+        "$value": "#8a5c0a"
+      },
+      "warning-line": {
+        "$value": "#a48140"
+      },
+      "info-soft": {
+        "$value": "#d9e9f1"
+      },
+      "info-soft-foreground": {
+        "$value": "#0d6c9c"
+      },
+      "info-line": {
+        "$value": "#388fb7"
+      },
+      "destructive-soft": {
+        "$value": "#efdee1"
+      },
+      "destructive-soft-foreground": {
+        "$value": "#b4232f"
+      },
+      "destructive-line": {
+        "$value": "#ca6a73"
       }
     },
     "dark": {
@@ -114,7 +150,7 @@
         "$value": "#98a3b3"
       },
       "accent": {
-        "$value": "#1b232e"
+        "$value": "#212c38"
       },
       "accent-foreground": {
         "$value": "#f5f7fb"
@@ -129,7 +165,7 @@
         "$value": "rgba(229, 235, 244, 0.24)"
       },
       "ring": {
-        "$value": "rgba(142, 216, 255, 0.38)"
+        "$value": "#8ed8ff"
       },
       "success": {
         "$value": "#8ee6ae"
@@ -148,6 +184,42 @@
       },
       "info-foreground": {
         "$value": "#08090d"
+      },
+      "success-soft": {
+        "$value": "#2c423e"
+      },
+      "success-soft-foreground": {
+        "$value": "#8ee6ae"
+      },
+      "success-line": {
+        "$value": "#4e7a65"
+      },
+      "warning-soft": {
+        "$value": "#413e34"
+      },
+      "warning-soft-foreground": {
+        "$value": "#ffd47a"
+      },
+      "warning-line": {
+        "$value": "#83724c"
+      },
+      "info-soft": {
+        "$value": "#2c3f4e"
+      },
+      "info-soft-foreground": {
+        "$value": "#8ed8ff"
+      },
+      "info-line": {
+        "$value": "#4e748b"
+      },
+      "destructive-soft": {
+        "$value": "#413037"
+      },
+      "destructive-soft-foreground": {
+        "$value": "#ff8a8a"
+      },
+      "destructive-line": {
+        "$value": "#93575b"
       }
     }
   },

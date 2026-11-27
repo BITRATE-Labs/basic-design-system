@@ -64,12 +64,12 @@
     "accent": {
       "$type": "color",
       "$value": "{brand.color.accent}",
-      "$description": "Hover and highlight surface"
+      "$description": "Hover and highlight wash: 5% of primary mixed into the popover surface"
     },
     "accent-foreground": {
       "$type": "color",
       "$value": "{brand.color.accent-foreground}",
-      "$description": "Text on accent"
+      "$description": "Text on accent: the normal popover text colour"
     },
     "destructive": {
       "$type": "color",
@@ -89,7 +89,7 @@
     "ring": {
       "$type": "color",
       "$value": "{brand.color.ring}",
-      "$description": "Focus ring"
+      "$description": "Focus outline; opaque, at least 3:1 on background, card, popover, muted and accent"
     },
     "success": {
       "$type": "color",
@@ -120,6 +120,66 @@
       "$type": "color",
       "$value": "{brand.color.info-foreground}",
       "$description": "Text on info"
+    },
+    "success-soft": {
+      "$type": "color",
+      "$value": "{brand.color.success-soft}",
+      "$description": "Soft wash behind success callouts, alerts and tinted buttons and badges: the success role mixed into the card (13% light, 19% dark)"
+    },
+    "success-soft-foreground": {
+      "$type": "color",
+      "$value": "{brand.color.success-soft-foreground}",
+      "$description": "Text on success-soft: the success role, mixed toward card-foreground only as far as 4.5:1 on the wash needs"
+    },
+    "success-line": {
+      "$type": "color",
+      "$value": "{brand.color.success-line}",
+      "$description": "Border or rule of a success callout: the success role mixed into the card (from 45% light, 47% dark), raised until it reaches 3:1 on background and card"
+    },
+    "warning-soft": {
+      "$type": "color",
+      "$value": "{brand.color.warning-soft}",
+      "$description": "Soft wash behind warning callouts, alerts and tinted buttons and badges: the warning role mixed into the card (13% light, 19% dark)"
+    },
+    "warning-soft-foreground": {
+      "$type": "color",
+      "$value": "{brand.color.warning-soft-foreground}",
+      "$description": "Text on warning-soft: the warning role, mixed toward card-foreground only as far as 4.5:1 on the wash needs"
+    },
+    "warning-line": {
+      "$type": "color",
+      "$value": "{brand.color.warning-line}",
+      "$description": "Border or rule of a warning callout: the warning role mixed into the card (from 45% light, 47% dark), raised until it reaches 3:1 on background and card"
+    },
+    "info-soft": {
+      "$type": "color",
+      "$value": "{brand.color.info-soft}",
+      "$description": "Soft wash behind informational callouts, alerts and tinted buttons and badges: the info role mixed into the card (13% light, 19% dark)"
+    },
+    "info-soft-foreground": {
+      "$type": "color",
+      "$value": "{brand.color.info-soft-foreground}",
+      "$description": "Text on info-soft: the info role, mixed toward card-foreground only as far as 4.5:1 on the wash needs"
+    },
+    "info-line": {
+      "$type": "color",
+      "$value": "{brand.color.info-line}",
+      "$description": "Border or rule of a informational callout: the info role mixed into the card (from 45% light, 47% dark), raised until it reaches 3:1 on background and card"
+    },
+    "destructive-soft": {
+      "$type": "color",
+      "$value": "{brand.color.destructive-soft}",
+      "$description": "Soft wash behind destructive callouts, alerts and tinted buttons and badges: the destructive role mixed into the card (13% light, 19% dark)"
+    },
+    "destructive-soft-foreground": {
+      "$type": "color",
+      "$value": "{brand.color.destructive-soft-foreground}",
+      "$description": "Text on destructive-soft: the destructive role, mixed toward card-foreground only as far as 4.5:1 on the wash needs"
+    },
+    "destructive-line": {
+      "$type": "color",
+      "$value": "{brand.color.destructive-line}",
+      "$description": "Border or rule of a destructive callout: the destructive role mixed into the card (from 45% light, 47% dark), raised until it reaches 3:1 on background and card"
     }
   },
   "font": {
