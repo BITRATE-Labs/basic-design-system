@@ -103,7 +103,7 @@
       "name": "dropdown-menu",
       "type": "registry:ui",
       "title": "Dropdown Menu",
-      "description": "Stock shadcn/ui dropdown menu on Base UI. Takes a portal container for native modal dialogs.",
+      "description": "Stock shadcn/ui dropdown menu on Base UI. Takes a portal container for top-layer elements.",
       "dependencies": ["@base-ui/react", "cn", "lucide-react"],
       "files": [
         {
@@ -142,7 +142,7 @@
       "name": "tooltip",
       "type": "registry:ui",
       "title": "Tooltip",
-      "description": "Stock shadcn/ui tooltip on Base UI. Wrap the app root in TooltipProvider. Takes a portal container for native modal dialogs.",
+      "description": "Stock shadcn/ui tooltip on Base UI. Wrap the app root in TooltipProvider. Takes a portal container for top-layer elements.",
       "dependencies": ["@base-ui/react", "cn"],
       "files": [
         {
@@ -155,7 +155,7 @@
       "name": "popover",
       "type": "registry:ui",
       "title": "Popover",
-      "description": "Stock shadcn/ui popover on Base UI. Takes a portal container for native modal dialogs.",
+      "description": "Stock shadcn/ui popover on Base UI. Takes a portal container for top-layer elements.",
       "dependencies": ["@base-ui/react", "cn"],
       "files": [
         {

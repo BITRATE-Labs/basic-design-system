@@ -45,6 +45,14 @@ export default [
           message:
             "The native title tooltip cannot be styled, never shows on keyboard focus or touch, and does not layer with shared popups. Use Tooltip from components/ui.",
         },
+        {
+          // Tooltip text is visual only (Base UI gives it no role or aria-describedby), so an
+          // icon-only trigger needs its own name. The aria-label may sit on either element.
+          selector:
+            'JSXOpeningElement[name.name="TooltipTrigger"]:not(:has(JSXAttribute[name.name=/^aria-label(ledby)?$/])) > JSXAttribute[name.name="render"] JSXOpeningElement[name.name="Button"]:has(JSXAttribute[name.name="size"][value.value=/^icon/])',
+          message:
+            "Tooltip text is visual only and does not name its trigger. Give the icon-only Button an aria-label, usually the tooltip text.",
+        },
       ],
       "no-restricted-imports": [
         "error",
@@ -77,18 +85,6 @@ export default [
             {
               pattern: `${prefix}${colorUtility}-\\[(?:color:)?(?:#|rgba?\\(|hsla?\\(|hwb\\(|oklch\\(|oklab\\(|lch\\(|lab\\(|color\\()`,
               message: "Arbitrary colour value. Use a role token instead.",
-            },
-            // Layering: shared popups portal above an `isolate` app root, so product code
-            // needs no z-index. See docs/lint-preset.md.
-            {
-              pattern: `${prefix}z-(?:\\[|\\()`,
-              message:
-                "Arbitrary z-index. Shared popups already sit above the page when the app root has `isolate`.",
-            },
-            {
-              pattern: `${prefix}z-\\d+$`,
-              message:
-                "Numeric z-index. Shared popups already sit above the page when the app root has `isolate`; order page content by DOM order or a local `isolate`.",
             },
           ],
         },

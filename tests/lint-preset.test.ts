@@ -54,9 +54,9 @@ describe("lint preset", () => {
     );
   });
 
-  it("reports arbitrary and numeric z-index classes, but not isolate or z-auto", async () => {
-    expect(await lint("z-index-classes.tsx", outside)).toEqual(
-      [5, 6, 6, 7, 7].map((line) => ({ rule: "better-tailwindcss/no-restricted-classes", line })),
+  it("reports an icon-only tooltip trigger without an aria-label", async () => {
+    expect(await lint("icon-tooltip-trigger.tsx", outside)).toEqual(
+      [8, 11].map((line) => ({ rule: "no-restricted-syntax", line })),
     );
   });
 
@@ -74,8 +74,8 @@ describe("lint preset", () => {
     "raw-elements.tsx",
     "primitive-imports.tsx",
     "color-classes.tsx",
-    "z-index-classes.tsx",
     "title-attribute.tsx",
+    "icon-tooltip-trigger.tsx",
   ])("exempts %s inside components/ui", async (fixture) => {
     expect(await lint(fixture, inside)).toEqual([]);
   });
