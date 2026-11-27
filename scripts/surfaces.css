@@ -127,6 +127,28 @@
         backdrop-filter: var(--surface-blur-menu);
       }
 
+      /* The hover wash on a glass menu's items: the same 5% of primary, translucent, so the
+         item shows the glass behind it instead of an opaque --accent slab. Over an opaque
+         popover this is exactly --accent, which is why only the glass block needs it. The
+         destructive item keeps its soft wash (unlayered theme CSS wins). */
+      :where([data-surface="glass"])
+        :is(
+          [data-slot="dropdown-menu-content"],
+          [data-slot="dropdown-menu-sub-content"],
+          [data-slot="select-content"],
+          [data-slot="combobox-content"]
+        ):not([data-transparency="reduce"], [data-transparency="reduce"] *)
+        :is(
+          [data-slot="dropdown-menu-item"],
+          [data-slot="dropdown-menu-checkbox-item"],
+          [data-slot="dropdown-menu-radio-item"],
+          [data-slot="dropdown-menu-sub-trigger"],
+          [data-slot="select-item"],
+          [data-slot="combobox-item"]
+        ):is(:focus, [data-highlighted], [data-open], [data-popup-open]) {
+        background-color: color-mix(in srgb, var(--primary) var(--wash-hover), transparent);
+      }
+
       :where([data-surface="glass"])
         [data-slot="card"][data-fill="uniform"]:not(
           [data-transparency="reduce"],

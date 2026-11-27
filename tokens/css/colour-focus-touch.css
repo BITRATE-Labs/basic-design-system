@@ -254,6 +254,11 @@
   [data-slot="switch"]::after {
     inset-block: min(-0.5rem, calc((100% - var(--touch-target-min)) / 2));
   }
+  /* A segmented control's radio already covers its whole segment; a wider hit area would
+     reach into the next segment. */
+  [data-slot="segmented-control-segment"] > [data-slot="radio-group-item"]::after {
+    inset: 0;
+  }
 
   :is(
     [data-slot="dropdown-menu-item"],

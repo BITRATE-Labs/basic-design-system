@@ -19,6 +19,7 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 | `brands/`                  | One DTCG file per brand: every role in light and dark, fonts, radius                           |
 | `scripts/build-tokens.mjs` | Style Dictionary build into `dist/` (git-ignored)                                              |
 | `theme/motion.css`         | Hand-written motion rules, appended to `dist/theme.css` by the token build                     |
+| `scripts/surfaces.css`     | Glass surface rules, scoped to glass brands and written into `dist/theme.css`                  |
 | `src/components/ui/`       | Stock shadcn as the CLI wrote it, except the changes listed below, plus the UI SDK items       |
 | `src/lib/utils.ts`         | `cn`                                                                                           |
 | `registry.json`            | shadcn registry: every installable item                                                        |
@@ -42,6 +43,22 @@ Every change to a file in `src/components/ui/` is listed here with its reason. R
 - `alert`: writes `data-variant`, so theme CSS can draw the destructive callout from the status roles.
 
 The CLI writes `font-heading` on the dialog, sheet, card, alert-dialog and empty titles only when `src/index.css` itself contains `--font-heading:`. It does not, so titles use `font-sans`; adding that variable there changes all five at once.
+
+## Look
+
+The shared look is stock shadcn structure with a few system-wide decisions on top, all shipped in `dist/theme.css` (or the token CSS) and aimed at the stock components' `data-slot` attributes:
+
+| Decision                                                                                                   | Where it lives                                                                         |
+| ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Motion tokens (durations, standard and emphasised easing, rise, delay step, reduced-motion collapse)       | `tokens/scales.tokens.json`, `theme/motion.css`; see Motion                            |
+| Solid 2px focus outline in `--ring`, offset out on controls and inset inside menus, lists and scroll areas | `tokens/css/colour-focus-touch.css`; see Theme CSS                                     |
+| Status roles: `-soft`, `-soft-foreground` and `-line` for success, warning, info and destructive           | `tokens/roles.tokens.json`, every `brands/*.tokens.json`, `tokens/css/`                |
+| Hover and active wash: 5% of the brand's primary with normal text colour                                   | `--accent` in every brand file, `tokens/css/colour-focus-touch.css`                    |
+| 44px touch targets on coarse pointers                                                                      | `tokens/css/colour-focus-touch.css`                                                    |
+| Per-brand surface style: flat (stock) by default, lit-edge glass for perkcord                              | the `surface` block in `brands/perkcord.tokens.json`, `scripts/surfaces.css`; Surfaces |
+| Selection: the weighted segmented control and the sliding tabs                                             | `src/components/ui/segmented-control.tsx`, `src/components/ui/sliding-tabs.tsx`        |
+
+Cascade order in `dist/theme.css`: motion (base and utilities layers, toasts unlayered), then glass surfaces (`@layer surfaces`, after Tailwind's), then `tokens/css/` unlayered. So the focus outline and the destructive soft wash beat a glass rule where both apply, and glass beats stock utilities.
 
 ## Theme CSS
 
@@ -103,7 +120,7 @@ A brand file's optional `surface` block picks the brand's surface style: flat (d
 ## Additions beyond stock
 
 - `sliding-tabs.tsx` is not a shadcn component. It composes the stock `tabs.tsx` (which stays unchanged) with Base UI's `Tabs.Indicator`, and adds `SlidingNav` for link navigation, because shadcn ships no sliding selection. Its motion comes from the `--duration-indicator` and `--ease-indicator` tokens. As in Perkcord's original, labels stay medium weight in every state, the selected label is `--primary`, and the bar has 2px corners. Details: Storybook **Docs / Sliding tabs**.
-- `segmented-control.tsx` is not a shadcn component. It is Perkcord's weighted segmented control: a single choice drawn as one track, with a thumb (`--primary` at 15%, ringed at 30%) that slides behind the checked option in 200ms ease-out, and option widths shared by weight. It composes the stock `radio-group.tsx` (unchanged): each segment is a `RadioGroupItem` stretched invisibly over its label, so radio semantics, arrow keys and form submission are the stock RadioGroup's, and the thumb's place comes from the option weights with no measuring. shadcn ships no segmented control (ToggleGroup has no thumb and equal widths). Stories: **Components / Segmented control**.
+- `segmented-control.tsx` is not a shadcn component. It is Perkcord's weighted segmented control: a single choice drawn as one track, with a thumb (`--primary` at 15%, ringed at 30%) that slides behind the checked option on the sliding indicator's `--duration-indicator` and `--ease-indicator` tokens (Perkcord used 200ms ease-out), and option widths shared by weight. It composes the stock `radio-group.tsx` (unchanged): each segment is a `RadioGroupItem` stretched invisibly over its label, so radio semantics, arrow keys and form submission are the stock RadioGroup's, and the thumb's place comes from the option weights with no measuring. shadcn ships no segmented control (ToggleGroup has no thumb and equal widths). Stories: **Components / Segmented control**.
 
 ## Lab convention
 
