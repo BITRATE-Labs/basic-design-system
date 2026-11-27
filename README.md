@@ -8,3 +8,7 @@ Shared design tokens, UI components and one Storybook, used across BASIC's produ
 - **Storybook:** every component in every brand, light and dark.
 
 This repository is being seeded. Setup and usage notes arrive with the first release.
+
+## Adding a brand
+
+Add `brands/<name>.tokens.json` and run `npm run build:tokens`. The build picks up every file in `brands/` and writes `dist/brands/<name>.css` (scoped to `[data-brand="<name>"]`, dark under `.dark`) and `dist/brands/<name>.ts`. Copy `brands/basic.tokens.json` for the shape: `color.light` and `color.dark` give a value for every role in `tokens/roles.tokens.json`, plus `font.sans`, `font.display`, `font.mono` and `radius`. A missing role fails the build.
