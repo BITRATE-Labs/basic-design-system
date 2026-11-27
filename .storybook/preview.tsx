@@ -17,7 +17,33 @@ const withTooltipProvider: Decorator = (Story) => (
   </TooltipProvider>
 );
 
+// Load the brand's fonts before the story renders: a play function that measures text
+// (scrolling a tab into view, say) otherwise measures the fallback font, and the swap
+// moves things afterwards. Offline the fallback stays; the visual test reports that.
+const loadBrandFonts = async (brand: string) => {
+  // The Google Fonts stylesheets declare the faces; fonts.load finds none before they arrive.
+  await Promise.all(
+    [...document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')]
+      .filter((link) => !link.sheet)
+      .map(
+        (link) =>
+          new Promise((done) => {
+            link.addEventListener("load", done, { once: true });
+            link.addEventListener("error", done, { once: true });
+          }),
+      ),
+  );
+  document.documentElement.dataset.brand = brand;
+  const style = getComputedStyle(document.documentElement);
+  await Promise.all(
+    ["--font-sans", "--font-display", "--font-mono"].map((name) =>
+      document.fonts.load(`1em ${style.getPropertyValue(name)}`).catch(() => []),
+    ),
+  );
+};
+
 const preview: Preview = {
+  loaders: [({ globals }) => loadBrandFonts(globals.brand ?? "basic")],
   globalTypes: {
     brand: {
       description: "Brand",
