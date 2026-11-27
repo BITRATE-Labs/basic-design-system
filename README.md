@@ -51,7 +51,7 @@ cd ../my-product && npx shadcn@latest add ../built/combobox.json
 
 The script rewrites the tag-pinned same-repo dependencies to the built files, as paths relative to the product's directory: the CLI cannot resolve a local dependency given as an absolute Windows path ("unknown scheme").
 
-Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `sliding-tabs`, `segmented-control`, `kbd`, `tooltip`, `popover`, `textarea`, `select`, `checkbox`, `switch`, `radio-group`, `input-group`, `combobox`, `alert`, `sonner` (toasts), `skeleton`, `spinner`, `empty`, `badge`, `progress`, `card`, `avatar`, `table`, `item`, `scroll-area`, `sheet`, `alert-dialog`, `direction`.
+Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `sliding-tabs`, `segmented-control`, `kbd`, `tooltip`, `popover`, `textarea`, `select`, `checkbox`, `switch`, `radio-group`, `input-group`, `combobox`, `alert`, `sonner` (toasts), `skeleton`, `spinner`, `empty`, `badge`, `progress`, `card`, `avatar`, `table`, `item`, `scroll-area`, `sheet`, `alert-dialog`, `direction`, `use-dirty-dismiss`.
 
 UI SDK items (`command`, `calendar`, `date-picker`, `otp-input`, `token-input`, `agent`) are Storybook-only for now and not installable (see UI SDK below).
 
