@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SettingsForm from "@/stories/settings-form.stories";
-import { ContrastReadout } from "../state-and-status-colour/contrast";
+import { ContrastReadout } from "../4-state-and-status-colour/contrast";
 import "./focus-ring.css";
 
 // Group 5 of the product-ideas lab. Notes: focus-ring.mdx in this folder.

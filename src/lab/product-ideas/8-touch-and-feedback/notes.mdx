@@ -1,8 +1,9 @@
 import { Meta } from "@storybook/addon-docs/blocks";
+import * as Stories from "./touch-and-feedback.stories";
 
-<Meta title="Lab/Product ideas/8. Touch and feedback/Notes" />
+<Meta of={Stories} name="Notes" />
 
-# Touch and feedback
+# 8. Touch and feedback
 
 Options shown in **Compare**. Switch brand and light or dark from the toolbar. A desktop browser cannot switch to a coarse pointer or to reduced motion, so the stories preview those with `data-preview-pointer` and `data-preview-motion` attributes; the shipped CSS uses only the media queries.
 

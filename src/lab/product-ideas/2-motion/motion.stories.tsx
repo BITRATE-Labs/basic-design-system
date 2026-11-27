@@ -40,7 +40,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import SettingsForm from "@/stories/settings-form.stories";
-import { ColumnHeading, pinned, PinSlot } from "../surfaces/stage";
+import { ColumnHeading, pinned, PinSlot } from "../1-surfaces/stage";
 import "./motion.css";
 import { startThemeTransition } from "./theme-transition";
 
