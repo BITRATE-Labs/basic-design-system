@@ -291,10 +291,10 @@ function BodyOverlay({ kind }: { kind: Kind }) {
 // The shared Toaster renders in place, not in a portal, at sonner's z-index 999999999.
 // Mounted inside the isolated app root (Storybook's root here), that z-index stays inside
 // the root, so a popup opened over a toast is painted above it (Docs / Layers, rule 1).
-// The toast sits just below the trigger so the popup has to cross it.
+// The toast is centred just below the centred trigger, so the popup has to cross it.
 function WithToast({ kind, theme }: { kind: Kind; theme: "light" | "dark" }) {
   return (
-    <div>
+    <div className="flex justify-center">
       <Probe kind={kind} />
       <Toaster theme={theme} position="top-center" offset={56} />
     </div>
