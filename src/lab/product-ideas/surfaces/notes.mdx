@@ -1,0 +1,27 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import * as SurfaceStories from "./surfaces.stories";
+
+<Meta of={SurfaceStories} name="Notes" />
+
+# 1. Surfaces
+
+## Stock
+
+Card, Dialog, DropdownMenu, Popover and Sheet as shadcn ships them: a 1px ring at 10% foreground and, on menus and popovers, `shadow-md`. Nothing to adopt. In forced-colours mode the ring is a box-shadow, so the browser removes it and the surface loses its edge.
+
+## Lit edge, no blur (Perkcord)
+
+The edge of Perkcord's glass panel without the translucency: a 13% foreground border with a brighter top edge, a faint 145° sheen in the top-left corner, a 1px inset highlight and a long shadow with negative spread (`0 18px 52px -24px`, menus `0 18px 44px -20px`) tinted towards the brand instead of black. Adopting it is one theme stylesheet that targets the five `data-slot` surfaces, plus a `--surface-shadow-tint` token per brand. The tint is derived from `--primary` and `--foreground`, which lands close to Perkcord's hand-picked green-grey in the perkcord brand but is unreviewed in the others.
+
+## Lit-edge glass (Perkcord)
+
+Perkcord's `GlassPanel` and glass menu: the lit edge plus a translucent fill with `blur(7px) saturate(1.15)` (menus `blur(12px)`), tuned per context (panels 36%, 44% dark; dialogs 72%, 62% dark; menus 84%), with an 82% uniform fill and no sheen for long lists and tables. It turns on only where `backdrop-filter` works and nobody asked for reduced transparency, more contrast or forced colours, and otherwise falls back to exactly the lit-edge option. Adopting it adds the fill tokens to the lit-edge stylesheet and a contrast re-check over busy backgrounds; the risks are that a 36% panel over a busy page loses contrast, blur is costly on long scrolling pages and stacked surfaces, and a blurred surface becomes the containing block for its fixed-position descendants.
+
+## Differences from the Perkcord source
+
+- Colours are `color-mix()` over the role tokens instead of `hsl(var(--x) / a)`, because this system's roles are full colours, not HSL channels.
+- The light shadow tint `hsl(160 28% 18%)` is `color-mix(--primary 30%, --foreground)`; the dark tint `hsl(165 40% 4%)` is `color-mix(--background 50%, black)`; the dark sheen `hsl(150 30% 91% / 0.075)` is a 15% primary tint of the foreground at 7.5%.
+- Perkcord has no popover or sheet in this recipe: the popover takes the menu values and the sheet takes the dialog values.
+- Radius and padding stay stock. Perkcord's panel uses `--radius + 2px` and `clamp(1rem, 3.1vw, 2rem)` padding.
+- The forced-colours handling (no glass, no sheen, an opaque uniform fill) is not in Perkcord's source.
+- `data-transparency="reduce"` is new: it forces the same opaque fallback, for an in-app setting and for the fallback story.
