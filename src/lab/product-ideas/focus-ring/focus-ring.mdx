@@ -1,0 +1,13 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Lab/Product ideas/5. Focus ring/Notes" />
+
+# 5. Focus ring
+
+Compare these in **Compare**; the other stories focus one real element by keyboard. To see forced colours, open DevTools, Rendering, and emulate `forced-colors: active`.
+
+## Loominist solid brand outline
+
+Focus is a solid 2px outline in the brand colour, 3px out from the control, replacing the stock 3px ring at 50% of `--ring`; inside menus, scroll areas, tab bars and the sliding nav it is drawn 2px inside the item so the container does not clip it. It comes from Loominist's setup and rules stylesheets (2px solid, offset 3px; other Loominist rules use 4px and 5px), with the inset taken from Chronote's picker and Perkcord's menu items; the colour is `--primary` because Loominist's ring is its brand colour, while several brands here have a grey or translucent `--ring`.
+
+Adopting it is one block of unlayered theme CSS on the components' `data-slot` attributes, which also clears the stock glow; every visual baseline with a focused control changes. In forced colours the stock ring is a box-shadow and disappears, while the outline stays and takes the system highlight; the known risks are an outline at 3px colliding with neighbours in tight groups and the stock 150ms transition growing the outline in, which the reduced-motion path removes.
