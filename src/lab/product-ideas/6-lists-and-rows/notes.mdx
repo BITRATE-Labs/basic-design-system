@@ -1,0 +1,18 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import * as Stories from "./lists-and-rows.stories";
+
+<Meta of={Stories} name="Notes" />
+
+# 6. Lists and rows
+
+## Stock: a stack of Cards and the stock Table
+
+Each row is its own ringed, rounded Card, or a Table row with a bottom border and a muted selected background. Selection and batch-checking look the same, and secondary actions are always visible.
+
+## One-surface ruled list (drasil)
+
+One bordered surface with rules between rows, a 4px selection rail that is always there but transparent (no layout shift), a separate primary wash for checked rows and a hover or focus-within lift; it comes from drasil's `.inbox-list` and `.inbox-row` (`apps/web/app/globals.css`) and its "count visible layers" rule, with Chronote's inset-shadow rail and selecta's focus-within and 40rem wrap folded in. Adopting it is small to medium: unlayered theme CSS for list and table rows keyed on `aria-current`, `data-state="selected"` and the stock checkbox's `data-checked`, an Examples story, and the layer-count rule in AGENTS.md. The risk is that the rules use `--border`, which is strong in some brands (perkcord light is `#73868c`).
+
+## Hover-reveal secondary actions (Chronote)
+
+Secondary row actions sit at opacity 0 with pointer events off and fade in over 120ms on hover or focus within the row, but only under `(hover: hover)`, so touch devices always see them; it comes from Chronote's Ask feedback buttons (`src/frontend/index.css`, `.ask-feedback-actions`). Adopting it is tiny: one container and target attribute pair in shared CSS and a docs example. The risk is discoverability, so it suits secondary actions only.

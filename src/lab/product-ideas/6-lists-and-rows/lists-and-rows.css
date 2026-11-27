@@ -1,0 +1,204 @@
+/*
+ * Lab: 6. Lists and rows. Two ideas, each applied by scope so the stock components stay untouched.
+ *
+ *   data-idea~="ruled-list"      drasil's one-surface ruled list (apps/web/app/globals.css, .inbox-list
+ *                                and .inbox-row), with the rail drawn as Chronote's inset shadow
+ *                                (uiTokens.ts accentInset) and selecta's focus-within highlight and
+ *                                phone-width wrap (apps/web/app/globals.css, .ui-track-row).
+ *   data-idea~="reveal-actions"  Chronote's hover-reveal secondary actions (src/frontend/index.css,
+ *                                .ask-feedback-actions). Hidden only under (hover: hover).
+ *
+ * The rules are unlayered on purpose: stock components style themselves with Tailwind utilities,
+ * which live in @layer utilities, and an unlayered rule beats any layered one without !important.
+ * Shipped as theme CSS, this file has to stay unlayered (or sit in a layer after utilities).
+ */
+
+/* ---------- Ruled list (drasil) ---------- */
+
+[data-idea~="ruled-list"] {
+  /* drasil --line, --panel, --panel-strong, --accent, --accent-soft, mapped to role tokens. */
+  --ruled-list-rule: var(--border);
+  --ruled-list-surface: var(--card);
+  /* drasil --radius-panel is 4px, its own brand radius; here it follows the brand. */
+  --ruled-list-radius: var(--radius-lg);
+  --ruled-row-padding-block: 18px;
+  --ruled-row-padding-inline: 20px;
+  --ruled-row-gap: 14px;
+  --ruled-row-rail-width: 4px;
+  --ruled-row-rail: var(--primary);
+  /* drasil --panel-strong is about 4% ink over --panel in both themes; brand --muted is too close
+     to --card in some dark brands to read, so both lifts mix in --foreground. Selected sits a
+     step above the hover and focus lift, and also has the rail. */
+  --ruled-row-selected: color-mix(in oklab, var(--foreground) 7%, var(--ruled-list-surface));
+  /* drasil --accent-soft is its accent at about 10% over the panel in light (#e4f7ee over #fff). */
+  --ruled-row-checked: color-mix(in oklab, var(--primary) 10%, var(--ruled-list-surface));
+  /* selecta lifts the row on hover and focus-within. */
+  --ruled-row-focus: color-mix(in oklab, var(--foreground) 4%, var(--ruled-list-surface));
+  --ruled-row-duration: 160ms;
+  --ruled-row-ease: ease;
+}
+
+.dark [data-idea~="ruled-list"],
+[data-idea~="ruled-list"].dark {
+  /* drasil's dark --accent-soft (#123525 over #131a23) is a stronger wash than its light one. */
+  --ruled-row-checked: color-mix(in oklab, var(--primary) 14%, var(--ruled-list-surface));
+}
+
+/* One surface: the list container (a stock Card stack or the stock table container). */
+[data-idea~="ruled-list"] [role="list"]:has(> [data-slot="card"]),
+[data-idea~="ruled-list"] [data-slot="table-container"] {
+  display: grid;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--ruled-list-rule);
+  border-radius: var(--ruled-list-radius);
+  background: var(--ruled-list-surface);
+  /* drasil adds 0 24px 70px rgba(15, 23, 42, 0.14) here; dropped, it fights the flat intent. */
+}
+
+/* Rows: flat, ruled between siblings only, rail always present but transparent (no layout shift). */
+[data-idea~="ruled-list"] [role="list"] > [data-slot="card"] {
+  --card-spacing: 0px;
+  gap: var(--ruled-row-gap);
+  padding: var(--ruled-row-padding-block) var(--ruled-row-padding-inline);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: inset var(--ruled-row-rail-width) 0 0 transparent;
+  transition:
+    background var(--ruled-row-duration) var(--ruled-row-ease),
+    box-shadow var(--ruled-row-duration) var(--ruled-row-ease);
+}
+
+[data-idea~="ruled-list"] [role="list"] > [data-slot="card"] + [data-slot="card"] {
+  border-top: 1px solid var(--ruled-list-rule);
+}
+
+[data-idea~="ruled-list"] [data-slot="table-row"] {
+  border-color: var(--ruled-list-rule);
+  transition: background var(--ruled-row-duration) var(--ruled-row-ease);
+}
+
+[data-idea~="ruled-list"] [data-slot="table-body"] [data-slot="table-row"] {
+  border-bottom: 0;
+}
+
+[data-idea~="ruled-list"]
+  [data-slot="table-body"]
+  [data-slot="table-row"]
+  + [data-slot="table-row"] {
+  border-top: 1px solid var(--ruled-list-rule);
+}
+
+[data-idea~="ruled-list"] [data-slot="table-row"] > :first-child {
+  box-shadow: inset var(--ruled-row-rail-width) 0 0 transparent;
+  transition: box-shadow var(--ruled-row-duration) var(--ruled-row-ease);
+}
+
+/* Hover and focus-within (selecta): keyboard users get the same row feedback as the mouse. */
+[data-idea~="ruled-list"] [role="list"] > [data-slot="card"]:is(:hover, :focus-within),
+[data-idea~="ruled-list"]
+  [data-slot="table-body"]
+  [data-slot="table-row"]:is(:hover, :focus-within) {
+  background: var(--ruled-row-focus);
+}
+
+/* Selected (the current row): rail plus a stronger surface. */
+[data-idea~="ruled-list"] [role="list"] > [data-slot="card"][aria-current="true"],
+[data-idea~="ruled-list"] [data-slot="table-row"][data-state="selected"] {
+  background: var(--ruled-row-selected);
+}
+
+[data-idea~="ruled-list"] [role="list"] > [data-slot="card"][aria-current="true"],
+[data-idea~="ruled-list"] [data-slot="table-row"][data-state="selected"] > :first-child {
+  box-shadow: inset var(--ruled-row-rail-width) 0 0 var(--ruled-row-rail);
+}
+
+/* Checked (batch selection) is a separate cue, read from the stock checkbox's own state. */
+[data-idea~="ruled-list"]
+  [role="list"]
+  > [data-slot="card"]:has([data-slot="checkbox"][data-checked]),
+[data-idea~="ruled-list"] [data-slot="table-row"]:has([data-slot="checkbox"][data-checked]) {
+  background: var(--ruled-row-checked);
+}
+
+[data-idea~="ruled-list"]
+  [role="list"]
+  > [data-slot="card"][aria-current="true"]:has([data-slot="checkbox"][data-checked]),
+[data-idea~="ruled-list"]
+  [data-slot="table-row"][data-state="selected"]:has([data-slot="checkbox"][data-checked]) {
+  background: linear-gradient(0deg, var(--ruled-row-checked), var(--ruled-row-selected));
+}
+
+/* Phone width (selecta, 40rem): the actions drop below the text instead of squeezing it. */
+@media (max-width: 40rem) {
+  [data-idea~="ruled-list"]
+    [role="list"]
+    [data-slot="card-header"]:has(> [data-slot="card-action"]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-idea~="ruled-list"] [role="list"] [data-slot="card-action"] {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-idea~="ruled-list"] {
+    --ruled-row-duration: 0ms;
+  }
+}
+
+/* Forced colours drop box-shadows and backgrounds, so the rail becomes a real border. */
+@media (forced-colors: active) {
+  [data-idea~="ruled-list"] [role="list"] > [data-slot="card"],
+  [data-idea~="ruled-list"] [data-slot="table-row"] > :first-child {
+    border-inline-start: var(--ruled-row-rail-width) solid transparent;
+  }
+
+  [data-idea~="ruled-list"] [role="list"] > [data-slot="card"][aria-current="true"],
+  [data-idea~="ruled-list"] [data-slot="table-row"][data-state="selected"] > :first-child {
+    border-inline-start-color: Highlight;
+  }
+}
+
+/* No reduced-transparency path: the ruled list draws nothing translucent over other content. */
+
+/* ---------- Hover-reveal secondary actions (Chronote) ---------- */
+
+[data-idea~="reveal-actions"] {
+  --reveal-actions-duration: 120ms;
+  --reveal-actions-ease: ease;
+}
+
+[data-idea~="reveal-actions"] [data-reveal-target] {
+  transition: opacity var(--reveal-actions-duration) var(--reveal-actions-ease);
+}
+
+/*
+ * Hidden only where the device can hover, so touch devices always see the actions.
+ * data-emulate-pointer="coarse" is a lab-only hook: Storybook cannot change the (hover) media
+ * feature, so the Coarse pointer story sets it to show what a touch device gets. It would not ship.
+ */
+@media (hover: hover) {
+  [data-idea~="reveal-actions"]:not([data-emulate-pointer="coarse"])
+    :is([data-slot="card"], [data-slot="table-row"])
+    [data-reveal-target] {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  [data-idea~="reveal-actions"]:not([data-emulate-pointer="coarse"])
+    :is([data-slot="card"], [data-slot="table-row"]):is(:hover, :focus-within, :focus-visible)
+    [data-reveal-target] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-idea~="reveal-actions"] {
+    --reveal-actions-duration: 0ms;
+  }
+}
