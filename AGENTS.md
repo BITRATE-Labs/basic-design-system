@@ -56,3 +56,5 @@ Shared popups portal to the end of `<body>` at `z-50`. Products wrap the app roo
 ## Working branch
 
 Day-to-day work is committed and pushed straight to the shared `next` branch; CI runs on every push to it. Open a pull request from `next` to `main` only when a large batch is ready. Cut a release tag from `main` after its CI is green.
+
+The published Storybook shows both branches: `main` at https://bitrate-labs.github.io/basic-design-system/ and `next` at https://bitrate-labs.github.io/basic-design-system/next/.
