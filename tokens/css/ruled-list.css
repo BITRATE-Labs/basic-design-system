@@ -1,0 +1,198 @@
+/*
+ * Ruled list: theme CSS for the stock Item (src/components/ui/item.tsx), appended to
+ * dist/theme.css by scripts/build-tokens.mjs. Opt in with <ItemGroup data-variant="ruled">.
+ *
+ * drasil's one-surface list (.inbox-list, .inbox-row): one surface, hairline rules between
+ * rows and no box per row, following its rule to count visible layers before adding one.
+ * Its values: 18px by 20px row padding, 14px gap, a 4px rail that is always there (so
+ * selecting shifts nothing), the selected row about 4% ink, the checked row a 10% (dark 14%)
+ * primary wash, and both at once a gradient of the two. The washes are translucent, so they
+ * read over a flat card and over a glass one.
+ *
+ * Unlayered (like colour-focus-touch.css) so it beats the stock Item utilities, except the
+ * group's own surface, which sits in the components layer so the glass brands' surfaces
+ * layer (scripts/surfaces.css) can restyle it.
+ */
+
+[data-slot="item-group"][data-variant="ruled"] {
+  --ruled-rail-width: 4px;
+  --ruled-pad-block: 1.125rem;
+  --ruled-pad-inline: 1.25rem;
+  --ruled-rail: var(--primary);
+  --ruled-wash-selected: color-mix(in srgb, var(--foreground) 4%, transparent);
+  --ruled-checked-share: 10%;
+  --ruled-wash-checked: color-mix(in srgb, var(--primary) var(--ruled-checked-share), transparent);
+  --ruled-wash-hover: color-mix(in srgb, var(--primary) var(--wash-hover), transparent);
+  /* Muted text on a washed row moves this far toward --foreground, so it keeps 4.5:1 in
+     every brand: chronote's product muted text needs the most, 20% light and 50% dark
+     (tests/tokens.test.ts). */
+  --ruled-muted-mix: 20%;
+  gap: 0;
+}
+
+.dark [data-slot="item-group"][data-variant="ruled"] {
+  --ruled-checked-share: 14%;
+  --ruled-muted-mix: 50%;
+}
+
+@layer components {
+  [data-slot="item-group"][data-variant="ruled"] {
+    /* Glass brands rule with their lit edge instead (scripts/surfaces.css). */
+    --ruled-rule: var(--border);
+    overflow: hidden;
+    border: 1px solid var(--ruled-rule);
+    border-radius: var(--radius-xl);
+    background-color: var(--card);
+  }
+}
+
+/* Inside a Card the card is the surface: the list goes flush, with a rule above it only
+   (end the card with the list and drop the card's bottom padding). */
+[data-slot="card"] [data-slot="item-group"][data-variant="ruled"] {
+  border-width: 1px 0 0;
+  border-color: var(--ruled-rule);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+[data-slot="item-group"][data-variant="ruled"] > [data-slot="item"] {
+  gap: 0.875rem;
+  align-items: start;
+  border-width: 0;
+  border-radius: 0;
+  padding: var(--ruled-pad-block) var(--ruled-pad-inline);
+  padding-inline-start: calc(var(--ruled-pad-inline) + var(--ruled-rail-width));
+  background-color: transparent;
+  box-shadow: inset var(--ruled-rail-width) 0 0 transparent;
+  --tw-ring-shadow: 0 0 #0000;
+  transition-property: background, box-shadow;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-standard);
+}
+
+[data-slot="item-group"][data-variant="ruled"] > [data-slot="item"] + [data-slot="item"] {
+  border-top: 1px solid var(--ruled-rule);
+}
+
+/* drasil's phone padding: 18px all round below 760px. */
+@media (max-width: 760px) {
+  [data-slot="item-group"][data-variant="ruled"] {
+    --ruled-pad-inline: 1.125rem;
+  }
+}
+
+/* Hover and keyboard focus inside a resting row: the system's brand-tint wash. */
+@media (hover: hover) {
+  [data-slot="item-group"][data-variant="ruled"] > [data-slot="item"]:hover {
+    background-color: var(--ruled-wash-hover);
+  }
+}
+
+[data-slot="item-group"][data-variant="ruled"] > [data-slot="item"]:focus-within {
+  background-color: var(--ruled-wash-hover);
+}
+
+/* Selected: the current row (aria-current on the row or on its link or button, or an
+   aria-selected option), shown by the rail and a step of ink. */
+[data-slot="item-group"][data-variant="ruled"]
+  > [data-slot="item"]:is(
+    [aria-current]:not([aria-current="false"]),
+    [aria-selected="true"],
+    :has([aria-current]:not([aria-current="false"]))
+  ) {
+  background-color: var(--ruled-wash-selected);
+  box-shadow: inset var(--ruled-rail-width) 0 0 var(--ruled-rail);
+}
+
+/* Checked (batch selection), read from the stock Checkbox: a separate primary wash. */
+[data-slot="item-group"][data-variant="ruled"]
+  > [data-slot="item"]:has([data-slot="checkbox"][data-checked]) {
+  background-color: var(--ruled-wash-checked);
+}
+
+[data-slot="item-group"][data-variant="ruled"]
+  > [data-slot="item"]:is(
+    [aria-current]:not([aria-current="false"]),
+    [aria-selected="true"],
+    :has([aria-current]:not([aria-current="false"]))
+  ):has([data-slot="checkbox"][data-checked]) {
+  background-image: linear-gradient(0deg, var(--ruled-wash-checked), var(--ruled-wash-selected));
+  background-color: transparent;
+}
+
+[data-slot="item-group"][data-variant="ruled"]
+  > [data-slot="item"]:is(
+    :focus-within,
+    [aria-current]:not([aria-current="false"]),
+    [aria-selected="true"],
+    :has([aria-current]:not([aria-current="false"])),
+    :has([data-slot="checkbox"][data-checked])
+  )
+  [data-slot="item-description"] {
+  color: color-mix(in oklab, var(--muted-foreground), var(--foreground) var(--ruled-muted-mix));
+}
+
+@media (hover: hover) {
+  [data-slot="item-group"][data-variant="ruled"]
+    > [data-slot="item"]:hover
+    [data-slot="item-description"] {
+    color: color-mix(in oklab, var(--muted-foreground), var(--foreground) var(--ruled-muted-mix));
+  }
+}
+
+/* Focus: the system's solid outline. A focusable row (an Item rendered as a link or button)
+   is drawn inside, since the list clips its rows. */
+[data-slot="item"]:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color, var(--ring));
+  outline-offset: var(--focus-ring-offset-action);
+  --tw-ring-shadow: 0 0 #0000;
+}
+
+[data-slot="item-group"][data-variant="ruled"] > [data-slot="item"]:focus-visible {
+  outline-offset: var(--focus-ring-offset-inset);
+}
+
+/* Secondary actions shown on hover: <ItemActions data-reveal="hover">. Hidden only where the
+   pointer can hover (touch always sees them), and still in the tab order, so keyboard focus
+   inside the row shows them; an open menu from one keeps them shown. */
+[data-slot="item-actions"][data-reveal="hover"] {
+  transition: opacity var(--duration-fast) var(--ease-standard);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-slot="item"]:not(:hover, :focus-within, :has([aria-expanded="true"]))
+    > [data-slot="item-actions"][data-reveal="hover"] {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* Reduced transparency: the washes become opaque over the card. */
+@media (prefers-reduced-transparency: reduce) {
+  [data-slot="item-group"][data-variant="ruled"] {
+    --ruled-wash-selected: color-mix(in srgb, var(--foreground) 4%, var(--card));
+    --ruled-wash-checked: color-mix(
+      in srgb,
+      var(--primary) var(--ruled-checked-share),
+      var(--card)
+    );
+    --ruled-wash-hover: color-mix(in srgb, var(--primary) var(--wash-hover), var(--card));
+  }
+}
+
+/* Forced colours drop the shadow rail and the washes: the selected row gets a real
+   Highlight border in the rail's place (so nothing moves), and checked rows rely on the
+   checkbox itself. */
+@media (forced-colors: active) {
+  [data-slot="item-group"][data-variant="ruled"]
+    > [data-slot="item"]:is(
+      [aria-current]:not([aria-current="false"]),
+      [aria-selected="true"],
+      :has([aria-current]:not([aria-current="false"]))
+    ) {
+    border-inline-start: var(--ruled-rail-width) solid Highlight;
+    padding-inline-start: var(--ruled-pad-inline);
+  }
+}
