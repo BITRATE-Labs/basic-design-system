@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
+import Color from "colorjs.io";
 import { beforeAll, describe, expect, it } from "vitest";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -45,5 +46,49 @@ describe.each(brandNames)("brand %s", (brand) => {
       expect(dark?.[`--${role}`], `dark --${role}`).toBeTruthy();
     }
     for (const v of sharedVars) expect(light?.[v], v).toBeTruthy();
+  });
+});
+
+// WCAG AA contrast (4.5:1) for every role/-foreground pair, plus muted text on the page.
+// Real product colours that fall short stay as the product has them and are listed
+// here, keyed "brand:mode:background/foreground", so the owner can decide. Values
+// derived for this design system must pass and never go in this list.
+const contrastAllowlist: Record<string, string> = {
+  // shadcn/ui stock neutral muted text on muted.
+  "basic:light:muted/muted-foreground": "shadcn neutral value, 4.34:1",
+  // Mantine's default dimmed text (gray.6) on the light surfaces.
+  "chronote:light:muted/muted-foreground": "Mantine dimmed gray.6, 3.18:1",
+  "chronote:light:background/muted-foreground": "Mantine dimmed gray.6, 3.15:1",
+  // White label on the dark-mode primary shade (brand.5).
+  "chronote:dark:primary/primary-foreground": "Mantine filled button, 3.71:1",
+};
+
+function contrastPairs(vars: Record<string, string>): [string, string][] {
+  const pairs = Object.keys(vars)
+    .filter((k) => k.endsWith("-foreground"))
+    .map((fg): [string, string] => [
+      fg === "--foreground" ? "--background" : fg.replace(/-foreground$/, ""),
+      fg,
+    ]);
+  return [...pairs, ["--background", "--muted-foreground"]];
+}
+
+describe.each(brandNames)("brand %s contrast", (brand) => {
+  it.each(["light", "dark"])("%s mode meets WCAG AA", (mode) => {
+    const blocks = parseBlocks(readFileSync(path.join(root, `dist/brands/${brand}.css`), "utf8"));
+    const selector =
+      mode === "light"
+        ? `[data-brand="${brand}"]`
+        : `[data-brand="${brand}"].dark, .dark [data-brand="${brand}"]`;
+    const vars = blocks.get(selector) ?? {};
+    const failures: string[] = [];
+    for (const [bg, fg] of contrastPairs(vars)) {
+      const key = `${brand}:${mode}:${bg.slice(2)}/${fg.slice(2)}`;
+      const ratio = new Color(vars[bg]).contrast(new Color(vars[fg]), "WCAG21");
+      const allowed = key in contrastAllowlist;
+      if (ratio < 4.5 && !allowed) failures.push(`${key} ${ratio.toFixed(2)}:1`);
+      if (ratio >= 4.5 && allowed) failures.push(`${key} passes; remove it from the allowlist`);
+    }
+    expect(failures).toEqual([]);
   });
 });

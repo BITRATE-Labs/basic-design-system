@@ -57,9 +57,18 @@
   },
   "font": {
     "$type": "fontFamily",
-    "sans": { "$value": ["Geist", "ui-sans-serif", "system-ui", "sans-serif"] },
-    "display": { "$value": ["Geist", "ui-sans-serif", "system-ui", "sans-serif"] },
-    "mono": { "$value": ["Geist Mono", "ui-monospace", "SFMono-Regular", "monospace"] }
+    "sans": {
+      "$value": ["Geist", "ui-sans-serif", "system-ui", "sans-serif"],
+      "$extensions": { "com.bitrate-labs.google-fonts": "Geist:wght@100..900" }
+    },
+    "display": {
+      "$value": ["Geist", "ui-sans-serif", "system-ui", "sans-serif"],
+      "$extensions": { "com.bitrate-labs.google-fonts": "Geist:wght@100..900" }
+    },
+    "mono": {
+      "$value": ["Geist Mono", "ui-monospace", "SFMono-Regular", "monospace"],
+      "$extensions": { "com.bitrate-labs.google-fonts": "Geist+Mono:wght@100..900" }
+    }
   },
   "radius": { "$type": "dimension", "$value": "0.625rem" }
 }
