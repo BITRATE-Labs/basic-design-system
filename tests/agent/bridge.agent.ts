@@ -148,3 +148,70 @@ test("offers the tools over WebMCP, and confirm steps still ask the person", asy
   expect(asked).toBe(1);
   await expect(status(page)).toHaveText("Workspace exists.");
 });
+
+// The UI SDK components in src/components/ui: each one is visible to the bridge and
+// driven through it, and the story shows the app received the change.
+const text = (page: Page, value: string) => page.getByText(value, { exact: true });
+
+test("runs a command, and refuses a disabled one", async ({ page }) => {
+  await openStory(page, "components-command--default");
+  const ran = await act(page, [{ ref: "Search commands", action: "run", args: ["profile"] }]);
+  expect(ran.ok, ran.error?.message).toBe(true);
+  await expect(text(page, "Ran: profile")).toBeVisible();
+
+  const disabled = await act(page, [{ ref: "Search commands", action: "run", args: ["schedule"] }]);
+  expect(disabled.ok).toBe(false);
+  await expect(text(page, "Ran: profile")).toBeVisible();
+});
+
+test("opens the command palette dialog", async ({ page }) => {
+  await openStory(page, "components-command--palette-closed");
+  const opened = await act(page, [{ ref: "Search commands", action: "setOpen", args: [true] }]);
+  expect(opened.ok, opened.error?.message).toBe(true);
+  await expect(page.getByRole("dialog")).toBeVisible();
+  expect(await snapshot(page)).toContainEqual(expect.objectContaining({ component: "command" }));
+});
+
+test("picks a calendar day", async ({ page }) => {
+  await openStory(page, "components-calendar--default");
+  const picked = await act(page, [
+    { ref: "October 2026", action: "setValue", args: ["2026-10-20"] },
+  ]);
+  expect(picked.ok, picked.error?.message).toBe(true);
+  expect(await snapshot(page)).toContainEqual(
+    expect.objectContaining({ component: "calendar", value: "2026-10-20" }),
+  );
+  await expect(page.getByRole("gridcell", { name: /20/, selected: true })).toBeVisible();
+});
+
+test("sets a date picker value", async ({ page }) => {
+  await openStory(page, "components-datepicker--empty");
+  const set = await act(page, [{ ref: "Due date", action: "setValue", args: ["2026-10-20"] }]);
+  expect(set.ok, set.error?.message).toBe(true);
+  await expect(text(page, "Value: 2026-10-20")).toBeVisible();
+});
+
+test("fills a one-time code, and the snapshot redacts it", async ({ page }) => {
+  await openStory(page, "components-otpinput--empty");
+  const filled = await act(page, [
+    { ref: "Verification code", action: "setValue", args: ["482913"] },
+  ]);
+  expect(filled.ok, filled.error?.message).toBe(true);
+  expect(await snapshot(page)).toContainEqual(
+    expect.objectContaining({ component: "otp-input", value: "[redacted]" }),
+  );
+  await expect(page.getByLabel("Verification code")).toHaveValue("482913");
+});
+
+test("inserts and removes a token", async ({ page }) => {
+  await openStory(page, "components-tokeninput--empty");
+  const inserted = await act(page, [
+    { ref: "Message", action: "insert", args: [{ type: "tag", value: "wanted", label: "wanted" }] },
+  ]);
+  expect(inserted.ok, inserted.error?.message).toBe(true);
+  await expect(text(page, "Value: [tag:wanted]")).toBeVisible();
+
+  const cleared = await act(page, [{ ref: "Message", action: "clear" }]);
+  expect(cleared.ok, cleared.error?.message).toBe(true);
+  await expect(text(page, "Value: empty")).toBeVisible();
+});
