@@ -1,168 +1,168 @@
 {
-  "$description": "perkcord: indigo on warm paper, from the default marketplace palette (converted from HSL).",
+  "$description": "perkcord: forest green on cool white, dark mode on near-black green, from Perkcord's product palette (converted from HSL).",
   "color": {
     "$type": "color",
     "light": {
       "background": {
-        "$value": "#f8f6f1"
+        "$value": "#f6f9f9"
       },
       "foreground": {
-        "$value": "#13192a"
+        "$value": "#21282c"
       },
       "card": {
-        "$value": "#fdfdfb"
+        "$value": "#ffffff"
       },
       "card-foreground": {
-        "$value": "#13192a"
+        "$value": "#21282c"
       },
       "popover": {
-        "$value": "#fdfdfb"
+        "$value": "#ffffff"
       },
       "popover-foreground": {
-        "$value": "#13192a"
+        "$value": "#21282c"
       },
       "primary": {
-        "$value": "#323d8f"
+        "$value": "#276d39"
       },
       "primary-foreground": {
-        "$value": "#fcfbf8"
+        "$value": "#ffffff"
       },
       "secondary": {
-        "$value": "#eeeae2"
+        "$value": "#eaeff1"
       },
       "secondary-foreground": {
-        "$value": "#1f273d"
+        "$value": "#21282c"
       },
       "muted": {
-        "$value": "#edeae3"
+        "$value": "#eaeff1"
       },
       "muted-foreground": {
-        "$value": "#575d70"
+        "$value": "#3e474c"
       },
       "accent": {
-        "$value": "#efd9c8"
+        "$value": "#ade49a"
       },
       "accent-foreground": {
-        "$value": "#13192a"
+        "$value": "#141b1f"
       },
       "destructive": {
         "$value": "#ef4343"
       },
       "border": {
-        "$value": "#d1cabd"
+        "$value": "#73868c"
       },
       "input": {
-        "$value": "#d1cabd"
+        "$value": "#73868c"
       },
       "ring": {
-        "$value": "#323d8f"
+        "$value": "#276d39"
       },
       "success": {
         "$value": "#22704c"
       },
       "success-foreground": {
-        "$value": "#fcfbf8"
+        "$value": "#ffffff"
       },
       "warning": {
         "$value": "#8a5512"
       },
       "warning-foreground": {
-        "$value": "#fcfbf8"
+        "$value": "#ffffff"
       },
       "info": {
         "$value": "#1f5f8f"
       },
       "info-foreground": {
-        "$value": "#fcfbf8"
+        "$value": "#ffffff"
       }
     },
     "dark": {
       "background": {
-        "$value": "#0c0f17"
+        "$value": "#101916"
       },
       "foreground": {
-        "$value": "#f3efe7"
+        "$value": "#f1f1f3"
       },
       "card": {
-        "$value": "#131720"
+        "$value": "#182520"
       },
       "card-foreground": {
-        "$value": "#f3efe7"
+        "$value": "#f1f1f3"
       },
       "popover": {
-        "$value": "#11141d"
+        "$value": "#182520"
       },
       "popover-foreground": {
-        "$value": "#f3efe7"
+        "$value": "#f1f1f3"
       },
       "primary": {
-        "$value": "#8a98ef"
+        "$value": "#acd985"
       },
       "primary-foreground": {
-        "$value": "#10131e"
+        "$value": "#18181b"
       },
       "secondary": {
-        "$value": "#242833"
+        "$value": "#27352f"
       },
       "secondary-foreground": {
-        "$value": "#f3efe7"
+        "$value": "#f1f1f3"
       },
       "muted": {
-        "$value": "#242833"
+        "$value": "#1d2a25"
       },
       "muted-foreground": {
-        "$value": "#a9afbc"
+        "$value": "#b7c2bc"
       },
       "accent": {
-        "$value": "#3c2d20"
+        "$value": "#1d2a25"
       },
       "accent-foreground": {
-        "$value": "#f3efe7"
+        "$value": "#f1f1f3"
       },
       "destructive": {
-        "$value": "#db2424"
+        "$value": "#f79797"
       },
       "border": {
-        "$value": "#323743"
+        "$value": "#7b7b7f"
       },
       "input": {
-        "$value": "#323743"
+        "$value": "#8b8b8f"
       },
       "ring": {
-        "$value": "#8a98ef"
+        "$value": "#acd985"
       },
       "success": {
         "$value": "#7fd1a8"
       },
       "success-foreground": {
-        "$value": "#10131e"
+        "$value": "#18181b"
       },
       "warning": {
         "$value": "#f0c06a"
       },
       "warning-foreground": {
-        "$value": "#10131e"
+        "$value": "#18181b"
       },
       "info": {
         "$value": "#7fbfec"
       },
       "info-foreground": {
-        "$value": "#10131e"
+        "$value": "#18181b"
       }
     }
   },
   "font": {
     "$type": "fontFamily",
     "sans": {
-      "$value": ["Space Grotesk", "ui-sans-serif", "system-ui", "sans-serif"],
+      "$value": ["Inter", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
       "$extensions": {
-        "com.bitrate-labs.google-fonts": "Space+Grotesk:wght@300..700"
+        "com.bitrate-labs.google-fonts": "Inter:wght@100..900"
       }
     },
     "display": {
-      "$value": ["Space Grotesk", "ui-sans-serif", "system-ui", "sans-serif"],
+      "$value": ["Inter", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
       "$extensions": {
-        "com.bitrate-labs.google-fonts": "Space+Grotesk:wght@300..700"
+        "com.bitrate-labs.google-fonts": "Inter:wght@100..900"
       }
     },
     "mono": {
