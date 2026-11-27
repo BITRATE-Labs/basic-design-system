@@ -52,3 +52,7 @@ Shared popups portal to the end of `<body>` at `z-50`. Products wrap the app roo
 - This is a non-live repository. Work on a branch and open a PR. CI must pass before merge.
 - Before committing, run `npm run lint`, `npm run typecheck`, `npm test`, `npm run registry:check` and `npm run build-storybook`. Screenshot baselines change only through the Update visual baselines workflow (or, before it can be dispatched, the Docker bootstrap in the README).
 - Commit messages and PR text follow the public-repo rule above.
+
+## Working branch
+
+Day-to-day work is committed and pushed straight to the shared `next` branch; CI runs on every push to it. Open a pull request from `next` to `main` only when a large batch is ready. Cut a release tag from `main` after its CI is green.
