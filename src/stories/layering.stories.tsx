@@ -438,6 +438,9 @@ export const BodyOverlayPopover: Story = {
   play: onTop("popover"),
 };
 
+// UI SDK opens its popups after a frame or two; allow for a loaded CI runner.
+const slow = { timeout: 3000 };
+
 // UI SDK popups inside the shared Dialog. UI SDK closes its popup on Escape but lets the key
 // bubble, and Base UI's Dialog closes on any Escape that reaches it, so the date picker and
 // command palette wrappers stop the Escape their content used. One press closes only the
@@ -462,11 +465,11 @@ const escapeClosesOnlyPopup =
   async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("button", { name: "Open dialog" }));
     const dialog = await screen.findByRole("dialog", { name: "Sample dialog" });
-    await waitFor(() => expect(dialog).toBeVisible());
+    await waitFor(() => expect(dialog).toBeVisible(), slow);
     const popup = await openPopup(userEvent);
-    await waitFor(() => expect(popup).toBeVisible());
+    await waitFor(() => expect(popup).toBeVisible(), slow);
     await userEvent.keyboard("{Escape}");
-    await waitFor(() => expect(popup).not.toBeVisible());
+    await waitFor(() => expect(popup).not.toBeVisible(), slow);
     await expect(screen.getByRole("dialog", { name: "Sample dialog" })).toBeVisible();
   };
 
@@ -484,7 +487,7 @@ export const DialogDatePickerEscape: Story = {
   ),
   play: escapeClosesOnlyPopup(async (user) => {
     await user.click(screen.getByRole("button", { name: "Choose date" }));
-    return screen.findByRole("grid");
+    return screen.findByRole("grid", {}, slow);
   }),
 };
 
@@ -519,15 +522,17 @@ export const DialogTokenInputEscapeKnownGap: Story = {
   ),
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("button", { name: "Open dialog" }));
-    await waitFor(() =>
-      expect(screen.getByRole("dialog", { name: "Sample dialog" })).toBeVisible(),
+    await waitFor(
+      () => expect(screen.getByRole("dialog", { name: "Sample dialog" })).toBeVisible(),
+      slow,
     );
     await userEvent.click(screen.getByRole("textbox", { name: "Message" }));
     await userEvent.keyboard("@Sam");
-    await waitFor(() => expect(screen.getByRole("listbox")).toBeVisible());
+    await waitFor(() => expect(screen.getByRole("listbox")).toBeVisible(), slow);
     await userEvent.keyboard("{Escape}");
-    await waitFor(() =>
-      expect(screen.queryByRole("dialog", { name: "Sample dialog" })).not.toBeInTheDocument(),
+    await waitFor(
+      () => expect(screen.queryByRole("dialog", { name: "Sample dialog" })).not.toBeInTheDocument(),
+      slow,
     );
   },
 };
@@ -547,6 +552,6 @@ export const DialogCommandPaletteEscape: Story = {
   ),
   play: escapeClosesOnlyPopup(async (user) => {
     await user.click(screen.getByRole("button", { name: "Search commands" }));
-    return screen.findByRole("dialog", { name: "Command palette" });
+    return screen.findByRole("dialog", { name: "Command palette" }, slow);
   }),
 };
