@@ -1,0 +1,176 @@
+/* ---- Surfaces ---------------------------------------------------------------------------
+ * Lit-edge glass for brands whose brand file sets "surface": { "style": "glass" }.
+ * scripts/build-tokens.mjs copies this block into dist/theme.css and replaces every
+ * :where([data-surface="glass"]) with the glass brands' [data-brand] selectors; with no glass
+ * brand it is left out. The --surface-* values come from the brand CSS (light and .dark).
+ * Flat brands keep stock surfaces: nothing here matches them.
+ *
+ * The rules sit in the "surfaces" layer, declared after Tailwind's layers, so they beat the
+ * stock utilities (bg-popover, ring-1, shadow-md) without !important. Unlayered product CSS
+ * still beats them.
+ *
+ * Opt-ins (documented in Docs / Surfaces):
+ *   data-surface-backdrop   on the app root or <body>: the brand's tinted page backdrop
+ *   data-fill="uniform"     on a Card: an even, mostly opaque fill with no sheen (long lists)
+ *   data-transparency="reduce"  on any ancestor: the opaque fallback (an in-app setting)
+ */
+@layer surfaces {
+  /* Lit edge: every glass-brand surface, with or without blur. Replaces stock's ring-1 and
+     shadow-md (both box-shadow) with a real border, so forced colours keep the edge. */
+  :where([data-surface="glass"])
+    :is(
+      [data-slot="card"],
+      [data-slot="dialog-content"],
+      [data-slot="alert-dialog-content"],
+      [data-slot="popover-content"],
+      [data-slot="dropdown-menu-content"],
+      [data-slot="dropdown-menu-sub-content"],
+      [data-slot="select-content"],
+      [data-slot="combobox-content"],
+      [data-slot="tooltip-content"]
+    ) {
+    border: 1px solid var(--surface-edge);
+    border-top-color: var(--surface-edge-top);
+    background-image: var(--surface-sheen);
+    box-shadow: var(--surface-highlight), var(--surface-shadow);
+  }
+
+  /* The sheet keeps stock's single border on its open side; only a bottom sheet's open side
+     is its top, which takes the lit edge. */
+  :where([data-surface="glass"]) [data-slot="sheet-content"] {
+    border-color: var(--surface-edge);
+    background-image: var(--surface-sheen);
+    box-shadow: var(--surface-highlight), var(--surface-shadow);
+  }
+
+  :where([data-surface="glass"]) [data-slot="sheet-content"][data-side="bottom"] {
+    border-top-color: var(--surface-edge-top);
+  }
+
+  /* Opaque fills (the fallback). Panels paint --background, as Perkcord's GlassPanel does. */
+  :where([data-surface="glass"]) [data-slot="card"] {
+    background-color: var(--background);
+  }
+
+  :where([data-surface="glass"])
+    :is(
+      [data-slot="dialog-content"],
+      [data-slot="alert-dialog-content"],
+      [data-slot="sheet-content"]
+    ) {
+    background-color: var(--background);
+  }
+
+  /* Menus and small popups: Perkcord's glass menu, a shorter, darker shadow. */
+  :where([data-surface="glass"])
+    :is(
+      [data-slot="popover-content"],
+      [data-slot="dropdown-menu-content"],
+      [data-slot="dropdown-menu-sub-content"],
+      [data-slot="select-content"],
+      [data-slot="combobox-content"]
+    ) {
+    background-color: var(--popover);
+    box-shadow: var(--surface-highlight), var(--surface-shadow-menu);
+  }
+
+  /* Tooltips stay opaque, on the popover colour like Perkcord's tooltip, not stock's inverted
+     fill. The arrow is the popup's only child with data-side. */
+  :where([data-surface="glass"]) [data-slot="tooltip-content"] {
+    background-color: var(--popover);
+    background-image: none;
+    color: var(--popover-foreground);
+    box-shadow: var(--surface-highlight), var(--surface-shadow-menu);
+  }
+
+  :where([data-surface="glass"]) [data-slot="tooltip-content"] > [data-side] {
+    background-color: var(--popover);
+    fill: var(--popover);
+  }
+
+  /* Uniform fill: opaque here; 82% in the glass block below, as in Perkcord. */
+  :where([data-surface="glass"]) [data-slot="card"][data-fill="uniform"] {
+    background-image: none;
+    background-color: var(--background);
+  }
+
+  /* Glass: only where backdrop-filter works and nobody asked for less transparency, more
+     contrast or forced colours (the browser keeps a fill's alpha there but drops the blur).
+     data-transparency="reduce" on an ancestor gives the same opaque result. */
+  @supports (backdrop-filter: blur(7px)) {
+    @media (not (prefers-reduced-transparency: reduce)) and (not (prefers-contrast: more)) and (not (forced-colors: active)) {
+      :where([data-surface="glass"])
+        [data-slot="card"]:not([data-transparency="reduce"], [data-transparency="reduce"] *) {
+        background-color: var(--surface-fill-panel);
+        backdrop-filter: var(--surface-blur);
+      }
+
+      :where([data-surface="glass"])
+        :is(
+          [data-slot="dialog-content"],
+          [data-slot="alert-dialog-content"],
+          [data-slot="sheet-content"]
+        ):not([data-transparency="reduce"], [data-transparency="reduce"] *) {
+        background-color: var(--surface-fill-dialog);
+        backdrop-filter: var(--surface-blur);
+      }
+
+      :where([data-surface="glass"])
+        :is(
+          [data-slot="popover-content"],
+          [data-slot="dropdown-menu-content"],
+          [data-slot="dropdown-menu-sub-content"],
+          [data-slot="select-content"],
+          [data-slot="combobox-content"]
+        ):not([data-transparency="reduce"], [data-transparency="reduce"] *) {
+        background-color: var(--surface-fill-menu);
+        backdrop-filter: var(--surface-blur-menu);
+      }
+
+      :where([data-surface="glass"])
+        [data-slot="card"][data-fill="uniform"]:not(
+          [data-transparency="reduce"],
+          [data-transparency="reduce"] *
+        ) {
+        background-color: var(--surface-fill-uniform);
+      }
+    }
+  }
+
+  /* Page backdrop: the brand's tinted background, so the glass has something behind it. */
+  :where([data-surface="glass"])[data-surface-backdrop],
+  :where([data-surface="glass"]) [data-surface-backdrop] {
+    background: var(--surface-backdrop);
+    background-attachment: fixed;
+  }
+
+  @media (prefers-contrast: more) {
+    :where([data-surface="glass"])[data-surface-backdrop],
+    :where([data-surface="glass"]) [data-surface-backdrop] {
+      background: var(--background);
+    }
+  }
+
+  /* Forced colours: the border is the edge; the sheen and the backdrop go. */
+  @media (forced-colors: active) {
+    :where([data-surface="glass"])
+      :is(
+        [data-slot="card"],
+        [data-slot="dialog-content"],
+        [data-slot="alert-dialog-content"],
+        [data-slot="sheet-content"],
+        [data-slot="popover-content"],
+        [data-slot="dropdown-menu-content"],
+        [data-slot="dropdown-menu-sub-content"],
+        [data-slot="select-content"],
+        [data-slot="combobox-content"]
+      ) {
+      background-image: none;
+    }
+
+    :where([data-surface="glass"])[data-surface-backdrop],
+    :where([data-surface="glass"]) [data-surface-backdrop] {
+      background: Canvas;
+    }
+  }
+}

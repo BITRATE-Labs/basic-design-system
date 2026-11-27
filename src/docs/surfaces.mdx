@@ -1,0 +1,51 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Docs/Surfaces" />
+
+# Surfaces
+
+Each brand picks a surface style in its brand file. **Flat** (the default) keeps stock shadcn surfaces: a 1px ring at 10% foreground and, on popups, `shadow-md`. **Glass** is Perkcord's lit-edge glass, and the perkcord brand uses it. See **Foundations / Surfaces** for both, light and dark.
+
+## What glass changes
+
+Glass replaces the stock ring with a real 1px border at 13% foreground and a brighter top edge, adds a faint 145° sheen in the top-left corner, a 1px inner highlight and a long shadow tinted green-grey instead of black. Where the browser can blur, it also makes the fill translucent and blurs what is behind it:
+
+| Surface                                           | Fill (light, dark)         | Blur                        | Shadow              |
+| ------------------------------------------------- | -------------------------- | --------------------------- | ------------------- |
+| Card                                              | 36%, 44% of `--background` | `blur(7px) saturate(1.15)`  | `0 18px 52px -24px` |
+| Dialog, AlertDialog, Sheet                        | 72%, 62% of `--background` | `blur(7px) saturate(1.15)`  | `0 18px 52px -24px` |
+| DropdownMenu, Popover, Select and Combobox popups | 84% of `--popover`         | `blur(12px) saturate(1.15)` | `0 18px 44px -20px` |
+| Tooltip                                           | opaque `--popover`         | none                        | `0 18px 44px -20px` |
+| Card with `data-fill="uniform"`                   | 82% of `--background`      | as Card, no sheen           | as Card             |
+
+The Tooltip takes the popover colours in a glass brand, as Perkcord's tooltip does, instead of stock's inverted fill.
+
+## The page backdrop
+
+Glass only reads as glass when something is behind it. Put `data-surface-backdrop` on `<body>` or the app root to paint the brand's backdrop there (fixed to the viewport). For perkcord it is the product's community scene drawn in CSS gradients: a pale blue-to-mint sky with soft clouds and a tree-line haze along the bottom in light mode, a green night glow in dark mode, under a scrim of the page colour. Flat brands ignore the attribute, so it is safe to set everywhere; Storybook sets it on every story.
+
+```html
+<html data-brand="perkcord">
+  <body data-surface-backdrop>
+    <div class="isolate">…</div>
+  </body>
+</html>
+```
+
+## Long lists
+
+Give a Card `data-fill="uniform"` when it holds a long list or a table: an even, mostly opaque fill with no sheen, so rows read alike from top to bottom.
+
+## Fallbacks
+
+The translucent fill and blur turn on only where `backdrop-filter` is supported and the person has not asked for reduced transparency (`prefers-reduced-transparency`), more contrast (`prefers-contrast: more`) or forced colours. Otherwise every surface keeps the edge, sheen and shadow on an opaque fill. `data-transparency="reduce"` on `<html>` (or any ancestor of a surface) forces the same fallback, for an in-app setting; **Foundations / Surfaces / Glass Fallback** shows it. With more contrast the backdrop becomes the plain page colour, and in forced colours the sheen and backdrop go and the real border keeps every edge visible (stock's ring is a box-shadow, which forced colours removes).
+
+## Costs
+
+Blur is expensive on long scrolling pages and where surfaces stack, and a blurred element becomes the containing block for its `position: fixed` descendants. Use the uniform fill for long content.
+
+## Adding glass to a brand
+
+Add a `surface` block to the brand file with `"style": { "$value": "glass" }` and a `light` and `dark` value for every key that `scripts/build-tokens.mjs` lists in `SURFACE_KEYS` (copy `brands/perkcord.tokens.json`). Each becomes a `--surface-<key>` property in the brand CSS, and the build scopes the glass rules in `dist/theme.css` to that brand. A missing key fails the build. Measure text contrast over the backdrop afterwards: translucent fills change it.
+
+The rules sit in a `surfaces` cascade layer after Tailwind's, so they win over the stock utilities without `!important`; unlayered product CSS still wins over them.

@@ -185,3 +185,44 @@ it("collapses every motion token under reduced motion", () => {
     for (const name of names) expect(body, name).toMatch(new RegExp(`${name}: (1ms|0ms|0px);`));
   }
 });
+
+// ---- Surfaces ----------------------------------------------------------------------------
+// Surface styles (Docs / Surfaces): glass brands get every --surface-* value in light and dark
+// and the glass rules in theme.css; flat brands get neither.
+const brandFile = (name: string) =>
+  JSON.parse(readFileSync(path.join(root, `brands/${name}.tokens.json`), "utf8")) as {
+    surface?: { style?: { $value?: string } };
+  };
+const brands = brandNames;
+const glass = brands.filter((b) => brandFile(b).surface?.style?.$value === "glass");
+
+describe("surfaces", () => {
+  it("makes perkcord a glass brand and leaves the rest flat", () => {
+    expect(glass).toEqual(["perkcord"]);
+  });
+
+  it.each(brands)("writes --surface-* values only for glass brands (%s)", (brand) => {
+    const css = readFileSync(path.join(root, `dist/brands/${brand}.css`), "utf8");
+    const count = (css.match(/--surface-backdrop:/g) ?? []).length;
+    expect(count).toBe(glass.includes(brand) ? 2 : 0);
+  });
+
+  it("scopes the glass rules in theme.css to the glass brands", () => {
+    const theme = readFileSync(path.join(root, "dist/theme.css"), "utf8");
+    expect(theme).toContain("@layer surfaces");
+    expect(theme).not.toContain('[data-surface="glass"]');
+    expect(theme).toContain(':where([data-brand="perkcord"]) [data-slot="card"]');
+    for (const flat of brands.filter((b) => !glass.includes(b)))
+      expect(theme).not.toContain(`[data-brand="${flat}"]`);
+  });
+
+  it("keeps the opaque fallbacks", () => {
+    const theme = readFileSync(path.join(root, "dist/theme.css"), "utf8");
+    expect(theme).toContain("(not (prefers-reduced-transparency: reduce))");
+    expect(theme).toContain("(not (prefers-contrast: more))");
+    expect(theme).toContain("(not (forced-colors: active))");
+    expect(theme).toContain('[data-transparency="reduce"]');
+    const rules = readFileSync(path.join(root, "scripts/surfaces.css"), "utf8");
+    expect(rules.replace(/\/\*[\s\S]*?\*\//g, "")).not.toContain("!important");
+  });
+});
