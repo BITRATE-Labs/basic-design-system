@@ -126,6 +126,20 @@
       ]
     },
     {
+      "name": "sliding-tabs",
+      "type": "registry:ui",
+      "title": "Sliding tabs",
+      "description": "Tabs list and link navigation bar with a sliding selection indicator, built on the stock tabs. Motion comes from the --duration-indicator and --ease-indicator tokens.",
+      "dependencies": ["@base-ui/react", "cn"],
+      "registryDependencies": ["BITRATE-Labs/basic-design-system/tabs#v0.1.0"],
+      "files": [
+        {
+          "path": "src/components/ui/sliding-tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "kbd",
       "type": "registry:ui",
       "title": "Kbd",
@@ -271,6 +285,19 @@
       "files": [
         {
           "path": "src/components/ui/token-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "direction",
+      "type": "registry:ui",
+      "title": "Direction",
+      "description": "Stock shadcn/ui DirectionProvider from Base UI. Right-to-left apps wrap the root in it so arrow keys follow the reading direction.",
+      "dependencies": ["@base-ui/react"],
+      "files": [
+        {
+          "path": "src/components/ui/direction.tsx",
           "type": "registry:ui"
         }
       ]

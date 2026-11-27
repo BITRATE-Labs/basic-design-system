@@ -79,6 +79,17 @@
     "$type": "duration",
     "fast": { "$value": "100ms" },
     "normal": { "$value": "150ms" },
-    "slow": { "$value": "300ms" }
+    "slow": { "$value": "300ms" },
+    "indicator": {
+      "$value": "250ms",
+      "$description": "Sliding tab and navigation indicator move."
+    }
+  },
+  "ease": {
+    "$type": "cubicBezier",
+    "indicator": {
+      "$value": [0, 0, 0.58, 1],
+      "$description": "Sliding indicator easing (CSS ease-out). Tailwind utility: ease-indicator."
+    }
   }
 }

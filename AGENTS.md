@@ -46,12 +46,13 @@ Shared popups portal to the end of `<body>` at `z-50`. Products wrap the app roo
 
 ## Which library each component comes from
 
-| Primitive library                 | Components                                                                                          |
-| --------------------------------- | --------------------------------------------------------------------------------------------------- |
-| Base UI (`@base-ui/react`), stock | `button`, `input`, `separator`, `dialog`, `dropdown-menu`, `tabs`, `tooltip`, `popover`             |
-| None (stock shadcn, plain HTML)   | `label`, `field`, `kbd`                                                                             |
-| UI SDK (`@ui-sdk/react`)          | `command`, `calendar`, `date-picker`, `otp-input`, `token-input`, `agent` (`src/components/ui-sdk`) |
-| Lab only, never in the registry   | `src/lab/ui-sdk`: UI SDK trial ports of Tabs and Dialog                                             |
+| Primitive library                 | Components                                                                                           |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Base UI (`@base-ui/react`), stock | `button`, `input`, `separator`, `dialog`, `dropdown-menu`, `tabs`, `tooltip`, `popover`, `direction` |
+| Base UI, composed (not stock)     | `sliding-tabs` (see Additions beyond stock)                                                          |
+| None (stock shadcn, plain HTML)   | `label`, `field`, `kbd`                                                                              |
+| UI SDK (`@ui-sdk/react`)          | `command`, `calendar`, `date-picker`, `otp-input`, `token-input`, `agent` (`src/components/ui-sdk`)  |
+| Lab only, never in the registry   | `src/lab/ui-sdk`: UI SDK trial ports of Tabs and Dialog                                              |
 
 ## UI SDK components (beta)
 
@@ -61,6 +62,10 @@ Shared popups portal to the end of `<body>` at `z-50`. Products wrap the app roo
 - Style them by copying the class patterns of the matching stock file (radius, border, ring, spacing, role tokens). UI SDK sets each part's `data-slot` itself and replaces one you pass, so do not pass it. Animate exits on `data-ending-style`, not `data-closed:animate-out`. shadcn's `tailwind.css` redefines `data-selected:` to match only `data-selected="true"`, and UI SDK writes it empty, so use `data-[selected]:`. Wrap `buttonVariants(...)` in `cn` when you use it on a UI SDK part, or `border-transparent` beats the variant's border. Wrapper `className` takes a string, not UI SDK's state function.
 - UI SDK popups use the browser top layer, need no z-index, and keep the browser's popover border, padding and background unless the class sets them (date picker and trigger menu content do). `src/index.css` declares `@layer ui-sdk;` before Tailwind; products must do the same in their global stylesheet.
 - Owner decision pending: whether a live product may ship this beta under Vercel's beta terms (upstream issue vercel-labs/ui#867).
+
+## Additions beyond stock
+
+- `sliding-tabs.tsx` is not a shadcn component. It composes the stock `tabs.tsx` (which stays unchanged) with Base UI's `Tabs.Indicator`, and adds `SlidingNav` for link navigation, because shadcn ships no sliding selection. Its motion comes from the `--duration-indicator` and `--ease-indicator` tokens. Details: Storybook **Docs / Sliding tabs**.
 
 ## Lab convention
 
