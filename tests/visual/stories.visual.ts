@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 import { brands } from "../../dist/tokens";
 
 // Every non-Lab story x every built brand x light and dark.
@@ -11,6 +11,52 @@ const index = JSON.parse(
 const stories = Object.values(index.entries).filter(
   (e) => e.type === "story" && !e.title.startsWith("Lab/"),
 );
+
+// The web-font families a brand declares (the css2 family spec Storybook loads, see
+// .storybook/main.ts), e.g. "Space+Grotesk:wght@300..700" -> "Space Grotesk".
+const brandFonts = (brand: string): string[] => {
+  const file = path.resolve(import.meta.dirname, `../../brands/${brand}.tokens.json`);
+  const tokens = JSON.parse(readFileSync(file, "utf8")) as {
+    font?: Record<string, { $extensions?: Record<string, string> }>;
+  };
+  const specs = Object.entries(tokens.font ?? {})
+    .filter(([key]) => !key.startsWith("$"))
+    .map(([, font]) => font.$extensions?.["com.bitrate-labs.google-fonts"])
+    .filter((spec): spec is string => !!spec);
+  return [...new Set(specs.map((spec) => spec.split(":")[0].replaceAll("+", " ")))];
+};
+
+// document.fonts.ready alone races: a face nobody has laid out yet is not loading, so
+// ready resolves and the screenshot shows the fallback. Load every family, weight and
+// style the rendered page uses, then fail rather than screenshot a fallback.
+async function waitForFonts(page: Page, families: string[]) {
+  await page
+    .waitForFunction(
+      (want) => {
+        const have = new Set([...document.fonts].map((f) => f.family.replace(/["']/g, "")));
+        return want.every((family) => have.has(family));
+      },
+      families,
+      { timeout: 15_000 },
+    )
+    .catch(() => {
+      throw new Error(
+        `font did not load: the stylesheet for ${families.join(", ")} never registered`,
+      );
+    });
+  const failed = await page.evaluate(async (declared) => {
+    const used = new Set<string>();
+    for (const el of [document.body, ...document.body.querySelectorAll("*")]) {
+      const s = getComputedStyle(el);
+      const family = s.fontFamily.split(",")[0].trim().replace(/["']/g, "");
+      if (declared.includes(family)) used.add(`${s.fontStyle} ${s.fontWeight} 16px "${family}"`);
+    }
+    await Promise.all([...used].map((font) => document.fonts.load(font)));
+    await document.fonts.ready;
+    return [...used].filter((font) => !document.fonts.check(font));
+  }, families);
+  expect(failed, `font did not load: ${failed.join("; ")}`).toEqual([]);
+}
 
 for (const story of stories) {
   for (const brand of brands) {
@@ -49,7 +95,7 @@ for (const story of stories) {
         expect(
           await page.evaluate(() => (window as { __storyFailures?: unknown }).__storyFailures),
         ).toEqual([]);
-        await page.evaluate(() => document.fonts.ready);
+        await waitForFonts(page, brandFonts(brand));
         await expect(page).toHaveScreenshot(`${story.id}--${brand}--${theme}.png`);
       });
     }
