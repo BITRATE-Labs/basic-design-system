@@ -27,8 +27,10 @@ const label = "font-medium";
 const input =
   "h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm";
 const tabsList = "inline-flex w-fit items-center rounded-lg bg-muted p-[3px] text-muted-foreground";
+// aria-selected, not data-selected: shadcn/tailwind.css redefines data-selected: as
+// [data-selected="true"], and ui-sdk writes data-selected="".
 const tab =
-  "rounded-md px-2 py-1 text-sm font-medium data-selected:bg-background data-selected:text-foreground data-selected:shadow-sm";
+  "rounded-md px-2 py-1 text-sm font-medium aria-selected:bg-background aria-selected:text-foreground aria-selected:shadow-sm";
 const status = "text-sm text-muted-foreground";
 
 function WorkspaceSettings() {
