@@ -15,7 +15,7 @@ A selection line that slides to the chosen item. Two components share it:
 - On first paint it appears in place; it never slides in from zero.
 - It follows the item after resizes, font loads and wrapping onto another row, and scrolls with a list that overflows sideways. Right-to-left layouts work.
 - With reduced motion, the line jumps straight to the new item.
-- Hover and selection brighten the label to `--foreground` and make it semibold. A hidden semibold copy reserves the width, so the change never moves the other items.
+- Hover and selection brighten the label to `--foreground` and make it semibold. Hidden copies in both weights reserve the width, so the change never moves the other items.
 - Tabs get Base UI's measurements from `Tabs.Indicator`. The navigation bar measures the current link itself with the same CSS variables (`--active-tab-left`, `--active-tab-top`, `--active-tab-width`, `--active-tab-height`).
 
 ## Motion tokens
