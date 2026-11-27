@@ -16,6 +16,26 @@ for (const story of stories) {
   for (const brand of brands) {
     for (const theme of ["light", "dark"]) {
       test(`${story.id} ${brand} ${theme}`, async ({ page }) => {
+        // A failing play function still ends in the "finished" phase, so record the
+        // preview's own failure events from the moment its channel is created.
+        await page.addInitScript(() => {
+          type Channel = { on(event: string, listener: (payload: unknown) => void): void };
+          const w = window as unknown as Record<string, unknown>;
+          let channel: Channel | undefined;
+          Object.defineProperty(w, "__STORYBOOK_ADDONS_CHANNEL__", {
+            configurable: true,
+            get: () => channel,
+            set: (c: Channel) => {
+              channel = c;
+              const failures: unknown[] = [];
+              w.__storyFailures = failures;
+              c.on("playFunctionThrewException", (e) => failures.push(e));
+              c.on("unhandledErrorsWhilePlaying", (e) => failures.push(e));
+              c.on("storyThrewException", (e) => failures.push(e));
+              c.on("storyErrored", (e) => failures.push(e));
+            },
+          });
+        });
         await page.goto(
           `/iframe.html?id=${story.id}&viewMode=story&globals=brand:${brand};theme:${theme}`,
         );
@@ -26,6 +46,9 @@ for (const story of stories) {
           return ["finished", "errored", "aborted"].includes(p ?? "") && p;
         });
         expect(await phase.jsonValue()).toBe("finished");
+        expect(
+          await page.evaluate(() => (window as { __storyFailures?: unknown }).__storyFailures),
+        ).toEqual([]);
         await page.evaluate(() => document.fonts.ready);
         await expect(page).toHaveScreenshot(`${story.id}--${brand}--${theme}.png`);
       });
