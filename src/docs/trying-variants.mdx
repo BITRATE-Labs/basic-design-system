@@ -1,0 +1,23 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Docs/Trying variants" />
+
+# Trying variants
+
+Use this when you want to compare a few options for a component, for example three takes on a dialog header. It ends with one option shipped and the rest deleted.
+
+1. **Ask.** Describe what to vary, in one sentence.
+2. **Lab stories.** An agent adds the options on a branch, under `src/lab/`. Each option gets one story, and one more story shows them side by side. Their titles start with `Lab/`, so they sit at the bottom of the sidebar.
+3. **Look.** Open the branch's Storybook. Switch brand and light or dark from the toolbar. Change props with the controls panel.
+4. **Iterate.** Say what to change. The agent updates the stories. Repeat until one is right.
+5. **Pick.** The agent turns the winner into the real component, deletes the lab stories and tags a release.
+
+## Rules for lab stories
+
+- Lab stories are never in the registry, so a product cannot install an option nobody picked.
+- They are left out of the screenshot checks.
+- They are throwaway. Nothing outside `src/lab/` may import from it.
+
+## Opening a branch's Storybook
+
+Check out the branch and run `npm run storybook`. It opens at http://localhost:6006.

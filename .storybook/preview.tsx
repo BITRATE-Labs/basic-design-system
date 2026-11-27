@@ -22,6 +22,10 @@ const preview: Preview = {
     },
   },
   initialGlobals: { brand: "basic" },
+  parameters: {
+    // Lab/ holds throwaway options (src/lab/README.md), so it always sorts last.
+    options: { storySort: { order: ["Docs", "Components", "Examples", "*", "Lab"] } },
+  },
   decorators: [
     withBrand,
     withThemeByClassName<ReactRenderer>({
