@@ -80,3 +80,20 @@ export async function expectOnTop(popup: HTMLElement) {
 export async function expectCovered(popup: HTMLElement) {
   await expect((await settle(popup, false)).length).toBeGreaterThan(0);
 }
+
+// Waits until `count` sonner toasts have mounted and finished their entry transition.
+export async function findToasts(count = 1) {
+  let toasts: HTMLElement[] = [];
+  await waitFor(() => {
+    toasts = [...document.querySelectorAll<HTMLElement>("[data-sonner-toast][data-mounted=true]")];
+    expect(toasts).toHaveLength(count);
+  });
+  await Promise.all(toasts.flatMap((t) => t.getAnimations().map((a) => a.finished)));
+  return toasts;
+}
+
+// The shared Toaster takes its colours from the role tokens, but sonner's own theme still
+// sets some text colours, such as the description's. The stock file reads it from
+// next-themes, which Storybook has no provider for, so stories pass the mode as `theme`.
+export const toasterTheme = (globals: Record<string, unknown>) =>
+  globals.theme === "dark" ? "dark" : "light";

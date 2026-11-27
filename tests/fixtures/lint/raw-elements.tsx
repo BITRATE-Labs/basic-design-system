@@ -8,6 +8,7 @@ export function RawElements() {
         <option>Small</option>
       </select>
       <textarea name="notes" />
+      <progress value={40} max={100} />
     </form>
   );
 }

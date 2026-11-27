@@ -10,7 +10,7 @@ Tooltip, Popover, DropdownMenu and Dialog render their popups in a portal at the
 
 Wrap the whole app in one element with Tailwind's `isolate` class (`isolation: isolate`). The page then forms a single stacking context, so no z-index inside it can rise above the portaled popups, and page code can use z-index freely for its own ordering. This is the setup [Base UI recommends](https://base-ui.com/react/overview/quick-start).
 
-That holds only inside the root. Anything else portaled to `<body>`, such as a toast library, a chat widget or a `createPortal(..., document.body)`, is a sibling of the popups and competes with their `z-50`. Mount it inside the isolated root, or keep its z-index below 50. At 50 or above it covers every shared popup.
+That holds only inside the root. Anything else portaled to `<body>`, such as a toast library, a chat widget or a `createPortal(..., document.body)`, is a sibling of the popups and competes with their `z-50`. Mount it inside the isolated root, or keep its z-index below 50. At 50 or above it covers every shared popup. The shared `Toaster` (sonner) renders where it is mounted, not in a portal, at z-index 999999999, so mount it inside the root.
 
 ## 2. Wrap the app root in `TooltipProvider` once
 
@@ -53,3 +53,4 @@ Each story under **Layering** opens a tooltip or popover and checks with the bro
 - inside a native modal `<dialog>` with `container`; the `BodyPortal` stories show the popup hidden behind the dialog without it
 - inside an element with the `popover` attribute, with `container` and `overflow-visible`
 - above an overlay portaled to the body with z-index 49
+- over a toast from the shared `Toaster`, mounted inside the root
