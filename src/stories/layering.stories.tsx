@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useRef, type CSSProperties, type ReactNode, type RefObject } from "react";
+import { createPortal } from "react-dom";
 import { expect, screen, waitFor } from "storybook/test";
 import { Button } from "@/components/ui/button";
 import {
@@ -235,6 +236,49 @@ function NativeDialog({ kind, useContainer }: { kind: Kind; useContainer: boolea
   );
 }
 
+// An element shown with the popover attribute is in the top layer too, and its UA style
+// sets overflow: auto, so without overflow-visible the host scrolls instead of letting the
+// popup out.
+function PopoverAttribute({ kind }: { kind: Kind }) {
+  const ref = useRef<HTMLDivElement>(null);
+  return (
+    <div>
+      <Button onClick={() => ref.current?.showPopover()}>Open top-layer panel</Button>
+      <div
+        ref={ref}
+        popover="manual"
+        role="dialog"
+        aria-label="Top-layer panel"
+        className="m-auto w-80 overflow-visible rounded-xl border-0 bg-popover p-4 text-popover-foreground ring-1 ring-foreground/10"
+      >
+        <p className="mb-3 text-sm font-medium">Element with the popover attribute</p>
+        <p className="mb-3 text-sm text-muted-foreground">Popups portal into this element.</p>
+        <Probe kind={kind} container={ref} />
+      </div>
+    </div>
+  );
+}
+
+// A third-party overlay portaled to <body>, outside the app root's `isolate`. Below
+// z-index 50 it stays under the shared popups (Docs / Layers, rule 1).
+function BodyOverlay({ kind }: { kind: Kind }) {
+  return (
+    <div>
+      <Caption>An overlay portaled to the body with z-index: 49 covers the lower page.</Caption>
+      <Probe kind={kind} />
+      {createPortal(
+        <div
+          className="fixed inset-x-0 top-28 bottom-0 flex items-center justify-center bg-muted text-sm text-muted-foreground"
+          style={{ zIndex: 49 }}
+        >
+          Sample body-level overlay, z-index: 49
+        </div>,
+        document.body,
+      )}
+    </div>
+  );
+}
+
 const meta = {
   title: "Layering",
   parameters: { layout: "padded" },
@@ -359,4 +403,14 @@ export const NativeDialogBodyPortalTooltip: Story = {
 export const NativeDialogBodyPortalPopover: Story = {
   render: () => <NativeDialog kind="popover" useContainer={false} />,
   play: coveredInNativeDialog("popover"),
+};
+
+export const PopoverAttributePopover: Story = {
+  render: () => <PopoverAttribute kind="popover" />,
+  play: inDialog("popover", "Open top-layer panel"),
+};
+
+export const BodyOverlayPopover: Story = {
+  render: () => <BodyOverlay kind="popover" />,
+  play: onTop("popover"),
 };
