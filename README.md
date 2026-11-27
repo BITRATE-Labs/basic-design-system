@@ -7,6 +7,20 @@ Shared design tokens, UI components and one Storybook, used across BASIC's produ
 - **Brands:** each product keeps its own palette, fonts and radius in one small brand file.
 - **Storybook:** every component in every brand, light and dark.
 
+## Look
+
+Stock shadcn structure, with these decisions shared by every product:
+
+- **Motion:** Perkcord's motion tokens (160, 240 and 420ms, standard and emphasised easing) time every popup, dialog, sheet and toast, and collapse under reduced motion. Storybook **Foundations / Motion**.
+- **Focus:** a solid 2px outline in the brand's ring colour instead of the translucent stock ring, drawn inside menus, lists and scroll areas.
+- **Status:** success, warning, info and destructive each have soft, soft-foreground and line roles for a consistent callout (`<Alert data-tone="success">`).
+- **Wash:** hover and highlight are a faint tint of the brand's primary with the normal text colour.
+- **Touch:** icon buttons and other small controls get 44px targets on coarse pointers.
+- **Surfaces:** per brand. Flat stock surfaces by default; perkcord uses lit-edge glass. Storybook **Docs / Surfaces**.
+- **Selection:** the weighted segmented control and the sliding tabs.
+
+Tokens live in `tokens/` and `brands/`; the rules that apply them ship in `theme.css`. `AGENTS.md` ("Look") lists the file behind each.
+
 ## Use it in a product
 
 > **Not available yet.** Nothing is tagged or published. Component and token installs work once the first tag, `v0.1.0`, is pushed. Publishing to npm is a later, owner-approved step.

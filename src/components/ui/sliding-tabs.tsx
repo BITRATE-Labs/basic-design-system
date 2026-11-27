@@ -135,7 +135,7 @@ function SlidingNavLink({
         // Colours match the stock tabs trigger: hover only brightens the label, and the
         // current link turns --primary. Labels stay medium weight in every state.
         className: cn(
-          "relative inline-flex min-h-11 shrink-0 items-center justify-center rounded-md px-3 text-sm whitespace-nowrap no-underline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary font-medium text-foreground/60 transition-colors hover:text-foreground aria-[current=page]:text-primary dark:text-muted-foreground dark:hover:text-foreground dark:aria-[current=page]:text-primary [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "relative inline-flex min-h-11 shrink-0 items-center justify-center rounded-md px-3 text-sm whitespace-nowrap no-underline font-medium text-foreground/60 transition-colors hover:text-foreground aria-[current=page]:text-primary dark:text-muted-foreground dark:hover:text-foreground dark:aria-[current=page]:text-primary [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
           className
         ),
         children,

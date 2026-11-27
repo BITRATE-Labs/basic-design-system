@@ -22,7 +22,7 @@ type SegmentedControlOption = {
 }
 
 const segmentedControlLabelVariants = cva(
-  "flex items-center justify-center gap-1 rounded-lg px-1 text-center font-semibold text-muted-foreground peer-data-checked:text-foreground peer-focus-visible:outline-2 peer-focus-visible:-outline-offset-2 peer-focus-visible:outline-primary peer-[:hover:not([data-disabled])]:bg-primary/10 peer-data-disabled:opacity-50",
+  "flex items-center justify-center gap-1 rounded-lg px-1 text-center font-semibold text-muted-foreground peer-data-checked:text-foreground peer-focus-visible:outline-(length:--focus-ring-width) peer-focus-visible:-outline-offset-2 peer-focus-visible:outline-(--focus-ring-color,var(--ring)) peer-[:hover:not([data-disabled])]:bg-primary/10 peer-data-disabled:opacity-50",
   {
     variants: {
       size: {
@@ -102,7 +102,7 @@ function SegmentedControl({
             aria-hidden="true"
             data-slot="segmented-control-thumb"
             hidden={index < 0}
-            className="pointer-events-none absolute inset-y-0 -z-10 rounded-lg bg-primary/15 ring-1 ring-primary/30 motion-safe:transition-[inset-inline-start,width] motion-safe:duration-200 motion-safe:ease-out contrast-more:ring-primary forced-colors:border-2 forced-colors:border-[Highlight] forced-colors:bg-transparent forced-colors:forced-color-adjust-none"
+            className="pointer-events-none absolute inset-y-0 -z-10 rounded-lg bg-primary/15 ring-1 ring-primary/30 motion-safe:transition-[inset-inline-start,width] motion-safe:duration-(--duration-indicator) motion-safe:ease-indicator contrast-more:ring-primary forced-colors:border-2 forced-colors:border-[Highlight] forced-colors:bg-transparent forced-colors:forced-color-adjust-none"
             style={{
               insetInlineStart: `${(100 * start) / total}%`,
               width: `${(100 * (weights[index] ?? 0)) / total}%`,
