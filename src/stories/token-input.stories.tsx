@@ -10,7 +10,7 @@ import {
   TriggerMenuEmpty,
   TriggerMenuItem,
   TriggerMenuList,
-} from "@/components/ui/token-input";
+} from "@/components/ui-sdk/token-input";
 
 const meta = {
   title: "Components/TokenInput",

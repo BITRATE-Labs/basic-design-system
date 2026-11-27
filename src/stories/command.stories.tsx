@@ -14,7 +14,7 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from "@/components/ui/command";
+} from "@/components/ui-sdk/command";
 
 const meta = {
   title: "Components/Command",

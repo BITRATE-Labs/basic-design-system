@@ -16,8 +16,13 @@
     "dist",
     "eslint",
     "src/components/ui",
-    "src/lib"
+    "src/components/ui-sdk",
+    "src/lib",
+    "scripts/check-ui-sdk-pin.mjs"
   ],
+  "bin": {
+    "check-ui-sdk-pin": "scripts/check-ui-sdk-pin.mjs"
+  },
   "exports": {
     "./tokens.css": "./dist/tokens.css",
     "./tokens": {
@@ -41,7 +46,7 @@
     "test": "vitest run",
     "storybook": "npm run build:tokens && storybook dev -p 6006",
     "build-storybook": "npm run build:tokens && storybook build",
-    "registry:check": "shadcn registry validate ./registry.json && shadcn registry validate ./registry-ui-sdk/registry.json",
+    "registry:check": "shadcn registry validate ./registry.json",
     "registry:build-local": "node scripts/build-registry-local.mjs",
     "test:visual": "node scripts/test-visual.mjs",
     "test:agent": "playwright test --project=agent"

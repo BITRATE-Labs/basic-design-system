@@ -7,7 +7,7 @@ import {
   OTPInputGroup,
   OTPInputSeparator,
   OTPInputSlot,
-} from "@/components/ui/otp-input";
+} from "@/components/ui-sdk/otp-input";
 
 const meta = {
   title: "Components/OTPInput",

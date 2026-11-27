@@ -29,14 +29,14 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "@/components/ui-sdk/command";
 import {
   DatePicker,
   DatePickerContent,
   DatePickerGroup,
   DatePickerInput,
   DatePickerTrigger,
-} from "@/components/ui/date-picker";
+} from "@/components/ui-sdk/date-picker";
 import {
   Dialog,
   DialogContent,
@@ -75,7 +75,7 @@ import {
   TriggerMenuContent,
   TriggerMenuItem,
   TriggerMenuList,
-} from "@/components/ui/token-input";
+} from "@/components/ui-sdk/token-input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   expectCovered,

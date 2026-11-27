@@ -5,6 +5,19 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 import designSystem from "./eslint/index.js";
 
+// The lab trials, the Agents stories and the agent tests use raw UI SDK parts on purpose;
+// everything else keeps the preset's import rule.
+const [, { patterns }] = designSystem[0].rules["no-restricted-imports"];
+const rawUiSdk = {
+  files: ["src/lab/ui-sdk/**", "src/stories/agents.stories.tsx", "tests/agent/**"],
+  rules: {
+    "no-restricted-imports": [
+      "error",
+      { patterns: patterns.filter((p) => !p.group.includes("@ui-sdk/*")) },
+    ],
+  },
+};
+
 export default defineConfig([
   globalIgnores([
     "dist",
@@ -23,6 +36,7 @@ export default defineConfig([
     languageOptions: { globals: globals.browser },
   },
   designSystem,
+  rawUiSdk,
   {
     files: ["scripts/**", "eslint/**", "*.config.{js,ts}", ".storybook/main.ts"],
     languageOptions: { globals: globals.node },

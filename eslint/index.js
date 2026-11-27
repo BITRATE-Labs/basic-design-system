@@ -2,9 +2,10 @@
 // Usage and adoption notes: docs/lint-preset.md.
 import betterTailwindcss from "eslint-plugin-better-tailwindcss";
 
-// Stock shadcn components live here and are the only place that may use raw
+// Stock shadcn components live in components/ui and the UI SDK wrappers (the sdk-* registry
+// items, installed under the components alias) in components/ui-sdk. Only these may use raw
 // elements, primitives and raw colours.
-const componentsUi = ["**/components/ui/**"];
+const componentsUi = ["**/components/ui/**", "**/components/ui-sdk/**"];
 
 const files = ["**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}"];
 
@@ -64,6 +65,11 @@ export default [
             {
               group: ["@base-ui/*", "@radix-ui/*", "radix-ui", "radix-ui/*"],
               message: "Import the shadcn component from components/ui instead of the primitive.",
+            },
+            {
+              group: ["@ui-sdk/*"],
+              message:
+                "Import the shared wrapper from components/ui-sdk instead of a raw UI SDK part.",
             },
           ],
         },

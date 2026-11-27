@@ -502,6 +502,122 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "sdk-agent",
+      "type": "registry:component",
+      "title": "UI SDK Agent bridge",
+      "description": "Agent bridge and AgentProvider for the app root. Confirm steps go to the person, WebMCP is opt-in, and it sees UI SDK components only. UI SDK beta, pinned.",
+      "dependencies": ["@ui-sdk/core@0.1.0-beta.17", "@ui-sdk/react@0.1.0-beta.17"],
+      "files": [
+        {
+          "path": "src/components/ui-sdk/agent.tsx",
+          "type": "registry:component",
+          "target": "@components/ui-sdk/agent.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sdk-command",
+      "type": "registry:ui",
+      "title": "UI SDK Command",
+      "description": "Command list and modal command palette, styled like shadcn command, without cmdk. UI SDK beta, pinned.",
+      "dependencies": [
+        "@ui-sdk/core@0.1.0-beta.17",
+        "@ui-sdk/react@0.1.0-beta.17",
+        "cn",
+        "lucide-react",
+        "class-variance-authority"
+      ],
+      "registryDependencies": ["BITRATE-Labs/basic-design-system/button#v0.1.0"],
+      "files": [
+        {
+          "path": "src/components/ui-sdk/command.tsx",
+          "type": "registry:ui",
+          "target": "@components/ui-sdk/command.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sdk-calendar",
+      "type": "registry:ui",
+      "title": "UI SDK Calendar",
+      "description": "Calendar with ISO date values, styled like shadcn calendar, without a date library. UI SDK beta, pinned.",
+      "dependencies": [
+        "@ui-sdk/core@0.1.0-beta.17",
+        "@ui-sdk/react@0.1.0-beta.17",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": ["BITRATE-Labs/basic-design-system/button#v0.1.0"],
+      "files": [
+        {
+          "path": "src/components/ui-sdk/calendar.tsx",
+          "type": "registry:ui",
+          "target": "@components/ui-sdk/calendar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sdk-date-picker",
+      "type": "registry:ui",
+      "title": "UI SDK Date Picker",
+      "description": "Typed date field with a calendar popup, without a date library. UI SDK beta, pinned.",
+      "dependencies": [
+        "@ui-sdk/core@0.1.0-beta.17",
+        "@ui-sdk/react@0.1.0-beta.17",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "BITRATE-Labs/basic-design-system/button#v0.1.0",
+        "BITRATE-Labs/basic-design-system/sdk-calendar#v0.1.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui-sdk/date-picker.tsx",
+          "type": "registry:ui",
+          "target": "@components/ui-sdk/date-picker.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sdk-otp-input",
+      "type": "registry:ui",
+      "title": "UI SDK OTP Input",
+      "description": "One-time code input, styled like shadcn input-otp. UI SDK beta, pinned.",
+      "dependencies": [
+        "@ui-sdk/core@0.1.0-beta.17",
+        "@ui-sdk/react@0.1.0-beta.17",
+        "cn",
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui-sdk/otp-input.tsx",
+          "type": "registry:ui",
+          "target": "@components/ui-sdk/otp-input.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sdk-token-input",
+      "type": "registry:ui",
+      "title": "UI SDK Token Input",
+      "description": "Text field holding mention and tag tokens, with a trigger menu for @ and # suggestions. UI SDK beta, pinned.",
+      "dependencies": [
+        "@ui-sdk/core@0.1.0-beta.17",
+        "@ui-sdk/react@0.1.0-beta.17",
+        "cn",
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui-sdk/token-input.tsx",
+          "type": "registry:ui",
+          "target": "@components/ui-sdk/token-input.tsx"
+        }
+      ]
     }
   ]
 }

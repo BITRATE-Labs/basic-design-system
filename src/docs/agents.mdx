@@ -7,7 +7,7 @@ import * as AgentStories from "../stories/agents.stories";
 
 An AI agent can read and operate a page through the [ui-sdk](https://ui-sdk.dev/docs/agents) agent bridge: `snapshot()` lists the components with their state and actions, `act({ steps })` runs actions in order, and `query()` finds components and list items. Every change an agent makes reaches the component's normal change callback, marked as the agent's.
 
-ui-sdk is in beta (`0.1.0-beta.17`, pinned exactly). Behaviour changes ship in patch releases, and whether its beta terms allow a live product to ship it is still an open question for the owner. Until that is settled, this is Storybook-only: the `agent` item and the other UI SDK items are kept in `registry-ui-sdk/registry.json`, which the shadcn CLI does not read. Once they are installable, set `save-exact=true` in the product's `.npmrc`: npm otherwise saves `^0.1.0-beta.17`, and `@ui-sdk/react`'s `^` peer range on `@ui-sdk/core` admits later betas too.
+ui-sdk is in beta (`0.1.0-beta.17`, pinned exactly) and allowed in products. Behaviour changes ship in patch releases. Set `save-exact=true` in the product's `.npmrc`: npm otherwise saves `^0.1.0-beta.17`, and `@ui-sdk/react`'s `^` peer range on `@ui-sdk/core` admits later betas too. `npx check-ui-sdk-pin` in the product's CI fails if either package drifts from the pin. UI SDK's README refers to Vercel's public beta terms; check them before shipping it in a commercial product.
 
 ## What the bridge covers
 
@@ -15,7 +15,7 @@ ui-sdk is in beta (`0.1.0-beta.17`, pinned exactly). Behaviour changes ship in p
 
 ## Set up the app root
 
-Add the `agent` registry item and wrap the app root in `AgentProvider`, next to the isolated root and `TooltipProvider` from **Docs / Layers**. It changes no layering.
+Add the `sdk-agent` registry item and wrap the app root in `AgentProvider`, next to the isolated root and `TooltipProvider` from **Docs / Layers**. It changes no layering.
 
 ```tsx
 import { AgentProvider } from "@/components/ui-sdk/agent";
@@ -33,7 +33,7 @@ The global stylesheet declares `@layer ui-sdk;` above `@import "tailwindcss"`.
 
 - `agent` (exported from the same file) is the page's one bridge. It is created when the module loads, in the browser only. Hand its `snapshot`, `act` and `query` to your model with `agentTools` from `@ui-sdk/react/agent`.
 - Every step on a `data-agent-confirm` control asks the person. By default that is the browser's `confirm()` dialog, which an agent cannot answer. Pass `confirm={(text, { signal }) => …}` to use your own prompt; resolve `true` to let the step run, and close the prompt when `signal` aborts.
-- `webmcp` offers the same three tools to the browser's own agent through WebMCP, only where `document.modelContext` exists. It is off by default. Confirm steps still ask the person.
+- `webmcp` offers the same three tools to the browser's own agent through WebMCP, only where `document.modelContext` exists. It is off by default. Confirm steps still ask the person. WebMCP is untested against a real browser implementation: the test browser has no `document.modelContext`.
 
 In this Storybook every story is wrapped in `AgentProvider` with `webmcp` on, and the bridge is on `window.agent`, so you can try it from the browser console on any story's canvas:
 

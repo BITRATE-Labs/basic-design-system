@@ -2,5 +2,8 @@ dist
 storybook-static
 package-lock.json
 src/components/ui
+# The UI SDK wrappers keep the stock files' CLI formatting; agent.tsx is Prettier's.
+src/components/ui-sdk/*.tsx
+!src/components/ui-sdk/agent.tsx
 src/lib/utils.ts
 .agents/skills/ui-sdk
