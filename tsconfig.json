@@ -19,5 +19,13 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "tests", ".storybook", "dist", "vite.config.ts", "vitest.config.ts"]
+  "include": [
+    "src",
+    "tests",
+    ".storybook",
+    "dist",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "playwright.config.ts"
+  ]
 }

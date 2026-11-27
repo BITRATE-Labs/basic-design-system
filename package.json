@@ -35,10 +35,11 @@
     "storybook": "npm run build:tokens && storybook dev -p 6006",
     "build-storybook": "npm run build:tokens && storybook build",
     "registry:check": "shadcn registry validate ./registry.json",
-    "test:visual": "node scripts/test-visual-stub.mjs"
+    "test:visual": "node scripts/test-visual.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@playwright/test": "1.65.1",
     "@storybook/addon-a11y": "10.6.9",
     "@storybook/addon-docs": "10.6.9",
     "@storybook/addon-themes": "10.6.9",
