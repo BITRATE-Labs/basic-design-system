@@ -27,7 +27,7 @@ The repository is a [shadcn GitHub registry](https://ui.shadcn.com/docs/registry
 3. Refs are not inherited by dependencies, so `registry.json` pins every dependency inside this repo (`dialog` needs `button`, `field` needs `label` and `separator`) to the release tag, `v` plus the `package.json` version. A test fails if the two disagree; bump both when cutting a release.
 4. To see whether a copied component has drifted from the tag, run `npx shadcn@latest add BITRATE-Labs/basic-design-system/button#v0.1.0 --diff`.
 
-Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `kbd`, `tooltip`, `popover`.
+Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `kbd`, `tooltip`, `popover`, `alert`, `sonner` (toasts), `skeleton`, `spinner`, `empty`, `badge`, `progress`.
 
 ### Tokens (after the first tag)
 
@@ -64,7 +64,7 @@ Then set the brand on the root element: `<html data-brand="vrdex">`. Dark mode i
 
 ### Layers
 
-Tooltips, popovers, menus and dialogs portal to the end of `<body>`. Wrap the app in one element with the `isolate` class and, inside it, `TooltipProvider`; then popups always sit above the page, whatever z-index the page uses. Anything else portaled to `<body>`, such as a toast library, goes inside that element or stays below z-index 50. Inside a top-layer element (a modal `<dialog>`, or an element with the `popover` attribute), pass it as the popup's `container` and give it `overflow-visible`. Tooltip text is visual only, so an icon-only trigger needs an `aria-label`. The rule and its checks are in Storybook under **Docs / Layers**.
+Tooltips, popovers, menus and dialogs portal to the end of `<body>`. Wrap the app in one element with the `isolate` class and, inside it, `TooltipProvider`; then popups always sit above the page, whatever z-index the page uses. Anything else portaled to `<body>` goes inside that element or stays below z-index 50. Mount the shared `Toaster` inside it too: it renders in place at a z-index far above 50. Inside a top-layer element (a modal `<dialog>`, or an element with the `popover` attribute), pass it as the popup's `container` and give it `overflow-visible`. Tooltip text is visual only, so an icon-only trigger needs an `aria-label`. The rule and its checks are in Storybook under **Docs / Layers**.
 
 ### Lint preset
 

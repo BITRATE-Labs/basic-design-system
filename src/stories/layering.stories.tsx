@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useRef, type CSSProperties, type ReactNode, type RefObject } from "react";
 import { createPortal } from "react-dom";
+import { toast } from "sonner";
 import { expect, screen, waitFor } from "storybook/test";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,8 +19,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Toaster } from "@/components/ui/sonner";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { expectCovered, expectOnTop, findPopover, hoverTooltip } from "./popup-test-utils";
+import {
+  expectCovered,
+  expectOnTop,
+  findPopover,
+  findToasts,
+  hoverTooltip,
+  toasterTheme,
+} from "./popup-test-utils";
 
 // Each story puts a tooltip or popover trigger in a container that clips or layers its
 // children, opens the popup, and checks with the browser's hit test that the popup is
@@ -279,6 +288,19 @@ function BodyOverlay({ kind }: { kind: Kind }) {
   );
 }
 
+// The shared Toaster renders in place, not in a portal, at sonner's z-index 999999999.
+// Mounted inside the isolated app root (Storybook's root here), that z-index stays inside
+// the root, so a popup opened over a toast is painted above it (Docs / Layers, rule 1).
+// The toast sits just below the trigger so the popup has to cross it.
+function WithToast({ kind, theme }: { kind: Kind; theme: "light" | "dark" }) {
+  return (
+    <div>
+      <Probe kind={kind} />
+      <Toaster theme={theme} position="top-center" offset={56} />
+    </div>
+  );
+}
+
 const meta = {
   title: "Layering",
   parameters: { layout: "padded" },
@@ -413,4 +435,30 @@ export const PopoverAttributePopover: Story = {
 export const BodyOverlayPopover: Story = {
   render: () => <BodyOverlay kind="popover" />,
   play: onTop("popover"),
+};
+
+const overToast =
+  (kind: Kind): Play =>
+  async ({ userEvent }) => {
+    toast.dismiss();
+    toast("Sample toast message", { duration: Infinity });
+    const [shown] = await findToasts();
+    const popup = await openProbe(kind, userEvent);
+    // The check means something only if the popup and the toast overlap.
+    const a = popup.getBoundingClientRect();
+    const b = shown.getBoundingClientRect();
+    await expect(
+      a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom,
+      "popup overlaps the toast",
+    ).toBe(true);
+    await expectOnTop(popup);
+  };
+
+export const ToastTooltip: Story = {
+  render: (_, { globals }) => <WithToast kind="tooltip" theme={toasterTheme(globals)} />,
+  play: overToast("tooltip"),
+};
+export const ToastPopover: Story = {
+  render: (_, { globals }) => <WithToast kind="popover" theme={toasterTheme(globals)} />,
+  play: overToast("popover"),
 };

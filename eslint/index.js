@@ -14,6 +14,7 @@ const rawElements = {
   input: "Input",
   select: "a shared component",
   textarea: "a shared component",
+  progress: "Progress",
 };
 
 // Tailwind utilities that take a colour.
