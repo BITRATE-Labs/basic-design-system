@@ -1,0 +1,147 @@
+{
+  "$description": "Role names shared by every brand. Names match shadcn/ui CSS variables. Each role aliases the active brand value; a brand file missing a role fails the build.",
+  "color": {
+    "background": {
+      "$type": "color",
+      "$value": "{brand.color.background}",
+      "$description": "Page background"
+    },
+    "foreground": {
+      "$type": "color",
+      "$value": "{brand.color.foreground}",
+      "$description": "Default text on background"
+    },
+    "card": {
+      "$type": "color",
+      "$value": "{brand.color.card}",
+      "$description": "Card surface"
+    },
+    "card-foreground": {
+      "$type": "color",
+      "$value": "{brand.color.card-foreground}",
+      "$description": "Text on card"
+    },
+    "popover": {
+      "$type": "color",
+      "$value": "{brand.color.popover}",
+      "$description": "Popover and menu surface"
+    },
+    "popover-foreground": {
+      "$type": "color",
+      "$value": "{brand.color.popover-foreground}",
+      "$description": "Text on popover"
+    },
+    "primary": {
+      "$type": "color",
+      "$value": "{brand.color.primary}",
+      "$description": "Primary action"
+    },
+    "primary-foreground": {
+      "$type": "color",
+      "$value": "{brand.color.primary-foreground}",
+      "$description": "Text on primary"
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "{brand.color.secondary}",
+      "$description": "Secondary action"
+    },
+    "secondary-foreground": {
+      "$type": "color",
+      "$value": "{brand.color.secondary-foreground}",
+      "$description": "Text on secondary"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "{brand.color.muted}",
+      "$description": "Subdued surface"
+    },
+    "muted-foreground": {
+      "$type": "color",
+      "$value": "{brand.color.muted-foreground}",
+      "$description": "Subdued text"
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "{brand.color.accent}",
+      "$description": "Hover and highlight surface"
+    },
+    "accent-foreground": {
+      "$type": "color",
+      "$value": "{brand.color.accent-foreground}",
+      "$description": "Text on accent"
+    },
+    "destructive": {
+      "$type": "color",
+      "$value": "{brand.color.destructive}",
+      "$description": "Destructive action and error text"
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{brand.color.border}",
+      "$description": "Borders and dividers"
+    },
+    "input": {
+      "$type": "color",
+      "$value": "{brand.color.input}",
+      "$description": "Input borders"
+    },
+    "ring": {
+      "$type": "color",
+      "$value": "{brand.color.ring}",
+      "$description": "Focus ring"
+    },
+    "success": {
+      "$type": "color",
+      "$value": "{brand.color.success}",
+      "$description": "Success state"
+    },
+    "success-foreground": {
+      "$type": "color",
+      "$value": "{brand.color.success-foreground}",
+      "$description": "Text on success"
+    },
+    "warning": {
+      "$type": "color",
+      "$value": "{brand.color.warning}",
+      "$description": "Warning state"
+    },
+    "warning-foreground": {
+      "$type": "color",
+      "$value": "{brand.color.warning-foreground}",
+      "$description": "Text on warning"
+    },
+    "info": {
+      "$type": "color",
+      "$value": "{brand.color.info}",
+      "$description": "Informational state"
+    },
+    "info-foreground": {
+      "$type": "color",
+      "$value": "{brand.color.info-foreground}",
+      "$description": "Text on info"
+    }
+  },
+  "font": {
+    "sans": {
+      "$type": "fontFamily",
+      "$value": "{brand.font.sans}",
+      "$description": "Body and UI text"
+    },
+    "display": {
+      "$type": "fontFamily",
+      "$value": "{brand.font.display}",
+      "$description": "Headings"
+    },
+    "mono": {
+      "$type": "fontFamily",
+      "$value": "{brand.font.mono}",
+      "$description": "Code"
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "$value": "{brand.radius}",
+    "$description": "Base radius; radius-sm..4xl derive from it."
+  }
+}

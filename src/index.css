@@ -1,0 +1,19 @@
+/* Storybook and local development stylesheet. Consumers import the dist files instead. */
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "../dist/tokens.css";
+@import "../dist/brands.css";
+@import "../dist/theme.css";
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}

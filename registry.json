@@ -1,0 +1,129 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "basic-design-system",
+  "homepage": "https://github.com/BITRATE-Labs/basic-design-system",
+  "items": [
+    {
+      "name": "utils",
+      "type": "registry:lib",
+      "title": "Utils",
+      "description": "The cn class-name helper.",
+      "dependencies": ["cn"],
+      "files": [
+        {
+          "path": "src/lib/utils.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "Stock shadcn/ui button on Base UI.",
+      "dependencies": ["@base-ui/react", "class-variance-authority", "cn"],
+      "files": [
+        {
+          "path": "src/components/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "description": "Stock shadcn/ui input on Base UI.",
+      "dependencies": ["@base-ui/react", "cn"],
+      "files": [
+        {
+          "path": "src/components/ui/input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "title": "Label",
+      "description": "Stock shadcn/ui label.",
+      "dependencies": ["cn"],
+      "files": [
+        {
+          "path": "src/components/ui/label.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "title": "Separator",
+      "description": "Stock shadcn/ui separator on Base UI.",
+      "dependencies": ["@base-ui/react", "cn"],
+      "files": [
+        {
+          "path": "src/components/ui/separator.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "description": "Stock shadcn/ui field: label, description and error layout for form controls.",
+      "dependencies": ["class-variance-authority", "cn"],
+      "registryDependencies": [
+        "BITRATE-Labs/basic-design-system/label#v0.1.0",
+        "BITRATE-Labs/basic-design-system/separator#v0.1.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "Stock shadcn/ui dialog on Base UI.",
+      "dependencies": ["@base-ui/react", "cn", "lucide-react"],
+      "registryDependencies": ["BITRATE-Labs/basic-design-system/button#v0.1.0"],
+      "files": [
+        {
+          "path": "src/components/ui/dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "Dropdown Menu",
+      "description": "Stock shadcn/ui dropdown menu on Base UI.",
+      "dependencies": ["@base-ui/react", "cn", "lucide-react"],
+      "files": [
+        {
+          "path": "src/components/ui/dropdown-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "Stock shadcn/ui tabs on Base UI.",
+      "dependencies": ["@base-ui/react", "class-variance-authority", "cn"],
+      "files": [
+        {
+          "path": "src/components/ui/tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    }
+  ]
+}
