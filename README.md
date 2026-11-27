@@ -29,6 +29,8 @@ The repository is a [shadcn GitHub registry](https://ui.shadcn.com/docs/registry
 
 Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `kbd`, `tooltip`, `popover`.
 
+UI SDK items (beta, pinned exactly to `@ui-sdk/react` and `@ui-sdk/core` `0.1.0-beta.17`): `command`, `calendar`, `date-picker`, `otp-input`, `token-input`. They need `@layer ui-sdk;` as the first line of the product's global stylesheet, above `@import "tailwindcss"`.
+
 ### Tokens (after the first tag)
 
 ```sh

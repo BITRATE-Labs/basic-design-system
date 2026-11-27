@@ -18,7 +18,7 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 | `tokens/`                  | Shared scales and role names (DTCG JSON)                                                       |
 | `brands/`                  | One DTCG file per brand: every role in light and dark, fonts, radius                           |
 | `scripts/build-tokens.mjs` | Style Dictionary build into `dist/` (git-ignored)                                              |
-| `src/components/ui/`       | Stock shadcn components, exactly as the CLI wrote them                                         |
+| `src/components/ui/`       | Stock shadcn components as the CLI wrote them, plus the UI SDK items (see below)               |
 | `src/lib/utils.ts`         | `cn`                                                                                           |
 | `registry.json`            | shadcn registry: every installable item                                                        |
 | `src/stories/`             | One stories file per component, plus `Examples/`                                               |
@@ -33,6 +33,15 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 ## Layers
 
 Shared popups portal to the end of `<body>` at `z-50`. Products wrap the app root in an element with `isolate` and in `TooltipProvider`; z-index inside that root never covers a popup. Anything else portaled to `<body>` (toasts, third-party widgets) goes inside the root or stays below z-index 50. Inside a top-layer element (a modal `<dialog>`, or an element shown with the `popover` attribute), popups take `container` pointing at it, and it gets `overflow-visible`. `tooltip`, `popover` and `dropdown-menu` differ from stock in one place for this: their Content component forwards `container` to the Base UI Portal, which the stock files do not expose. Use the shared Tooltip for hover hints, never the native `title` attribute. Tooltip text is visual only: Base UI gives the popup no role and the trigger no `aria-describedby`, so an icon-only trigger needs an `aria-label`, usually the tooltip text (the lint preset reports a `TooltipTrigger` rendering an icon-size `Button` without one). The `Layering` stories prove each case with a hit test; keep them passing when changing a popup. Details: Storybook **Docs / Layers**.
+
+## UI SDK components (beta)
+
+- `command`, `calendar`, `date-picker`, `otp-input` and `token-input` (which also exports the Trigger Menu parts for its `@` and `#` suggestions) wrap UI SDK's starter components (`@ui-sdk/react` and `@ui-sdk/core`, Apache-2.0). Everything else in `src/components/ui/` is stock shadcn on Base UI.
+- UI SDK is a **beta dependency, pinned exactly** to `0.1.0-beta.17` in `package.json` and in each registry item's `dependencies`; `tests/registry.test.ts` fails if they drift or if core and react differ. Its patch releases change behaviour, so upgrade on purpose: read the changelog, bump both packages and every registry pin together, and re-check the stories.
+- Why these come from UI SDK: shadcn's command, calendar and input-otp sit on third-party libraries (cmdk, react-day-picker with date-fns, input-otp), shadcn has no date picker field or token input, and UI SDK parts are visible to its agent bridge. Stock shadcn first still holds for everything else.
+- Style them by copying the class patterns of the matching stock file (radius, border, ring, spacing, role tokens). UI SDK sets each part's `data-slot` itself and replaces one you pass, so do not pass it. Animate exits on `data-ending-style`, not `data-closed:animate-out`. shadcn's `tailwind.css` redefines `data-selected:` to match only `data-selected="true"`, and UI SDK writes it empty, so use `data-[selected]:`. Wrap `buttonVariants(...)` in `cn` when you use it on a UI SDK part, or `border-transparent` beats the variant's border. Wrapper `className` takes a string, not UI SDK's state function.
+- UI SDK popups use the browser top layer, need no z-index, and keep the browser's popover border, padding and background unless the class sets them (date picker and trigger menu content do). `src/index.css` declares `@layer ui-sdk;` before Tailwind; products must do the same in their global stylesheet.
+- Owner decision pending: whether a live product may ship this beta under Vercel's beta terms (upstream issue vercel-labs/ui#867).
 
 ## Lab convention
 
