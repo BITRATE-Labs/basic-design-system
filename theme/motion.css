@@ -193,3 +193,20 @@
     }
   }
 }
+
+/* ---- Unsaved-changes nudge (src/hooks/use-dirty-dismiss.tsx) ------------------------------
+   The shake runs through the Web Animations API on transform, so it leaves the popup's
+   stock enter and exit animations, its centring translate and its layout alone. Under
+   reduced motion there is no shake: the action row shows the focus outline (width, colour,
+   inset offset) for Perkcord's 900ms instead. The hook removes the attribute on
+   animationend; the duration is not a motion token, because those collapse to 1ms here. */
+[data-dirty-dismiss="ring"] {
+  animation: dirty-dismiss-ring 900ms step-end;
+}
+
+@keyframes dirty-dismiss-ring {
+  from {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color, var(--ring));
+    outline-offset: var(--focus-ring-offset-inset);
+  }
+}
