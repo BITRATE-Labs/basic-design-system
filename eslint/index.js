@@ -13,6 +13,7 @@ const rawElements = {
   dialog: "Dialog",
   input: "Input, Checkbox, RadioGroup or Switch",
   select: "Select or Combobox",
+  table: "Table",
   textarea: "Textarea",
   progress: "Progress",
 };

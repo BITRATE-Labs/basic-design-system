@@ -11,6 +11,9 @@ export function RawElements() {
       <input type="checkbox" name="agree" />
       <input type="hidden" name="draft" value="sample-1" />
       <progress value={40} max={100} />
+      <table>
+        <tbody />
+      </table>
     </form>
   );
 }
