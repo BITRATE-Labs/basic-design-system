@@ -2,6 +2,17 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useRef, type CSSProperties, type ReactNode, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import { expect, screen, waitFor } from "storybook/test";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,6 +29,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { expectCovered, expectOnTop, findPopover, hoverTooltip } from "./popup-test-utils";
 
@@ -279,6 +298,55 @@ function BodyOverlay({ kind }: { kind: Kind }) {
   );
 }
 
+function InsideSheet({ kind }: { kind: Kind }) {
+  return (
+    <Sheet>
+      <SheetTrigger render={<Button />}>Open sheet</SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Sample sheet</SheetTitle>
+          <SheetDescription>
+            The shared Sheet. Popups opened inside it render above it.
+          </SheetDescription>
+        </SheetHeader>
+        <div className="px-4">
+          <Probe kind={kind} />
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+// A confirmation opened from inside the shared Dialog, the usual "Delete..." flow.
+function AlertFromDialog() {
+  return (
+    <Dialog>
+      <DialogTrigger render={<Button />}>Open dialog</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Sample dialog</DialogTitle>
+          <DialogDescription>The confirmation opens above this dialog.</DialogDescription>
+        </DialogHeader>
+        <AlertDialog>
+          <AlertDialogTrigger render={<Button variant="destructive" />}>
+            Delete item
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete this sample item?</AlertDialogTitle>
+              <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction variant="destructive">Delete</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 const meta = {
   title: "Layering",
   parameters: { layout: "padded" },
@@ -413,4 +481,53 @@ export const PopoverAttributePopover: Story = {
 export const BodyOverlayPopover: Story = {
   render: () => <BodyOverlay kind="popover" />,
   play: onTop("popover"),
+};
+
+const inSheet =
+  (kind: Kind): Play =>
+  async (context) => {
+    await context.userEvent.click(context.canvas.getByRole("button", { name: "Open sheet" }));
+    const sheet = screen.getByRole("dialog");
+    await waitFor(() => expect(sheet).toBeVisible());
+    await Promise.all(sheet.getAnimations().map((a) => a.finished));
+    await expectOnTop(await openProbe(kind, context.userEvent));
+  };
+
+export const SheetTooltip: Story = {
+  render: () => <InsideSheet kind="tooltip" />,
+  play: inSheet("tooltip"),
+};
+export const SheetPopover: Story = {
+  render: () => <InsideSheet kind="popover" />,
+  play: inSheet("popover"),
+};
+export const SheetDropdownMenu: Story = {
+  render: () => <InsideSheet kind="menu" />,
+  play: inSheet("menu"),
+};
+
+// The alert dialog paints above the dialog it was opened from, its backdrop covers that
+// dialog, and Escape closes only the alert dialog.
+export const DialogAlertDialog: Story = {
+  render: () => <AlertFromDialog />,
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Open dialog" }));
+    const dialog = screen.getByRole("dialog");
+    await waitFor(() => expect(dialog).toBeVisible());
+    await userEvent.click(screen.getByRole("button", { name: "Delete item" }));
+    const alert = await screen.findByRole("alertdialog");
+    await waitFor(() => expect(alert).toBeVisible());
+    await Promise.all(alert.getAnimations().map((a) => a.finished));
+    await expectOnTop(alert);
+    await expectCovered(dialog);
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument());
+    await expect(dialog).toBeVisible();
+    // Reopen so the screenshot shows the stacked state.
+    await userEvent.click(screen.getByRole("button", { name: "Delete item" }));
+    const reopened = await screen.findByRole("alertdialog");
+    await waitFor(() => expect(reopened).toBeVisible());
+    await Promise.all(reopened.getAnimations().map((a) => a.finished));
+    await expectOnTop(reopened);
+  },
 };

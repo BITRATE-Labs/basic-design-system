@@ -13,6 +13,7 @@ const rawElements = {
   dialog: "Dialog",
   input: "Input",
   select: "a shared component",
+  table: "Table",
   textarea: "a shared component",
 };
 

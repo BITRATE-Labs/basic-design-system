@@ -8,6 +8,9 @@ export function RawElements() {
         <option>Small</option>
       </select>
       <textarea name="notes" />
+      <table>
+        <tbody />
+      </table>
     </form>
   );
 }
