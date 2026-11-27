@@ -506,8 +506,17 @@ export const SheetDropdownMenu: Story = {
   play: inSheet("menu"),
 };
 
-// The alert dialog paints above the dialog it was opened from, its backdrop covers that
-// dialog, and Escape closes only the alert dialog.
+// The alert dialog's buttons are hit-testable at their centres, so it paints above the dialog
+// it was opened from (expectOnTop samples near the corners, which the popup's rounded
+// corners leave out), its backdrop covers that dialog, and Escape closes only the alert.
+async function expectButtonsOnTop(alert: HTMLElement) {
+  for (const button of alert.querySelectorAll("button")) {
+    const r = button.getBoundingClientRect();
+    const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    await expect(hit && button.contains(hit), `${button.textContent} is covered`).toBe(true);
+  }
+}
+
 export const DialogAlertDialog: Story = {
   render: () => <AlertFromDialog />,
   play: async ({ canvas, userEvent }) => {
@@ -518,7 +527,7 @@ export const DialogAlertDialog: Story = {
     const alert = await screen.findByRole("alertdialog");
     await waitFor(() => expect(alert).toBeVisible());
     await Promise.all(alert.getAnimations().map((a) => a.finished));
-    await expectOnTop(alert);
+    await expectButtonsOnTop(alert);
     await expectCovered(dialog);
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument());
@@ -528,6 +537,6 @@ export const DialogAlertDialog: Story = {
     const reopened = await screen.findByRole("alertdialog");
     await waitFor(() => expect(reopened).toBeVisible());
     await Promise.all(reopened.getAnimations().map((a) => a.finished));
-    await expectOnTop(reopened);
+    await expectButtonsOnTop(reopened);
   },
 };
