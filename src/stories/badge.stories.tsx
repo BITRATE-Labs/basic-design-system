@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ArrowUpRightIcon, CheckIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const meta = {
   title: "Components/Badge",
@@ -73,29 +81,31 @@ const rows = [
 // The use the docs note allows: counts and compact status in a dense table.
 export const InTable: Story = {
   render: () => (
-    <table className="w-full max-w-md text-sm">
-      <thead>
-        <tr className="border-b text-left text-muted-foreground">
-          <th className="py-1.5 font-medium">Item</th>
-          <th className="py-1.5 font-medium">Comments</th>
-          <th className="py-1.5 font-medium">Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row) => (
-          <tr key={row.item} className="border-b">
-            <td className="py-1.5">{row.item}</td>
-            <td className="py-1.5">
-              <Badge variant="secondary">{row.comments}</Badge>
-            </td>
-            <td className="py-1.5">
-              <Badge variant={row.status === "Overdue" ? "destructive" : "outline"}>
-                {row.status}
-              </Badge>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="w-full max-w-md">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Item</TableHead>
+            <TableHead>Comments</TableHead>
+            <TableHead>Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow key={row.item}>
+              <TableCell>{row.item}</TableCell>
+              <TableCell>
+                <Badge variant="secondary">{row.comments}</Badge>
+              </TableCell>
+              <TableCell>
+                <Badge variant={row.status === "Overdue" ? "destructive" : "outline"}>
+                  {row.status}
+                </Badge>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   ),
 };
