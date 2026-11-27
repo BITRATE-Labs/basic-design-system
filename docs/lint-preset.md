@@ -2,13 +2,19 @@
 
 `@bitrate-labs/design-system/eslint` is an ESLint flat config. It keeps product code on the shared components and the colour role tokens. Everything under `**/components/ui/**` is exempt, because that is where the stock shadcn components live.
 
-| Rule                                       | Reports                                                                                                                                                                     |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `no-restricted-syntax`                     | Raw `<button>`, `<dialog>`, `<input>`, `<select>` and `<textarea>` JSX                                                                                                      |
-| `no-restricted-imports`                    | Imports from `@base-ui/*`, `@radix-ui/*` and `radix-ui`                                                                                                                     |
-| `better-tailwindcss/no-restricted-classes` | Tailwind palette colour classes (`bg-red-500`, `hover:text-neutral-400`, `bg-black/10`) and arbitrary colour values (`bg-[#fff]`, `text-[rgb(0,0,0)]`, `fill-[oklch(...)]`) |
+| Rule                                       | Reports                                                                                                                                                                                                                                     |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `no-restricted-syntax`                     | Raw `<button>`, `<dialog>`, `<input>`, `<select>` and `<textarea>` JSX; the `title` attribute on `<a>`, `<button>` and `<Button>`                                                                                                           |
+| `no-restricted-imports`                    | Imports from `@base-ui/*`, `@radix-ui/*` and `radix-ui`                                                                                                                                                                                     |
+| `better-tailwindcss/no-restricted-classes` | Tailwind palette colour classes (`bg-red-500`, `hover:text-neutral-400`, `bg-black/10`), arbitrary colour values (`bg-[#fff]`, `text-[rgb(0,0,0)]`, `fill-[oklch(...)]`) and z-index classes (`z-[9999]`, `z-(--layer)`, `z-10`, `md:-z-1`) |
 
 Role classes such as `bg-primary`, `text-muted-foreground` and `border-border` pass. Classes are read from `className`, `class` and the class helpers that eslint-plugin-better-tailwindcss knows by default, including `cn` and `cva`.
+
+### Z-index and `title`
+
+Shared popups portal above an app root with `isolate` (Storybook **Docs / Layers**), so product code needs no z-index, and the rule reports every arbitrary and numeric `z-*` class. `isolate` and `z-auto` pass. Page content that must overlap, such as a sticky header, usually needs none either: a positioned element already paints over the plain content after it. Where a local overlap really needs one, put `isolate` on that section and add an `eslint-disable-next-line` with the reason.
+
+The native `title` tooltip cannot be styled, does not show on keyboard focus or touch, and does not stack with shared popups. The rule reports `title` only on `<a>`, `<button>` and `<Button>`. It leaves other elements alone, because `title` is correct on `<input>` (the `pattern` hint), `<abbr>` and `<iframe>`, and many components take a `title` prop that is not the attribute. A `title` on another component that forwards it to a link or button is not caught.
 
 ## Turn it on
 

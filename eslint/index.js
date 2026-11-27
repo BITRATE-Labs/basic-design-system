@@ -37,6 +37,14 @@ export default [
           selector: `JSXOpeningElement[name.name="${element}"]`,
           message: `Use ${replacement} from components/ui instead of a raw <${element}>.`,
         })),
+        {
+          // Only links and buttons: `title` is legitimate on <input> (pattern hint),
+          // <abbr> and <iframe>, and many components take a `title` prop of their own.
+          selector:
+            'JSXOpeningElement[name.name=/^(a|button|Button)$/] > JSXAttribute[name.name="title"]',
+          message:
+            "The native title tooltip cannot be styled, never shows on keyboard focus or touch, and does not layer with shared popups. Use Tooltip from components/ui.",
+        },
       ],
       "no-restricted-imports": [
         "error",
@@ -52,7 +60,7 @@ export default [
     },
   },
   {
-    name: "@bitrate-labs/design-system/colors",
+    name: "@bitrate-labs/design-system/classes",
     files,
     ignores: componentsUi,
     plugins: { "better-tailwindcss": betterTailwindcss },
@@ -69,6 +77,18 @@ export default [
             {
               pattern: `${prefix}${colorUtility}-\\[(?:color:)?(?:#|rgba?\\(|hsla?\\(|hwb\\(|oklch\\(|oklab\\(|lch\\(|lab\\(|color\\()`,
               message: "Arbitrary colour value. Use a role token instead.",
+            },
+            // Layering: shared popups portal above an `isolate` app root, so product code
+            // needs no z-index. See docs/lint-preset.md.
+            {
+              pattern: `${prefix}z-(?:\\[|\\()`,
+              message:
+                "Arbitrary z-index. Shared popups already sit above the page when the app root has `isolate`.",
+            },
+            {
+              pattern: `${prefix}z-\\d+$`,
+              message:
+                "Numeric z-index. Shared popups already sit above the page when the app root has `isolate`; order page content by DOM order or a local `isolate`.",
             },
           ],
         },
