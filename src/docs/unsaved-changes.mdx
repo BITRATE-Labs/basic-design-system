@@ -1,0 +1,45 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Docs/Unsaved changes" />
+
+# Unsaved changes
+
+Perkcord's refuse-to-dismiss nudge, for the shared `Dialog` and `Sheet` (registry item `use-dirty-dismiss`). While a form inside has unsaved changes, Escape and a press outside do not close it. The popup shakes instead, focus moves to its action row and a polite status says why. Stories: **Components / Unsaved changes**.
+
+```tsx
+const [dirty, setDirty] = useState(false);
+const { onOpenChange, popup, announcement } = useDirtyDismiss({ dirty, onOpenChange: setOpen });
+
+<Dialog open={open} onOpenChange={onOpenChange}>
+  <DialogContent ref={popup}>
+    <form onChange={() => setDirty(true)}>
+      …
+      <DialogFooter>
+        <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
+        <Button type="submit">Save changes</Button>
+      </DialogFooter>
+    </form>
+    {announcement}
+  </DialogContent>
+</Dialog>;
+```
+
+Destructure the result: the React Compiler lint treats an object whose member is passed as a `ref` as a ref, and then reports reading `announcement` from it during render.
+
+## Behaviour
+
+- Only Base UI's `escape-key` and `outside-press` reasons are refused, with `eventDetails.cancel()`. Cancel, the close button, a submit and every other close still close, so there is always an explicit way out. Every refused attempt nudges again; there is no discard confirmation, as in Perkcord.
+- The shake is Perkcord's: `translateX` 0, -6, 6, -4, 4, 0px over 320ms, ease-out (the `--ease-indicator` token; no duration token is 320ms). It runs through the Web Animations API on `transform`, so the stock enter and exit animations, the centring `translate`, layout and the glass `backdrop-filter` are untouched. The popup carries `data-dirty-dismiss="shake"` while it runs.
+- Reduced motion (`prefers-reduced-motion` or `data-motion="reduce"` on `<html>`): no shake. The action row shows the focus outline (`--focus-ring-width`, `--focus-ring-color` or `--ring`, inset) for Perkcord's 900ms, from `theme/motion.css`. The row carries `data-dirty-dismiss="ring"` meanwhile.
+- The action row is the `DialogFooter` or `SheetFooter`, or else the submit button's parent. Its first enabled button takes focus, so focus stays inside and the next Tab goes on from there.
+- `announcement` is a `role="status"` paragraph for screen readers; render it inside the popup, since a modal hides everything outside it. The shake says nothing to a screen reader on its own. Pass `message` to change the wording, for example when the button is not called Cancel.
+- Nothing dirty, nothing changes: Escape and an outside press close as normal.
+
+## Native `<dialog>`
+
+Give the dialog `ref={popup}` and call `nudge()` from its `cancel` event after `preventDefault()` when dirty. The browser honours that `preventDefault` only while the page holds a user activation, so repeated Escapes with no input between still close a native dialog; it can never trap anyone. The **Native dialog** story shows the wiring.
+
+## Not covered
+
+- Base UI's focus guards hand focus back a frame later, so two Tab presses inside one frame (automation, not a person) can reach the page behind any shared modal, with or without the nudge. A real-keyboard check (`tests/agent/dirty-dismiss.agent.ts`) presses Tab and Shift+Tab after the nudge and confirms focus stays inside.
+- A Sheet at the screen edge shows a 6px gap on the inward swing of the shake.

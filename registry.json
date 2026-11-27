@@ -100,6 +100,19 @@
       ]
     },
     {
+      "name": "use-dirty-dismiss",
+      "type": "registry:hook",
+      "title": "Unsaved-changes nudge",
+      "description": "useDirtyDismiss for the shared Dialog and Sheet: while the form is dirty, Escape and an outside press are refused with a shake (an outline under reduced motion), focus moves to the action row and a polite status explains. Its reduced-motion outline rule ships in theme.css.",
+      "registryDependencies": ["BITRATE-Labs/basic-design-system/dialog#v0.1.0"],
+      "files": [
+        {
+          "path": "src/hooks/use-dirty-dismiss.tsx",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "dropdown-menu",
       "type": "registry:ui",
       "title": "Dropdown Menu",
