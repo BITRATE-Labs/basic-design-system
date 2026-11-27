@@ -1,0 +1,176 @@
+{
+  "$description": "chronote: indigo brand on Mantine neutrals, from the Mantine theme and ui tokens. Card is the default surface tone, popover the raised tone, muted the soft tone flattened onto the background.",
+  "color": {
+    "$type": "color",
+    "light": {
+      "background": {
+        "$value": "#f8f9fa"
+      },
+      "foreground": {
+        "$value": "#000000"
+      },
+      "card": {
+        "$value": "#ffffff"
+      },
+      "card-foreground": {
+        "$value": "#000000"
+      },
+      "popover": {
+        "$value": "#ffffff"
+      },
+      "popover-foreground": {
+        "$value": "#000000"
+      },
+      "primary": {
+        "$value": "#5e64f2"
+      },
+      "primary-foreground": {
+        "$value": "#ffffff"
+      },
+      "secondary": {
+        "$value": "#f1f3f5"
+      },
+      "secondary-foreground": {
+        "$value": "#000000"
+      },
+      "muted": {
+        "$value": "#f8fafe"
+      },
+      "muted-foreground": {
+        "$value": "#868e96"
+      },
+      "accent": {
+        "$value": "#edf0ff"
+      },
+      "accent-foreground": {
+        "$value": "#000000"
+      },
+      "destructive": {
+        "$value": "#fa5252"
+      },
+      "border": {
+        "$value": "#e9ecef"
+      },
+      "input": {
+        "$value": "#ced4da"
+      },
+      "ring": {
+        "$value": "#5e64f2"
+      },
+      "success": {
+        "$value": "#237032"
+      },
+      "success-foreground": {
+        "$value": "#ffffff"
+      },
+      "warning": {
+        "$value": "#fab005"
+      },
+      "warning-foreground": {
+        "$value": "#000000"
+      },
+      "info": {
+        "$value": "#1971c2"
+      },
+      "info-foreground": {
+        "$value": "#ffffff"
+      }
+    },
+    "dark": {
+      "background": {
+        "$value": "#0b1020"
+      },
+      "foreground": {
+        "$value": "#c9c9c9"
+      },
+      "card": {
+        "$value": "#2e2e2e"
+      },
+      "card-foreground": {
+        "$value": "#c9c9c9"
+      },
+      "popover": {
+        "$value": "#2e2e2e"
+      },
+      "popover-foreground": {
+        "$value": "#c9c9c9"
+      },
+      "primary": {
+        "$value": "#6f75ff"
+      },
+      "primary-foreground": {
+        "$value": "#ffffff"
+      },
+      "secondary": {
+        "$value": "#3b3b3b"
+      },
+      "secondary-foreground": {
+        "$value": "#c9c9c9"
+      },
+      "muted": {
+        "$value": "#121826"
+      },
+      "muted-foreground": {
+        "$value": "#828282"
+      },
+      "accent": {
+        "$value": "#424242"
+      },
+      "accent-foreground": {
+        "$value": "#c9c9c9"
+      },
+      "destructive": {
+        "$value": "#ff6b6b"
+      },
+      "border": {
+        "$value": "#424242"
+      },
+      "input": {
+        "$value": "#424242"
+      },
+      "ring": {
+        "$value": "#6f75ff"
+      },
+      "success": {
+        "$value": "#51cf66"
+      },
+      "success-foreground": {
+        "$value": "#0b1020"
+      },
+      "warning": {
+        "$value": "#fcc419"
+      },
+      "warning-foreground": {
+        "$value": "#0b1020"
+      },
+      "info": {
+        "$value": "#4dabf7"
+      },
+      "info-foreground": {
+        "$value": "#0b1020"
+      }
+    }
+  },
+  "font": {
+    "$type": "fontFamily",
+    "sans": {
+      "$value": ["Inter", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+      "$extensions": {
+        "com.bitrate-labs.google-fonts": "Inter:wght@100..900"
+      }
+    },
+    "display": {
+      "$value": ["Inter", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+      "$extensions": {
+        "com.bitrate-labs.google-fonts": "Inter:wght@100..900"
+      }
+    },
+    "mono": {
+      "$value": ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"]
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "$value": "0.5rem"
+  }
+}
