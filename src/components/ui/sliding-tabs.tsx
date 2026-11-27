@@ -16,14 +16,18 @@ const indicatorClassName =
   "h-[3px] w-(--active-tab-width) translate-x-(--active-tab-left) translate-y-[calc(var(--active-tab-top)+var(--active-tab-height)-3px)] " +
   "group-data-vertical/tabs:h-(--active-tab-height) group-data-vertical/tabs:w-[3px] group-data-vertical/tabs:translate-x-0 group-data-vertical/tabs:translate-y-(--active-tab-top)"
 
-// Brighter and semibold on hover and selection; the hidden semibold copy keeps the
-// item's width, so the weight change never shifts its neighbours.
+// Brighter and semibold on hover and selection. Hidden copies in both weights keep
+// the item at the wider of the two (hinted text is not always wider when bolder),
+// so the weight change never shifts its neighbours.
 const itemClassName =
   "font-medium text-muted-foreground transition-colors hover:font-semibold hover:text-foreground"
 
 function ItemLabel({ children }: { children: React.ReactNode }) {
   return (
     <span className="grid *:col-start-1 *:row-start-1 *:inline-flex *:items-center *:justify-center *:gap-1.5">
+      <span aria-hidden="true" className="invisible font-medium">
+        {children}
+      </span>
       <span aria-hidden="true" className="invisible font-semibold">
         {children}
       </span>
