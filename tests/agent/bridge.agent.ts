@@ -101,13 +101,53 @@ test("leaves a data-agent-hidden region out of snapshot, query and act", async (
   );
 });
 
+test("keeps portaled content marked only when the portaled element carries the mark", async ({
+  page,
+}) => {
+  await openStory(page, "agents--portaled-marks");
+  expect((await snapshot(page)).map((c) => c.label)).not.toContain("Portaled recovery code");
+  const hidden = await act(page, [
+    { ref: "Portaled recovery code", action: "setValue", args: ["x"] },
+  ]);
+  expect(hidden.ok).toBe(false);
+  await expect(page.getByRole("textbox", { name: "Portaled recovery code" })).toHaveValue(
+    "SAMPLE-1111-1111",
+  );
+
+  const asked: string[] = [];
+  page.once("dialog", (d) => (asked.push(d.message()), d.dismiss()));
+  const pressed = await act(page, [{ ref: "Reset sample data", action: "press" }]);
+  expect(pressed.ok).toBe(false);
+  expect(asked).toHaveLength(1);
+  await expect(status(page)).toHaveText("Sample data kept.");
+});
+
+// Pins the ui-sdk beta behaviour that makes the rule above necessary: a component moved out
+// of a data-agent-hidden element in the DOM (as a portal does) is visible again. If this
+// starts failing, the marks follow the React tree and Docs / Agents can drop the rule.
+test("marks follow the DOM, so content moved out of a marked element loses the mark", async ({
+  page,
+}) => {
+  await openStory(page, "agents--hidden-region");
+  await page.evaluate(() => {
+    const field = document.querySelector("[data-agent-hidden] [data-slot=field]")!;
+    document.body.append(field);
+  });
+  expect((await snapshot(page)).map((c) => c.label)).toContain("Recovery code");
+});
+
 test("reports agent changes as source agent and lets the app cancel them", async ({ page }) => {
   await openStory(page, "agents--agent-changes");
+  const notice = page.locator("[data-slot=agent-notice]");
+  await expect(notice).toHaveText("");
   const moved = await act(page, [
     { ref: "Settings sections", action: "setValue", args: ["Notifications"] },
   ]);
   expect(moved.ok, moved.error?.message).toBe(true);
   await expect(status(page)).toHaveText("notifications opened by an agent.");
+  // AgentProvider shows and announces every agent change.
+  await expect(notice).toHaveText("Assistant changed Settings sections");
+  await expect(notice).toHaveAttribute("aria-live", "polite");
 
   const billing = await act(page, [
     { ref: "Settings sections", action: "setValue", args: ["Billing"] },

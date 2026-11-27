@@ -13,7 +13,10 @@ import { Field, FieldLabel } from "@ui-sdk/react/field";
 import { Input } from "@ui-sdk/react/input";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@ui-sdk/react/tabs";
 import { useState } from "react";
+import { createPortal } from "react-dom";
+import { cn } from "cn";
 import { buttonVariants } from "@/components/ui/button";
+import { tabsListVariants } from "@/components/ui/tabs";
 
 // The bridge sees only ui-sdk parts, so these stories use them directly, styled with the
 // same role tokens as the stock components. tests/agent drives each one through window.agent.
@@ -26,11 +29,17 @@ const field = "grid gap-2 text-sm";
 const label = "font-medium";
 const input =
   "h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm";
-const tabsList = "inline-flex w-fit items-center rounded-lg bg-muted p-[3px] text-muted-foreground";
-// aria-selected, not data-selected: shadcn/tailwind.css redefines data-selected: as
-// [data-selected="true"], and ui-sdk writes data-selected="".
-const tab =
-  "rounded-md px-2 py-1 text-sm font-medium aria-selected:bg-background aria-selected:text-foreground aria-selected:shadow-sm";
+const tabsList = cn(tabsListVariants(), "h-8");
+// The stock TabsTrigger classes (default variant) with aria-selected for data-active:
+// shadcn/tailwind.css redefines data-selected: as [data-selected="true"], and ui-sdk
+// writes data-selected="".
+const tab = cn(
+  "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring aria-disabled:pointer-events-none aria-disabled:opacity-50 dark:text-muted-foreground dark:hover:text-foreground",
+  "aria-selected:bg-background aria-selected:text-foreground aria-selected:shadow-sm dark:aria-selected:border-input dark:aria-selected:bg-input/30 dark:aria-selected:text-foreground",
+);
+// Through cn: buttonVariants' base keeps border-transparent next to the outline border,
+// and on a UI SDK part (no cn inside) the transparent one wins (AGENTS.md).
+const button = (variant?: "outline" | "destructive") => cn(buttonVariants({ variant }));
 const status = "text-sm text-muted-foreground";
 
 function WorkspaceSettings() {
@@ -43,9 +52,7 @@ function WorkspaceSettings() {
   return (
     <div className="grid justify-items-start gap-4">
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger className={buttonVariants({ variant: "outline" })}>
-          Edit workspace
-        </DialogTrigger>
+        <DialogTrigger className={button("outline")}>Edit workspace</DialogTrigger>
         <DialogBackdrop className="fixed inset-0 bg-foreground/10" />
         <DialogContent className="fixed top-1/2 left-1/2 w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 outline-none sm:max-w-sm">
           <form
@@ -93,8 +100,8 @@ function WorkspaceSettings() {
               </TabsPanel>
             </Tabs>
             <div className="flex justify-end gap-2">
-              <DialogClose className={buttonVariants({ variant: "outline" })}>Cancel</DialogClose>
-              <Button type="submit" className={buttonVariants()}>
+              <DialogClose className={button("outline")}>Cancel</DialogClose>
+              <Button type="submit" className={button()}>
                 Save changes
               </Button>
             </div>
@@ -116,7 +123,7 @@ function DeleteWorkspace() {
   return (
     <div className="grid justify-items-start gap-4">
       <Button
-        className={buttonVariants({ variant: "destructive" })}
+        className={button("destructive")}
         data-agent-confirm="Deletes the sample workspace"
         onClick={() => setDeleted(true)}
       >
@@ -204,3 +211,45 @@ function SettingsSections() {
 
 /** details.source tells an agent's change from a person's; details.cancel() refuses it. */
 export const AgentChanges: Story = { render: () => <SettingsSections /> };
+
+// The shared Popover, Dialog, DropdownMenu and Tooltip contents portal to the body, like
+// this createPortal. The marks follow the DOM, so the portaled element carries its own.
+function PortaledPanels() {
+  const [reset, setReset] = useState(false);
+  return (
+    <div className="grid max-w-sm gap-4">
+      <section
+        data-agent-hidden
+        aria-label="Recovery"
+        className="grid gap-2 rounded-lg border border-border p-3"
+      >
+        <p className={status}>This section and the panel portaled from it are hidden.</p>
+        {createPortal(
+          <div data-agent-hidden className="m-4 grid max-w-sm gap-2 rounded-lg border p-3">
+            <Field className={field}>
+              <FieldLabel className={label}>Portaled recovery code</FieldLabel>
+              <Input defaultValue="SAMPLE-1111-1111" readOnly className={input} />
+            </Field>
+          </div>,
+          document.body,
+        )}
+      </section>
+      <div data-agent-confirm="Resets the sample data">
+        {createPortal(
+          <div data-agent-confirm="Resets the sample data" className="m-4">
+            <Button className={button("destructive")} onClick={() => setReset(true)}>
+              Reset sample data
+            </Button>
+          </div>,
+          document.body,
+        )}
+      </div>
+      <p role="status" className={status}>
+        {reset ? "Sample data reset." : "Sample data kept."}
+      </p>
+    </div>
+  );
+}
+
+/** Portaled content repeats the mark: the marks do not cross a portal on their own. */
+export const PortaledMarks: Story = { render: () => <PortaledPanels /> };

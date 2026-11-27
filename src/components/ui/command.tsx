@@ -66,6 +66,11 @@ function CommandDialog({
       {trigger}
       <DialogBackdrop className="fixed inset-0 bg-black/10 transition-opacity duration-100 supports-backdrop-filter:backdrop-blur-xs data-ending-style:opacity-0 data-starting-style:opacity-0" />
       <DialogContent
+        // UI SDK closes the palette on Escape but lets the key bubble, so an enclosing Base UI
+        // Dialog would close too. Keys reach this element only while the palette is open.
+        onKeyDown={(event) => {
+          if (event.key === "Escape") event.stopPropagation()
+        }}
         className={cn(
           "fixed top-1/3 left-1/2 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 overflow-hidden rounded-xl bg-popover p-0 text-sm text-popover-foreground ring-1 ring-foreground/10 transition-[opacity,scale] duration-100 outline-none sm:max-w-sm data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0",
           className

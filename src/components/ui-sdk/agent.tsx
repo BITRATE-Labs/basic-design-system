@@ -1,7 +1,7 @@
 "use client";
 
 import { createAgent, registerTools } from "@ui-sdk/react/agent";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 type Confirm = (text: string, context: { signal: AbortSignal }) => boolean | Promise<boolean>;
 
@@ -21,6 +21,15 @@ export const agent =
         allow: (step, context) => (step.confirm ? confirmStep(step.confirm, context) : true),
       });
 
+/**
+ * Wraps the app root. Confirm steps ask the person; every change an agent makes is shown
+ * and announced in a polite live region at the bottom right.
+ *
+ * The data-agent-confirm, -hidden and -secret marks follow the DOM, not the React tree, so
+ * they do not reach content portaled out of the marked element: the shared Popover,
+ * Dialog, DropdownMenu and Tooltip contents, or any createPortal. Put the mark on the
+ * portaled element itself (`<PopoverContent data-agent-hidden>`). See Docs / Agents.
+ */
 export function AgentProvider({
   confirm = askPerson,
   webmcp = false,
@@ -46,5 +55,33 @@ export function AgentProvider({
     return registerTools(agent, { allow: () => true });
   }, [webmcp]);
 
-  return children;
+  const [notice, setNotice] = useState("");
+  useEffect(() => {
+    if (!agent) return;
+    let clear: ReturnType<typeof setTimeout> | undefined;
+    const stop = agent.subscribe((change) => {
+      if (change.source !== "agent") return;
+      setNotice(`Assistant changed ${change.label ?? change.component}`);
+      clearTimeout(clear);
+      clear = setTimeout(() => setNotice(""), 5000);
+    });
+    return () => (stop(), clearTimeout(clear));
+  }, []);
+
+  return (
+    <>
+      {children}
+      <div
+        aria-live="polite"
+        data-slot="agent-notice"
+        className={
+          notice
+            ? "fixed right-4 bottom-4 z-50 rounded-lg bg-popover px-3 py-2 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10"
+            : undefined
+        }
+      >
+        {notice}
+      </div>
+    </>
+  );
 }

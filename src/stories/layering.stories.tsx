@@ -4,6 +4,21 @@ import { createPortal } from "react-dom";
 import { expect, screen, waitFor } from "storybook/test";
 import { Button } from "@/components/ui/button";
 import {
+  Command,
+  CommandDialog,
+  CommandDialogTrigger,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  DatePicker,
+  DatePickerContent,
+  DatePickerGroup,
+  DatePickerInput,
+  DatePickerTrigger,
+} from "@/components/ui/date-picker";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -18,6 +33,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  TokenInput,
+  TokenInputEditor,
+  TriggerMenu,
+  TriggerMenuContent,
+  TriggerMenuItem,
+  TriggerMenuList,
+} from "@/components/ui/token-input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { expectCovered, expectOnTop, findPopover, hoverTooltip } from "./popup-test-utils";
 
@@ -413,4 +436,117 @@ export const PopoverAttributePopover: Story = {
 export const BodyOverlayPopover: Story = {
   render: () => <BodyOverlay kind="popover" />,
   play: onTop("popover"),
+};
+
+// UI SDK popups inside the shared Dialog. UI SDK closes its popup on Escape but lets the key
+// bubble, and Base UI's Dialog closes on any Escape that reaches it, so the date picker and
+// command palette wrappers stop the Escape their content used. One press closes only the
+// popup; the dialog stays open.
+function SdkInDialog({ children }: { children: ReactNode }) {
+  return (
+    <Dialog>
+      <DialogTrigger render={<Button />}>Open dialog</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Sample dialog</DialogTitle>
+          <DialogDescription>The shared Dialog with a UI SDK popup inside.</DialogDescription>
+        </DialogHeader>
+        {children}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+const escapeClosesOnlyPopup =
+  (openPopup: (user: Parameters<Play>[0]["userEvent"]) => Promise<HTMLElement>): Play =>
+  async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Open dialog" }));
+    const dialog = await screen.findByRole("dialog", { name: "Sample dialog" });
+    await waitFor(() => expect(dialog).toBeVisible());
+    const popup = await openPopup(userEvent);
+    await waitFor(() => expect(popup).toBeVisible());
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(popup).not.toBeVisible());
+    await expect(screen.getByRole("dialog", { name: "Sample dialog" })).toBeVisible();
+  };
+
+export const DialogDatePickerEscape: Story = {
+  render: () => (
+    <SdkInDialog>
+      <DatePicker today="2026-10-14" locale="en-US">
+        <DatePickerGroup>
+          <DatePickerInput aria-label="Due date" placeholder="MM/DD/YYYY" />
+          <DatePickerTrigger aria-label="Choose date" />
+        </DatePickerGroup>
+        <DatePickerContent />
+      </DatePicker>
+    </SdkInDialog>
+  ),
+  play: escapeClosesOnlyPopup(async (user) => {
+    await user.click(screen.getByRole("button", { name: "Choose date" }));
+    return screen.findByRole("grid");
+  }),
+};
+
+// Known gap, pinned: the trigger menu leaves Escape to a document listener, which runs after
+// Base UI's Dialog has already closed on the same key, so a wrapper cannot stop it without
+// also stopping UI SDK. One Escape closes the menu and the dialog. Keep TokenInput out of
+// the shared Dialog until this story fails (then turn it into an escapeClosesOnlyPopup check).
+export const DialogTokenInputEscapeKnownGap: Story = {
+  render: () => (
+    <SdkInDialog>
+      <TokenInput>
+        <TokenInputEditor aria-label="Message" placeholder="Type @ to mention" />
+        <TriggerMenu
+          triggers={[
+            { char: "@", type: "mention", items: [{ value: "sample-a", label: "Sample User A" }] },
+          ]}
+        >
+          <TriggerMenuContent>
+            <TriggerMenuList>
+              {(state) =>
+                (state.items as { value: string; label: string }[]).map((item) => (
+                  <TriggerMenuItem key={item.value} value={item.value} label={item.label}>
+                    {item.label}
+                  </TriggerMenuItem>
+                ))
+              }
+            </TriggerMenuList>
+          </TriggerMenuContent>
+        </TriggerMenu>
+      </TokenInput>
+    </SdkInDialog>
+  ),
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Open dialog" }));
+    await waitFor(() =>
+      expect(screen.getByRole("dialog", { name: "Sample dialog" })).toBeVisible(),
+    );
+    await userEvent.click(screen.getByRole("textbox", { name: "Message" }));
+    await userEvent.keyboard("@Sam");
+    await waitFor(() => expect(screen.getByRole("listbox")).toBeVisible());
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog", { name: "Sample dialog" })).not.toBeInTheDocument(),
+    );
+  },
+};
+
+export const DialogCommandPaletteEscape: Story = {
+  render: () => (
+    <SdkInDialog>
+      <CommandDialog trigger={<CommandDialogTrigger>Search commands</CommandDialogTrigger>}>
+        <Command>
+          <CommandInput aria-label="Search commands" placeholder="Type a command" />
+          <CommandList>
+            <CommandItem value="new-note">New sample note</CommandItem>
+          </CommandList>
+        </Command>
+      </CommandDialog>
+    </SdkInDialog>
+  ),
+  play: escapeClosesOnlyPopup(async (user) => {
+    await user.click(screen.getByRole("button", { name: "Search commands" }));
+    return screen.findByRole("dialog", { name: "Command palette" });
+  }),
 };

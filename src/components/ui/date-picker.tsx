@@ -68,12 +68,19 @@ function DatePickerContent({
   children,
   sideOffset = 4,
   align = "start",
+  onKeyDown,
   ...props
 }: Styled<typeof DatePickerContentPrimitive>) {
   return (
     <DatePickerContentPrimitive
       sideOffset={sideOffset}
       align={align}
+      // UI SDK closes the popup on Escape but lets the key bubble, so an enclosing Base UI
+      // Dialog would close too. Keys reach this element only while the popup is open.
+      onKeyDown={(event) => {
+        onKeyDown?.(event)
+        if (event.key === "Escape") event.stopPropagation()
+      }}
       className={cn(
         "m-0 origin-(--transform-origin) rounded-lg border-0 bg-popover p-2 text-popover-foreground shadow-md ring-1 ring-foreground/10 transition-[opacity,scale] duration-100 outline-hidden data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0",
         calendarVars,

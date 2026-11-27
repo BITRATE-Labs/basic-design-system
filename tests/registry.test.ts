@@ -2,9 +2,21 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { expect, it } from "vitest";
 
-const registry = JSON.parse(
-  readFileSync(path.resolve(import.meta.dirname, "../registry.json"), "utf8"),
-) as { items: { name: string; files: { path: string }[] }[] };
+// registry-ui-sdk/registry.json holds the UI SDK items, kept out of the installable root
+// registry until the owner decides on UI SDK's beta terms. The checks cover both.
+const read = (file: string) =>
+  JSON.parse(readFileSync(path.resolve(import.meta.dirname, "..", file), "utf8")) as {
+    items: { name: string; files: { path: string }[] }[];
+  };
+const root = read("registry.json");
+const registry = { items: [...root.items, ...read("registry-ui-sdk/registry.json").items] };
+
+it("keeps every UI SDK item out of the installable root registry", () => {
+  const sdk = (root.items as { name: string; dependencies?: string[] }[]).filter((item) =>
+    (item.dependencies ?? []).some((d) => d.startsWith("@ui-sdk/")),
+  );
+  expect(sdk.map((item) => item.name)).toEqual([]);
+});
 
 // Lab options are throwaway (src/lab/README.md); a product must never be able to install one.
 it("registry lists no file from src/lab", () => {
