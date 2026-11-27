@@ -46,5 +46,5 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 ## Workflow
 
 - This is a non-live repository. Work on a branch and open a PR. CI must pass before merge.
-- Before committing, run `npm run lint`, `npm run typecheck`, `npm test`, `npm run registry:check` and `npm run build-storybook`. Screenshot baselines change only through the Update visual baselines workflow.
+- Before committing, run `npm run lint`, `npm run typecheck`, `npm test`, `npm run registry:check` and `npm run build-storybook`. Screenshot baselines change only through the Update visual baselines workflow (or, before it can be dispatched, the Docker bootstrap in the README).
 - Commit messages and PR text follow the public-repo rule above.

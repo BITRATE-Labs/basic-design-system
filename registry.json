@@ -75,8 +75,8 @@
       "description": "Stock shadcn/ui field: label, description and error layout for form controls.",
       "dependencies": ["class-variance-authority", "cn"],
       "registryDependencies": [
-        "BITRATE-Labs/basic-design-system/label",
-        "BITRATE-Labs/basic-design-system/separator"
+        "BITRATE-Labs/basic-design-system/label#v0.1.0",
+        "BITRATE-Labs/basic-design-system/separator#v0.1.0"
       ],
       "files": [
         {
@@ -91,7 +91,7 @@
       "title": "Dialog",
       "description": "Stock shadcn/ui dialog on Base UI.",
       "dependencies": ["@base-ui/react", "cn", "lucide-react"],
-      "registryDependencies": ["BITRATE-Labs/basic-design-system/button"],
+      "registryDependencies": ["BITRATE-Labs/basic-design-system/button#v0.1.0"],
       "files": [
         {
           "path": "src/components/ui/dialog.tsx",

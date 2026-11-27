@@ -49,7 +49,8 @@ describe.each(brandNames)("brand %s", (brand) => {
   });
 });
 
-// WCAG AA contrast (4.5:1) for every role/-foreground pair, plus muted text on the page.
+// WCAG AA contrast (4.5:1) for every role/-foreground pair, plus the role-as-text
+// pairs listed in contrastPairs.
 // Real product colours that fall short stay as the product has them and are listed
 // here, keyed "brand:mode:background/foreground", so the owner can decide. Values
 // derived for this design system must pass and never go in this list.
@@ -61,6 +62,20 @@ const contrastAllowlist: Record<string, string> = {
   "chronote:light:background/muted-foreground": "Mantine dimmed gray.6, 3.15:1",
   // White label on the dark-mode primary shade (brand.5).
   "chronote:dark:primary/primary-foreground": "Mantine filled button, 3.71:1",
+  "chronote:light:card/muted-foreground": "Mantine dimmed gray.6 on white, 3.32:1",
+  "chronote:dark:card/muted-foreground": "Mantine dimmed text on dark.6 surface, 3.53:1",
+  // Mantine red.6 / red.5 as error text.
+  "chronote:light:background/destructive": "Mantine red.6, 3.12:1",
+  "chronote:light:card/destructive": "Mantine red.6 on white, 3.28:1",
+  // Brand indigo as link text on the light page.
+  "chronote:light:background/primary": "product brand indigo, 4.35:1",
+  // The product's destructive red used as error text.
+  "perkcord:light:background/destructive": "product destructive red, 3.50:1",
+  "perkcord:light:card/destructive": "product destructive red, 3.71:1",
+  "perkcord:dark:background/destructive": "product destructive red, 3.91:1",
+  "perkcord:dark:card/destructive": "product destructive red, 3.66:1",
+  // Product blue as link text on the light-theme page.
+  "vrdex:light:background/primary": "product primary blue, 4.40:1",
 };
 
 function contrastPairs(vars: Record<string, string>): [string, string][] {
@@ -70,7 +85,16 @@ function contrastPairs(vars: Record<string, string>): [string, string][] {
       fg === "--foreground" ? "--background" : fg.replace(/-foreground$/, ""),
       fg,
     ]);
-  return [...pairs, ["--background", "--muted-foreground"]];
+  // Roles the stock components also render as text: muted text on cards, error
+  // text (FieldError, destructive Button) and the link Button on the page.
+  return [
+    ...pairs,
+    ["--background", "--muted-foreground"],
+    ["--card", "--muted-foreground"],
+    ["--background", "--destructive"],
+    ["--card", "--destructive"],
+    ["--background", "--primary"],
+  ];
 }
 
 describe.each(brandNames)("brand %s contrast", (brand) => {
