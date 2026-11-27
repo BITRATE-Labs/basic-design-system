@@ -27,7 +27,7 @@ The repository is a [shadcn GitHub registry](https://ui.shadcn.com/docs/registry
 3. Refs are not inherited by dependencies, so `registry.json` pins every dependency inside this repo (`dialog` needs `button`, `field` needs `label` and `separator`) to the release tag, `v` plus the `package.json` version. A test fails if the two disagree; bump both when cutting a release.
 4. To see whether a copied component has drifted from the tag, run `npx shadcn@latest add BITRATE-Labs/basic-design-system/button#v0.1.0 --diff`.
 
-Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `kbd`, `tooltip`, `popover`.
+Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `sliding-tabs`, `kbd`, `tooltip`, `popover`.
 
 ### Tokens (after the first tag)
 
