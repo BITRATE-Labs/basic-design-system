@@ -70,10 +70,8 @@ const contrastAllowlist: Record<string, string> = {
   // Brand indigo as link text on the light page.
   "chronote:light:background/primary": "product brand indigo, 4.35:1",
   // The product's destructive red used as error text.
-  "perkcord:light:background/destructive": "product destructive red, 3.50:1",
-  "perkcord:light:card/destructive": "product destructive red, 3.71:1",
-  "perkcord:dark:background/destructive": "product destructive red, 3.91:1",
-  "perkcord:dark:card/destructive": "product destructive red, 3.66:1",
+  "perkcord:light:background/destructive": "product destructive red, 3.57:1",
+  "perkcord:light:card/destructive": "product destructive red on white, 3.78:1",
   // Product blue as link text on the light-theme page.
   "vrdex:light:background/primary": "product primary blue, 4.40:1",
 };
