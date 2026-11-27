@@ -39,7 +39,7 @@ const ref = useRef<HTMLDivElement>(null);
 </div>;
 ```
 
-`TooltipContent`, `PopoverContent` and `DropdownMenuContent` take `container`. The shared Dialog needs none of this, so prefer it to a native `<dialog>`, which the lint preset reports.
+`TooltipContent`, `PopoverContent`, `DropdownMenuContent`, `SelectContent` and `ComboboxContent` take `container`. The shared Dialog needs none of this, so prefer it to a native `<dialog>`, which the lint preset reports.
 
 ## Modals: toasts and nested dialogs
 
@@ -56,7 +56,7 @@ Each story under **Layering** opens a tooltip or popover and checks with the bro
 - inside a `z-index: 1` stacking context next to a `z-index: 9999` sibling
 - inside a `transform`ed ancestor that holds a `contain: paint` box
 - inside the shared Dialog
-- inside a native modal `<dialog>` with `container`; the `BodyPortal` stories show the popup hidden behind the dialog without it
+- inside a native modal `<dialog>` with `container`, for a tooltip, popover, menu, select and combobox; the `BodyPortal` stories show the popup hidden behind the dialog without it
 - inside an element with the `popover` attribute, with `container` and `overflow-visible`
 - above an overlay portaled to the body with z-index 49
 - over a toast from the shared `Toaster`, mounted inside the root

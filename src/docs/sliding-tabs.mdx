@@ -17,7 +17,8 @@ A selection line that slides to the chosen item. Two components share it:
 - Right-to-left layouts work. Wrap a right-to-left app in `DirectionProvider` (registry item `direction`) with `direction="rtl"` as well as setting `dir`, so arrow keys follow the reading direction.
 - To draw a hairline under the bar, use an inset shadow on the bar or its wrapper, for example `shadow-[inset_0_-1px_0_var(--color-border)]`, not a border. The line then sits inside the bar's box and the indicator covers it.
 - With reduced motion, the line jumps straight to the new item.
-- Labels use the stock tabs colours. Hover only brightens the label to `--foreground`; the selected item is also semibold. Hidden copies in both weights reserve the width, so selection never moves the other items.
+- Labels use the stock tabs colours. Hover only brightens the label to `--foreground`, and the selected label is `--primary`. Every label stays medium weight, so selection never moves the other items.
+- The line has 2px corners, as in Perkcord's original.
 - A focused link shows a 2px `--primary` outline inside its box.
 - Tabs get Base UI's measurements from `Tabs.Indicator`. The navigation bar measures the current link itself with the same CSS variables (`--active-tab-left`, `--active-tab-top`, `--active-tab-width`, `--active-tab-height`).
 

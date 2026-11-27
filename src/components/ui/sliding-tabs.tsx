@@ -12,26 +12,9 @@ import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 // Tabs.Indicator sets them for tabs, SlidingNav measures and sets the same ones for
 // links. Both stay hidden until measured, so the first paint never slides in from zero.
 const indicatorClassName =
-  "pointer-events-none absolute top-0 left-0 rounded-full bg-primary transition-[translate,width,height] duration-(--duration-indicator) ease-indicator motion-reduce:transition-none " +
+  "pointer-events-none absolute top-0 left-0 rounded-[2px] bg-primary transition-[translate,width,height] duration-(--duration-indicator) ease-indicator motion-reduce:transition-none " +
   "h-[3px] w-(--active-tab-width) translate-x-(--active-tab-left) translate-y-[calc(var(--active-tab-top)+var(--active-tab-height)-3px)] " +
   "group-data-vertical/tabs:h-(--active-tab-height) group-data-vertical/tabs:w-[3px] group-data-vertical/tabs:translate-x-0 group-data-vertical/tabs:translate-y-(--active-tab-top)"
-
-// The selected item is semibold. Hidden copies in both weights keep the item at the
-// wider of the two (hinted text is not always wider when bolder), so selection never
-// shifts its neighbours.
-function ItemLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="grid *:col-start-1 *:row-start-1 *:inline-flex *:items-center *:justify-center *:gap-1.5">
-      <span aria-hidden="true" className="invisible font-medium">
-        {children}
-      </span>
-      <span aria-hidden="true" className="invisible font-semibold">
-        {children}
-      </span>
-      <span>{children}</span>
-    </span>
-  )
-}
 
 function SlidingTabsList({
   className,
@@ -60,10 +43,13 @@ function SlidingTabsTrigger({
 }: React.ComponentProps<typeof TabsTrigger>) {
   return (
     <TabsTrigger
-      className={cn("flex-none data-active:font-semibold", className)}
+      className={cn(
+        "flex-none data-active:text-primary dark:data-active:text-primary",
+        className
+      )}
       {...props}
     >
-      <ItemLabel>{children}</ItemLabel>
+      {children}
     </TabsTrigger>
   )
 }
@@ -146,12 +132,13 @@ function SlidingNavLink({
     props: mergeProps<"a">(
       {
         "aria-current": active ? "page" : undefined,
-        // Colours match the stock tabs trigger: hover only brightens the label.
+        // Colours match the stock tabs trigger: hover only brightens the label, and the
+        // current link turns --primary. Labels stay medium weight in every state.
         className: cn(
-          "relative inline-flex min-h-11 shrink-0 items-center justify-center rounded-md px-3 text-sm whitespace-nowrap no-underline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary font-medium text-foreground/60 transition-colors hover:text-foreground aria-[current=page]:font-semibold aria-[current=page]:text-foreground dark:text-muted-foreground dark:hover:text-foreground dark:aria-[current=page]:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "relative inline-flex min-h-11 shrink-0 items-center justify-center rounded-md px-3 text-sm whitespace-nowrap no-underline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary font-medium text-foreground/60 transition-colors hover:text-foreground aria-[current=page]:text-primary dark:text-muted-foreground dark:hover:text-foreground dark:aria-[current=page]:text-primary [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
           className
         ),
-        children: <ItemLabel>{children}</ItemLabel>,
+        children,
       },
       props
     ),
