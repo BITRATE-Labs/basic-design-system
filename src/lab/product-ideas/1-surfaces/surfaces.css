@@ -3,8 +3,9 @@
  *
  *   data-idea="lit-edge"        lit top edge, sheen, inset highlight and tinted shadow; opaque
  *   data-idea="lit-edge glass"  the same plus the translucent fill and backdrop blur
+ *   ... glass glass-contrast    glass on menus only, at 92%; the rest opaque (not Perkcord)
  *
- * Source: perkcord apps/web/components/ui/glass-panel.module.css (panel and dialog) and
+ * Source: Perkcord glass-panel.module.css (panel and dialog) and
  * dropdown-menu.module.css (menu). The scope attribute goes on <html> (or the app root) when
  * this ships; in the lab it goes on a wrapper, and on each portaled popup itself, because
  * popups render at the end of <body>, outside any wrapper.
@@ -157,6 +158,38 @@
       ) {
       --surface-fill-panel: color-mix(in srgb, var(--background) 44%, transparent);
       --surface-fill-dialog: color-mix(in srgb, var(--background) 62%, transparent);
+    }
+
+    /* Adjusted for contrast (not Perkcord). Over the busy page, muted text on Perkcord's
+       panel (36%), dialog (72%) and uniform (82%) fills, and on the popover at the menu's
+       84%, drops below 4.5:1 in the basic light theme, and raising every fill to 92% still
+       measured 4.27:1 where surfaces stack. So panels, dialogs, sheets and popovers take the
+       opaque fallback, and only menus stay glass, at 92%. :root lifts the specificity above
+       the .dark rule. */
+    :root
+      :is(
+        [data-slot="card"],
+        [data-slot="dialog-content"],
+        [data-slot="sheet-content"],
+        [data-slot="dropdown-menu-content"],
+        [data-slot="popover-content"]
+      ):is([data-idea~="glass-contrast"], [data-idea~="glass-contrast"] *):not(
+        [data-transparency="reduce"],
+        [data-transparency="reduce"] *
+      ) {
+      --surface-fill-panel: var(--background);
+      --surface-fill-dialog: var(--background);
+      --surface-fill-menu: color-mix(in srgb, var(--popover) 92%, transparent);
+      --surface-blur: none;
+    }
+
+    :root
+      [data-slot="popover-content"]:is(
+        [data-idea~="glass-contrast"],
+        [data-idea~="glass-contrast"] *
+      ):not([data-transparency="reduce"], [data-transparency="reduce"] *) {
+      --surface-fill-menu: var(--popover);
+      --surface-blur-menu: none;
     }
   }
 }

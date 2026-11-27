@@ -2,7 +2,7 @@ import { useId, useState, type ReactNode } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import "./selection-indicators.css";
 
-// Lab port of Perkcord's SlidingRadioGroup (apps/web/components/ui/sliding-radio-group.tsx).
+// Lab port of Perkcord's SlidingRadioGroup (sliding-radio-group.tsx).
 // The thumb's place and width come from the checked index and the option weights alone:
 // no DOM measurement. Each segment is the stock RadioGroupItem stretched invisibly over
 // it, so arrow keys, focus and form submission are the stock RadioGroup's.

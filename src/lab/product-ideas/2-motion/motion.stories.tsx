@@ -42,7 +42,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import SettingsForm from "@/stories/settings-form.stories";
 import { ColumnHeading, pinned, PinSlot } from "../1-surfaces/stage";
 import "./motion.css";
-import { startThemeTransition } from "./theme-transition";
+import { SCENE_TIMING, startThemeTransition } from "./theme-transition";
 
 const meta = {
   title: "Lab/Product ideas/2. Motion and timing",
@@ -364,10 +364,11 @@ export const ArrivalHighlight: Story = {
 
 function ThemeFade({ dark, setTheme }: { dark: boolean; setTheme: (dark: boolean) => void }) {
   const [fade, setFade] = useState(true);
+  const [scene, setScene] = useState(false);
   const Example = SettingsForm.component;
   const toggle = () => {
     // As in Perkcord's mode toggle: start the transition, then swap the class in the same task.
-    if (fade) startThemeTransition();
+    if (fade) startThemeTransition(undefined, scene ? SCENE_TIMING : undefined);
     document.documentElement.classList.toggle("dark", !dark);
     setTheme(!dark);
   };
@@ -377,9 +378,15 @@ function ThemeFade({ dark, setTheme }: { dark: boolean; setTheme: (dark: boolean
         <Button onClick={toggle}>Switch to {dark ? "light" : "dark"}</Button>
         <ToggleRow
           id="theme-fade"
-          label="Colour-only cross-fade (Perkcord, 220ms); off is stock, an instant swap"
+          label="Colour-only cross-fade (Perkcord); off is stock, an instant swap"
           checked={fade}
           onChange={setFade}
+        />
+        <ToggleRow
+          id="theme-fade-scene"
+          label="Timing: on is Perkcord with a community scene (500ms, cubic-bezier(0.4, 0, 0.2, 1)); off is its no-scene fallback (220ms, emphasised ease)"
+          checked={scene}
+          onChange={setScene}
         />
       </div>
       <Example />

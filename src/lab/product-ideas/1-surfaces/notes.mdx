@@ -15,7 +15,13 @@ The edge of Perkcord's glass panel without the translucency: a 13% foreground bo
 
 ## Lit-edge glass (Perkcord)
 
-Perkcord's `GlassPanel` and glass menu: the lit edge plus a translucent fill with `blur(7px) saturate(1.15)` (menus `blur(12px)`), tuned per context (panels 36%, 44% dark; dialogs 72%, 62% dark; menus 84%), with an 82% uniform fill and no sheen for long lists and tables. It turns on only where `backdrop-filter` works and nobody asked for reduced transparency, more contrast or forced colours, and otherwise falls back to exactly the lit-edge option. Adopting it adds the fill tokens to the lit-edge stylesheet and a contrast re-check over busy backgrounds; the risks are that a 36% panel over a busy page loses contrast, blur is costly on long scrolling pages and stacked surfaces, and a blurred surface becomes the containing block for its fixed-position descendants.
+Perkcord's `GlassPanel` and glass menu: the lit edge plus a translucent fill with `blur(7px) saturate(1.15)` (menus `blur(12px)`), tuned per context (panels 36%, 44% dark; dialogs 72%, 62% dark; menus 84%), with an 82% uniform fill and no sheen for long lists and tables. It turns on only where `backdrop-filter` works and nobody asked for reduced transparency, more contrast or forced colours, and otherwise falls back to exactly the lit-edge option. Adopting it adds the fill tokens to the lit-edge stylesheet and a contrast re-check over busy backgrounds; the risks are contrast, blur is costly on long scrolling pages and stacked surfaces, and a blurred surface becomes the containing block for its fixed-position descendants.
+
+Measured from the rendered pixels over the busy background (10th percentile, text hidden), muted text on the 36% panel falls to 1.76 to 3.76:1 in nine of the ten brand and theme pairs (all but perkcord light), the dialog's 72% fill gives 3.60:1 and the popover 4.10:1 in basic light where stock gives 4.74:1, and the destructive field error in a page drops to 2.35:1 in chronote light. Perkcord's 82% uniform fill still gives 4.43:1 in basic light.
+
+## Lit-edge glass, adjusted for contrast
+
+Glass stays on menus only, at 92%, and panels, dialogs, sheets and popovers take the opaque fallback. This is not Perkcord's recipe; raising every fill to 92% instead still measured 4.27:1 where surfaces stack. Over the busy background it then matches the lit-edge option everywhere, so the only remaining failures are the ones stock already has (chronote's muted grey, perkcord light's destructive text).
 
 ## Differences from the Perkcord source
 

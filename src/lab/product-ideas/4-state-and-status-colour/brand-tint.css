@@ -64,6 +64,13 @@
   color: var(--primary);
 }
 
+/* Adjusted for contrast (not Loominist): primary text on the 7% wash measures 4.00 to 4.43:1
+   in the chronote, vrdex and loominist light themes, so the current link keeps the wash and
+   takes the foreground colour instead. */
+[data-idea="brand-tint"][data-adjust="contrast"] [data-slot="sliding-nav"] a[aria-current="page"] {
+  color: var(--foreground);
+}
+
 /* Forced colours drop every author background, so the wash disappears. Give the
    highlighted menu item the system highlight instead, which stock does not. */
 @media (forced-colors: active) {

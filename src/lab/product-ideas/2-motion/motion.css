@@ -1,5 +1,5 @@
 /*
- * Group 2, Motion and timing. Perkcord's motion tokens (apps/web/app/globals.css :root and the
+ * Group 2, Motion and timing. Perkcord's motion tokens (globals.css :root and the
  * prefers-reduced-motion block), applied by scope:
  *
  *   data-idea="motion"         the tokens, and the stock popups retimed to read them
@@ -198,8 +198,9 @@
 
 /* ---- Colour-only theme cross-fade -------------------------------------------------------- */
 
-/* globals.css html.theme-transitioning. While the class is on (theme-transition.ts adds it for
-   220ms around the class swap), only colour properties transition, with no delay. Perkcord
+/* globals.css html.theme-transitioning. While the class is on (theme-transition.ts adds it
+   around the class swap, for 220ms, or 500ms with a community scene, which it sets inline on
+   <html>), only colour properties transition, with no delay. Perkcord
    declares these in @layer base and needs !important to beat component utilities; unlayered
    here, they win without it. */
 :root {

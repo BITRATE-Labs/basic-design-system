@@ -30,10 +30,17 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-type Tint = "stock" | "brand-tint";
+type Tint = "stock" | "brand-tint" | "brand-tint-contrast";
 const tintLabels: Record<Tint, string> = {
   stock: "Stock: grey accent and muted hover",
   "brand-tint": "Loominist: brand tint wash (primary at 5% hover, 7% current, 3% selected)",
+  "brand-tint-contrast":
+    "Loominist brand tint, adjusted for contrast: current nav link text in foreground",
+};
+const tintScope: Record<Tint, Record<`data-${string}`, string>> = {
+  stock: {},
+  "brand-tint": { "data-idea": "brand-tint" },
+  "brand-tint-contrast": { "data-idea": "brand-tint", "data-adjust": "contrast" },
 };
 
 function Column({
@@ -264,13 +271,9 @@ export const Compare: Story = {
           The second button of each kind, the middle table row, the middle nav link and the first
           menu item are drawn in their hover state. The last row is selected.
         </p>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {(Object.keys(tintLabels) as Tint[]).map((tint) => (
-            <Column
-              key={tint}
-              label={tintLabels[tint]}
-              {...(tint === "stock" ? {} : { "data-idea": tint })}
-            >
+            <Column key={tint} label={tintLabels[tint]} {...tintScope[tint]}>
               <WashSubjects forced menuLabel="Actions" />
             </Column>
           ))}
@@ -304,13 +307,12 @@ export const ContrastInEveryBrand: Story = {
       {brands.map((brand) => (
         <div key={brand} data-brand={brand} className="rounded-lg bg-background p-3 font-sans">
           <h2 className="mb-2 text-sm font-semibold text-foreground">{brand}</h2>
-          <div className="grid gap-3 lg:grid-cols-2 2xl:grid-cols-4">
-            <Column label={tintLabels.stock}>
-              <WashSubjects forced />
-            </Column>
-            <Column label={tintLabels["brand-tint"]} data-idea="brand-tint">
-              <WashSubjects forced />
-            </Column>
+          <div className="grid gap-3 lg:grid-cols-2 2xl:grid-cols-5">
+            {(Object.keys(tintLabels) as Tint[]).map((tint) => (
+              <Column key={tint} label={tintLabels[tint]} {...tintScope[tint]}>
+                <WashSubjects forced />
+              </Column>
+            ))}
             <Column label={statusLabels.triad} {...statusScope.triad}>
               <StatusSubjects option="triad" />
             </Column>
@@ -328,13 +330,9 @@ export const ContrastInEveryBrand: Story = {
 export const LiveHover: Story = {
   name: "Live hover",
   render: () => (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       {(Object.keys(tintLabels) as Tint[]).map((tint) => (
-        <Column
-          key={tint}
-          label={tintLabels[tint]}
-          {...(tint === "stock" ? {} : { "data-idea": tint })}
-        >
+        <Column key={tint} label={tintLabels[tint]} {...tintScope[tint]}>
           <WashSubjects menuLabel="Actions" />
         </Column>
       ))}
@@ -347,7 +345,7 @@ function menuHighlight(tint: Tint): Story {
   return {
     name: `Menu highlight, ${tint === "stock" ? "stock" : "Loominist tint"}`,
     render: () => (
-      <div {...(tint === "stock" ? {} : { "data-idea": tint })} className="pb-40">
+      <div {...tintScope[tint]} className="pb-40">
         <WashMenu label="Actions" />
       </div>
     ),

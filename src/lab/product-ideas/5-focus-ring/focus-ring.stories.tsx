@@ -34,7 +34,7 @@ type Idea = "stock" | "focus-outline";
 const labels: Record<Idea, string> = {
   stock: "Stock: 3px ring at 50% of --ring",
   "focus-outline":
-    "Loominist: solid 2px brand outline, 3px out, inset in menus, lists and tab bars",
+    "Loominist: solid 2px brand outline, 5px out on buttons and links, 3px on fields, inset in menus, lists and tab bars",
 };
 const scope = (idea: Idea) => (idea === "stock" ? {} : { "data-idea": idea });
 
