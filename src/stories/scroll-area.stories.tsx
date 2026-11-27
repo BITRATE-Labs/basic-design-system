@@ -71,7 +71,10 @@ export const Horizontal: Story = {
 export const KeyboardFocus: Story = {
   render: () => <TagList />,
   play: async ({ canvasElement, userEvent }) => {
+    // Base UI makes the viewport focusable once it has measured the overflow.
+    const el = viewport(canvasElement);
+    await waitFor(() => expect(el).toHaveAttribute("tabindex", "0"));
     await userEvent.tab();
-    await expect(viewport(canvasElement)).toHaveFocus();
+    await expect(el).toHaveFocus();
   },
 };
