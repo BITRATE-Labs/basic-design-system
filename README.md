@@ -134,7 +134,7 @@ GitHub can only dispatch that workflow once it is on the default branch. Until t
 docker run --rm -v "$PWD:/src:ro" -v "$PWD/tests/visual:/out" mcr.microsoft.com/playwright:v1.65.1-noble   bash -c 'git clone -q /src /w && cd /w && npm ci && npm run build-storybook && rm -rf tests/visual/__screenshots__ && npm run test:visual -- --update-snapshots=all; rm -rf /out/__screenshots__ && cp -r tests/visual/__screenshots__ /out/'
 ```
 
-It clones the committed tree, so commit first.
+It clones the committed tree, so commit first. In a git worktree `.git` is a pointer file the container cannot follow, so bundle the branch instead (`git bundle create ../branch.bundle HEAD`), mount the bundle and clone it inside.
 
 Use the toolbar to switch brand and light or dark.
 
