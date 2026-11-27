@@ -177,6 +177,19 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "direction",
+      "type": "registry:ui",
+      "title": "Direction",
+      "description": "Stock shadcn/ui DirectionProvider from Base UI. Right-to-left apps wrap the root in it so arrow keys follow the reading direction.",
+      "dependencies": ["@base-ui/react"],
+      "files": [
+        {
+          "path": "src/components/ui/direction.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }
