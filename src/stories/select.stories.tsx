@@ -171,6 +171,6 @@ export const ChooseOption: Story = {
     await findSelect();
     await userEvent.click(screen.getByRole("option", { name: "Large" }));
     await waitFor(() => expect(trigger).toHaveTextContent("Large"));
-    await waitFor(() => expect(document.querySelector("[data-slot=select-content]")).toBeNull());
+    await waitFor(() => expect(trigger).toHaveAttribute("aria-expanded", "false"));
   },
 };
