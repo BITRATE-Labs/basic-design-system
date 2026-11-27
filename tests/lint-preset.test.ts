@@ -54,14 +54,29 @@ describe("lint preset", () => {
     );
   });
 
+  it("reports arbitrary and numeric z-index classes, but not isolate or z-auto", async () => {
+    expect(await lint("z-index-classes.tsx", outside)).toEqual(
+      [5, 6, 6, 7, 7].map((line) => ({ rule: "better-tailwindcss/no-restricted-classes", line })),
+    );
+  });
+
+  it("reports title on links and buttons only", async () => {
+    expect(await lint("title-attribute.tsx", outside)).toEqual(
+      [7, 8].map((line) => ({ rule: "no-restricted-syntax", line })),
+    );
+  });
+
   it("allows token classes", async () => {
     expect(await lint("token-classes.tsx", outside)).toEqual([]);
   });
 
-  it.each(["raw-elements.tsx", "primitive-imports.tsx", "color-classes.tsx"])(
-    "exempts %s inside components/ui",
-    async (fixture) => {
-      expect(await lint(fixture, inside)).toEqual([]);
-    },
-  );
+  it.each([
+    "raw-elements.tsx",
+    "primitive-imports.tsx",
+    "color-classes.tsx",
+    "z-index-classes.tsx",
+    "title-attribute.tsx",
+  ])("exempts %s inside components/ui", async (fixture) => {
+    expect(await lint(fixture, inside)).toEqual([]);
+  });
 });
