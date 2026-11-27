@@ -77,9 +77,10 @@
   },
   "duration": {
     "$type": "duration",
-    "fast": { "$value": "100ms" },
-    "normal": { "$value": "150ms" },
-    "slow": { "$value": "300ms" },
+    "$description": "Perkcord's motion durations. Every duration collapses to 1ms under prefers-reduced-motion or data-motion=\"reduce\" (scripts/build-tokens.mjs).",
+    "fast": { "$value": "160ms", "$description": "Menus, popovers, tooltips; every popup exit." },
+    "base": { "$value": "240ms", "$description": "Dialog entrance; sheet exit." },
+    "slow": { "$value": "420ms", "$description": "Sheet and toast entrance; section entrance." },
     "indicator": {
       "$value": "250ms",
       "$description": "Sliding tab and navigation indicator move."
@@ -90,6 +91,26 @@
     "indicator": {
       "$value": [0, 0, 0.58, 1],
       "$description": "Sliding indicator easing (CSS ease-out). Tailwind utility: ease-indicator."
+    },
+    "standard": {
+      "$value": [0.2, 0.8, 0.2, 1],
+      "$description": "Popups and every exit. Tailwind utility: ease-standard."
+    },
+    "emphasized": {
+      "$value": [0.22, 1, 0.36, 1],
+      "$description": "Dialog, sheet, toast and section entrances. Tailwind utility: ease-emphasized."
+    }
+  },
+  "motion": {
+    "rise-distance": {
+      "$type": "dimension",
+      "$value": "18px",
+      "$description": "How far .motion-enter rises. 0px under reduced motion."
+    },
+    "delay-step": {
+      "$type": "duration",
+      "$value": "70ms",
+      "$description": "Stagger step for .motion-delay-N. 0ms under reduced motion."
     }
   }
 }

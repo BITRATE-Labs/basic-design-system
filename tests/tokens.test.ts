@@ -166,3 +166,22 @@ describe.each(brandNames)("brand %s indicators", (brand) => {
     expect(failures).toEqual([]);
   });
 });
+
+// ---- Motion ------------------------------------------------------------------------------
+// Reduced motion collapses every motion token, under the media query and data-motion="reduce".
+it("collapses every motion token under reduced motion", () => {
+  const css = readFileSync(path.join(root, "dist/tokens.css"), "utf8");
+  const scales = JSON.parse(readFileSync(path.join(root, "tokens/scales.tokens.json"), "utf8"));
+  const names = [
+    ...Object.keys(scales.duration)
+      .filter((k) => !k.startsWith("$"))
+      .map((k) => `--duration-${k}`),
+    ...Object.keys(scales.motion).map((k) => `--motion-${k}`),
+  ];
+  const media = css.match(/@media \(prefers-reduced-motion: reduce\) \{\s*:root \{([^}]*)\}/)?.[1];
+  const forced = css.match(/\[data-motion="reduce"\] \{([^}]*)\}/)?.[1];
+  for (const body of [media, forced]) {
+    expect(body).toBeDefined();
+    for (const name of names) expect(body, name).toMatch(new RegExp(`${name}: (1ms|0ms|0px);`));
+  }
+});

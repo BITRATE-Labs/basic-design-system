@@ -83,6 +83,8 @@ The package ships no `@font-face` rules, so the product loads its brand's fonts 
 
 Then set the brand on the root element: `<html data-brand="vrdex">`. Dark mode is the `dark` class on the same element. Products without Tailwind (Mantine, MUI) can import concrete hex and rgba values from `@bitrate-labs/design-system/brands/<name>` (plain JavaScript with type declarations).
 
+`theme.css` also retimes the shared popups, dialogs, sheets and toasts with the motion tokens, collapsing them under `prefers-reduced-motion` or `data-motion="reduce"` on `<html>`, and adds the `motion-enter`, `motion-delay-1` to `-4` and `motion-arrival` classes. Storybook **Foundations / Motion** shows each animation.
+
 ### Layers
 
 Tooltips, popovers, menus and dialogs portal to the end of `<body>`. Wrap the app in one element with the `isolate` class and, inside it, `TooltipProvider`; then popups always sit above the page, whatever z-index the page uses. Anything else portaled to `<body>` goes inside that element or stays below z-index 50. Mount the shared `Toaster` inside it too: it renders in place at a z-index far above 50. An open dialog or sheet covers toasts with its overlay, so show success toasts after it closes. Inside a top-layer element (a modal `<dialog>`, or an element with the `popover` attribute), pass it as the popup's `container` and give it `overflow-visible`. Tooltip text is visual only, so an icon-only trigger needs an `aria-label`. The rule and its checks are in Storybook under **Docs / Layers**.

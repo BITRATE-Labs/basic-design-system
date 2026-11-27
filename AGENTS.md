@@ -18,6 +18,7 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 | `tokens/`                  | Shared scales and role names (DTCG JSON); `tokens/css/`: theme CSS for the stock components    |
 | `brands/`                  | One DTCG file per brand: every role in light and dark, fonts, radius                           |
 | `scripts/build-tokens.mjs` | Style Dictionary build into `dist/` (git-ignored)                                              |
+| `theme/motion.css`         | Hand-written motion rules, appended to `dist/theme.css` by the token build                     |
 | `src/components/ui/`       | Stock shadcn as the CLI wrote it, except the changes listed below, plus the UI SDK items       |
 | `src/lib/utils.ts`         | `cn`                                                                                           |
 | `registry.json`            | shadcn registry: every installable item                                                        |
@@ -51,6 +52,10 @@ The CLI writes `font-heading` on the dialog, sheet, card, alert-dialog and empty
 - Focus: a solid 2px outline in `--ring` on `:focus-visible`, 3px out on form controls, 5px out on buttons and links, 2px inside within menus, lists, tabs, scroll areas and the sliding nav. `--ring` reaches 3:1 on every surface it can sit on in each brand (tested).
 - Touch: on `pointer: coarse`, buttons, select triggers, tabs and switches get an invisible 44px hit area (checkboxes and radios 44px wide only, since they stack about 31px apart); menu, select and combobox rows grow to 44px tall, which changes their layout.
 - Each part has its forced-colours, `prefers-contrast: more`, reduced-motion and reduced-transparency path in the same file.
+
+## Motion
+
+Perkcord's motion tokens are the system's motion for every brand: `--duration-fast` 160ms, `--duration-base` 240ms, `--duration-slow` 420ms, `--ease-standard`, `--ease-emphasized`, `--motion-rise-distance` 18px and `--motion-delay-step` 70ms, in `tokens/scales.tokens.json` beside the sliding indicator's `--duration-indicator` and `--ease-indicator`. `prefers-reduced-motion: reduce` and `data-motion="reduce"` (an in-app setting; put it on `<html>`, since popups portal to `<body>`) collapse every duration to 1ms and the rise and step to 0. `theme/motion.css` points the stock components at them through their `data-slot` attributes, with no change to `src/components/ui`: menu, popover, select, combobox and tooltip fast and standard; dialog and alert dialog base and emphasised in, fast and standard out; sheet slow and emphasised in, base and standard out; toast slow and emphasised in, fast out. To retime one popup use `animation-duration-*` and `ease-*` (`duration-*` no longer changes its animation); one sheet needs `!duration-*`. It also ships the `.motion-enter`, `.motion-enter-soft` and `.motion-delay-1` to `-4` section entrance (first paint of key sections only) and the `.motion-arrival` deep-link highlight. Storybook **Foundations / Motion** plays each one beside stock's timing.
 
 ## Layers
 
