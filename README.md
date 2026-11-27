@@ -38,6 +38,16 @@ The script rewrites the tag-pinned same-repo dependencies to the built files, as
 
 Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `sliding-tabs`, `kbd`, `tooltip`, `popover`, `textarea`, `select`, `checkbox`, `switch`, `radio-group`, `input-group`, `combobox`, `alert`, `sonner` (toasts), `skeleton`, `spinner`, `empty`, `badge`, `progress`, `card`, `avatar`, `table`, `scroll-area`, `sheet`, `alert-dialog`, `direction`.
 
+UI SDK items (`command`, `calendar`, `date-picker`, `otp-input`, `token-input`, `agent`) are Storybook-only for now and not installable (see UI SDK below).
+
+### UI SDK
+
+[UI SDK](https://github.com/vercel-labs/ui) (`@ui-sdk/core` and `@ui-sdk/react`, Apache-2.0) supplies the components shadcn builds on third-party libraries or does not ship (command, calendar, date picker, OTP input, token input) and the agent bridge that lets an AI agent operate them. Everything else stays stock shadcn on Base UI.
+
+It is a **beta, pinned exactly** to `0.1.0-beta.17`, and its patch releases change behaviour. Until the owner decides whether a live product may ship it under Vercel's beta terms, its items stay in `registry-ui-sdk/registry.json`, which the shadcn CLI does not read. When they become installable: set `save-exact=true` in the product's `.npmrc` (npm otherwise writes `^0.1.0-beta.17`, which admits later betas), and add `@layer ui-sdk;` as the first line of the global stylesheet, above `@import "tailwindcss"`.
+
+To bump it: read the release notes, run `npm install --save-exact @ui-sdk/core@<version> @ui-sdk/react@<version>`, change every `@ui-sdk/*` pin in `registry-ui-sdk/registry.json` to the same version, then run `npm test` (fails if any pin differs), `npm run build-storybook`, `npm run test:agent` and the visual check.
+
 ### Tokens (after the first tag)
 
 ```sh
@@ -76,6 +86,10 @@ Then set the brand on the root element: `<html data-brand="vrdex">`. Dark mode i
 ### Layers
 
 Tooltips, popovers, menus and dialogs portal to the end of `<body>`. Wrap the app in one element with the `isolate` class and, inside it, `TooltipProvider`; then popups always sit above the page, whatever z-index the page uses. Anything else portaled to `<body>` goes inside that element or stays below z-index 50. Mount the shared `Toaster` inside it too: it renders in place at a z-index far above 50. An open dialog or sheet covers toasts with its overlay, so show success toasts after it closes. Inside a top-layer element (a modal `<dialog>`, or an element with the `popover` attribute), pass it as the popup's `container` and give it `overflow-visible`. Tooltip text is visual only, so an icon-only trigger needs an `aria-label`. The rule and its checks are in Storybook under **Docs / Layers**.
+
+### Agents
+
+An AI agent can operate ui-sdk components through ui-sdk's agent bridge. Add the `agent` item and wrap the app root in `AgentProvider`; steps on controls marked `data-agent-confirm` ask the person first. Only the UI SDK items are agent-drivable: the bridge does not see the stock Base UI components, so a page built from them shows the agent nothing. Marks do not cross portals, so a portaled element carries its own. ui-sdk is in beta, so this is Storybook-only for now. See Storybook **Docs / Agents**.
 
 ### Lint preset
 
