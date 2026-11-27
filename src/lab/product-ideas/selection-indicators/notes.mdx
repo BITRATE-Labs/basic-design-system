@@ -1,0 +1,19 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Lab/Product ideas/3. Selection indicators/Notes" />
+
+# Selection indicators
+
+Options shown in **Compare**. Switch brand and light or dark from the toolbar.
+
+## Stock
+
+The Tabs pill raises the active tab on a muted track, the line variant shows a static 2px underline, and RadioGroup shows a column of circles. None of them moves between choices.
+
+## Sliding 3px bar (Perkcord)
+
+A 3px primary bar slides under the current tab or link in 250ms with an ease-out curve, and does not animate its first placement. It already ships as **Components / Sliding tabs**, so it appears here for reference only and costs nothing further. Its known gap is the server-render fallback Perkcord draws with an `::after` on the current link; Sliding tabs hides the bar until it is measured instead.
+
+## Weighted segmented control (Perkcord)
+
+A radio choice drawn as one track: a thumb tinted with the primary at 15% and ringed at 30% slides behind the checked option in 200ms, and each option takes a share of the width by weight, so a long label can sit beside a short one. The thumb's position comes from the option index and weights alone, with no measuring, and each segment is a stock RadioGroupItem stretched over it, so keyboard, focus and form behaviour are the stock RadioGroup's. Adopting it means a new `segmented-control` registry item with stories (medium cost; it is used in several Perkcord screens). The primary at 15% on the muted track is a low-contrast thumb and needs checking in every brand; under forced colours the lab draws the thumb as a Highlight border.
