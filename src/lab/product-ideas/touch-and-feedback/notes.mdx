@@ -1,0 +1,23 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Lab/Product ideas/8. Touch and feedback/Notes" />
+
+# Touch and feedback
+
+Options shown in **Compare**. Switch brand and light or dark from the toolbar. A desktop browser cannot switch to a coarse pointer or to reduced motion, so the stories preview those with `data-preview-pointer` and `data-preview-motion` attributes; the shipped CSS uses only the media queries.
+
+## Stock
+
+Icon buttons are 24 to 32px on every device, menu rows are about 28px, and buttons and menu items show the default arrow cursor because Tailwind v4 removed the pointer. A dialog closes on Escape or an outside click whatever has been typed into it. A pressed toggle changes its icon and nothing else.
+
+## 44px targets on coarse pointers (Perkcord)
+
+On a touch screen every icon button and menu row grows to a 44px minimum while its glyph keeps its size, and every enabled button and menu item shows the pointer cursor. Adopting it is a few theme-level rules under `@media (pointer: coarse)` with no component forks, but stock Button writes no `data-size`, so the lab matches its icon size classes; shipping it wants a one-line `data-size` addition to Button, listed in Changes from stock. The larger targets can crowd dense rows such as tag chips, where a 24px remove button becomes 44px.
+
+## Refuse-to-dismiss nudge (Perkcord)
+
+When a dialog's input has changed since it opened, Escape or an outside click is refused: the dialog shakes in a decaying 6, 4px pattern over 320ms and focus moves to its action row, or under reduced motion the action row is ringed in the primary for 900ms. Adopting it is a small `useDirtyDismiss` helper on the stock Dialog's `onOpenChange`, plus a polite status message, because the shake alone tells a screen reader nothing. A dialog that refuses to close must always keep a visible Cancel, or it feels like a trap.
+
+## Selection pop on the user's own press (VRDex)
+
+When a toggle becomes selected because the person pressed it, its icon scales to 1.2 and back over 220ms; state loaded on first render or from the server never pops. Adopting it is a 30-line `usePressPop` hook and one keyframe, offered as opt-in. Above 1.2 the icon would overflow tight rows, and the pop carries no information, so under reduced motion it is simply dropped.
