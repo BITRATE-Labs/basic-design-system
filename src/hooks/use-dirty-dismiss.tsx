@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, type ComponentProps } from "react";
 import type { Dialog } from "@/components/ui/dialog";
 
