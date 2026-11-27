@@ -53,3 +53,7 @@ Each story under **Layering** opens a tooltip or popover and checks with the bro
 - inside a native modal `<dialog>` with `container`; the `BodyPortal` stories show the popup hidden behind the dialog without it
 - inside an element with the `popover` attribute, with `container` and `overflow-visible`
 - above an overlay portaled to the body with z-index 49
+
+The `Dialog * Escape` stories open a UI SDK popup (date picker, command palette) inside the shared Dialog and check that one Escape closes only the popup. UI SDK lets the key bubble after closing its popup, and Base UI's Dialog closes on any Escape that reaches it, so each UI SDK wrapper stops the Escape its content used. A new UI SDK popup wrapper needs the same handler and the same story.
+
+Known gap: the token input's `@`/`#` menu keeps focus in the editor and closes from a document listener that runs after the Dialog has already closed, so one Escape closes both. Do not put `TokenInput` inside the shared Dialog. `Dialog Token Input Escape Known Gap` pins this; when it fails, the gap is fixed.

@@ -13,7 +13,7 @@ it("pins @ui-sdk/core and @ui-sdk/react to the same exact version everywhere", (
   expect(core).toMatch(/^\d+\.\d+\.\d+(-[\w.]+)?$/);
   expect(devDependencies["@ui-sdk/react"]).toBe(core);
 
-  const { items } = read("registry.json") as {
+  const { items } = read("registry-ui-sdk/registry.json") as {
     items: { name: string; dependencies?: string[] }[];
   };
   const sdkDeps = items

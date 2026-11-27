@@ -18,8 +18,9 @@ const withTooltipProvider: Decorator = (Story) => (
   </TooltipProvider>
 );
 
-// Every story is agent-drivable: the bridge sees each ui-sdk part it renders, and
-// window.agent lets the browser console and tests/agent drive it (Docs / Agents).
+// Every story has the bridge. It sees only the ui-sdk parts a story renders (stock Base UI
+// components are invisible to it), and window.agent lets the browser console and
+// tests/agent drive it (Docs / Agents).
 const withAgent: Decorator = (Story) => {
   (window as { agent?: typeof agent }).agent = agent;
   return (
