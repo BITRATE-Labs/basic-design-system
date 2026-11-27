@@ -1,0 +1,186 @@
+{
+  "$description": "vrdex: ice blue on near-black, from the VRDex web app tokens. Dark is the product default; light is its data-theme=light set.",
+  "color": {
+    "$type": "color",
+    "light": {
+      "background": {
+        "$value": "#e8edf5"
+      },
+      "foreground": {
+        "$value": "#0c1220"
+      },
+      "card": {
+        "$value": "#f8fafc"
+      },
+      "card-foreground": {
+        "$value": "#0c1220"
+      },
+      "popover": {
+        "$value": "#f8fafc"
+      },
+      "popover-foreground": {
+        "$value": "#0c1220"
+      },
+      "primary": {
+        "$value": "#2563eb"
+      },
+      "primary-foreground": {
+        "$value": "#f8fafc"
+      },
+      "secondary": {
+        "$value": "#f8fafc"
+      },
+      "secondary-foreground": {
+        "$value": "#0c1220"
+      },
+      "muted": {
+        "$value": "#dde6f2"
+      },
+      "muted-foreground": {
+        "$value": "#475569"
+      },
+      "accent": {
+        "$value": "#e2e8f0"
+      },
+      "accent-foreground": {
+        "$value": "#0c1220"
+      },
+      "destructive": {
+        "$value": "#b4232f"
+      },
+      "border": {
+        "$value": "rgba(15, 23, 42, 0.16)"
+      },
+      "input": {
+        "$value": "rgba(15, 23, 42, 0.28)"
+      },
+      "ring": {
+        "$value": "rgba(37, 99, 235, 0.32)"
+      },
+      "success": {
+        "$value": "#167340"
+      },
+      "success-foreground": {
+        "$value": "#f8fafc"
+      },
+      "warning": {
+        "$value": "#8b5d08"
+      },
+      "warning-foreground": {
+        "$value": "#f8fafc"
+      },
+      "info": {
+        "$value": "#0874a6"
+      },
+      "info-foreground": {
+        "$value": "#f8fafc"
+      }
+    },
+    "dark": {
+      "background": {
+        "$value": "#08090d"
+      },
+      "foreground": {
+        "$value": "#f5f7fb"
+      },
+      "card": {
+        "$value": "#151b24"
+      },
+      "card-foreground": {
+        "$value": "#f5f7fb"
+      },
+      "popover": {
+        "$value": "#1b232e"
+      },
+      "popover-foreground": {
+        "$value": "#f5f7fb"
+      },
+      "primary": {
+        "$value": "#8ed8ff"
+      },
+      "primary-foreground": {
+        "$value": "#08090d"
+      },
+      "secondary": {
+        "$value": "#151b24"
+      },
+      "secondary-foreground": {
+        "$value": "#f5f7fb"
+      },
+      "muted": {
+        "$value": "#0f131a"
+      },
+      "muted-foreground": {
+        "$value": "#98a3b3"
+      },
+      "accent": {
+        "$value": "#1b232e"
+      },
+      "accent-foreground": {
+        "$value": "#f5f7fb"
+      },
+      "destructive": {
+        "$value": "#ff8a8a"
+      },
+      "border": {
+        "$value": "rgba(229, 235, 244, 0.14)"
+      },
+      "input": {
+        "$value": "rgba(229, 235, 244, 0.24)"
+      },
+      "ring": {
+        "$value": "rgba(142, 216, 255, 0.38)"
+      },
+      "success": {
+        "$value": "#8ee6ae"
+      },
+      "success-foreground": {
+        "$value": "#08090d"
+      },
+      "warning": {
+        "$value": "#ffd47a"
+      },
+      "warning-foreground": {
+        "$value": "#08090d"
+      },
+      "info": {
+        "$value": "#8ed8ff"
+      },
+      "info-foreground": {
+        "$value": "#08090d"
+      }
+    }
+  },
+  "font": {
+    "$type": "fontFamily",
+    "sans": {
+      "$value": ["Space Grotesk", "ui-sans-serif", "system-ui", "sans-serif"],
+      "$extensions": {
+        "com.bitrate-labs.google-fonts": "Space+Grotesk:wght@300..700"
+      }
+    },
+    "display": {
+      "$value": ["Space Grotesk", "ui-sans-serif", "system-ui", "sans-serif"],
+      "$extensions": {
+        "com.bitrate-labs.google-fonts": "Space+Grotesk:wght@300..700"
+      }
+    },
+    "mono": {
+      "$value": [
+        "IBM Plex Mono",
+        "ui-monospace",
+        "SFMono-Regular",
+        "Menlo",
+        "Consolas",
+        "monospace"
+      ],
+      "$extensions": {
+        "com.bitrate-labs.google-fonts": "IBM+Plex+Mono:wght@400;500;600;700"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "$value": "0.5rem"
+  }
+}

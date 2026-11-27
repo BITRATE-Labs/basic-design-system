@@ -1,0 +1,74 @@
+{
+  "$description": "basic: the neutral default brand (shadcn/ui neutral base colour).",
+  "color": {
+    "$type": "color",
+    "light": {
+      "background": { "$value": "oklch(1 0 0)" },
+      "foreground": { "$value": "oklch(0.145 0 0)" },
+      "card": { "$value": "oklch(1 0 0)" },
+      "card-foreground": { "$value": "oklch(0.145 0 0)" },
+      "popover": { "$value": "oklch(1 0 0)" },
+      "popover-foreground": { "$value": "oklch(0.145 0 0)" },
+      "primary": { "$value": "oklch(0.205 0 0)" },
+      "primary-foreground": { "$value": "oklch(0.985 0 0)" },
+      "secondary": { "$value": "oklch(0.97 0 0)" },
+      "secondary-foreground": { "$value": "oklch(0.205 0 0)" },
+      "muted": { "$value": "oklch(0.97 0 0)" },
+      "muted-foreground": { "$value": "oklch(0.556 0 0)" },
+      "accent": { "$value": "oklch(0.97 0 0)" },
+      "accent-foreground": { "$value": "oklch(0.205 0 0)" },
+      "destructive": { "$value": "oklch(0.577 0.245 27.325)" },
+      "border": { "$value": "oklch(0.922 0 0)" },
+      "input": { "$value": "oklch(0.922 0 0)" },
+      "ring": { "$value": "oklch(0.708 0 0)" },
+      "success": { "$value": "oklch(0.527 0.154 150.069)" },
+      "success-foreground": { "$value": "oklch(0.985 0 0)" },
+      "warning": { "$value": "oklch(0.769 0.188 70.08)" },
+      "warning-foreground": { "$value": "oklch(0.205 0 0)" },
+      "info": { "$value": "oklch(0.546 0.245 262.881)" },
+      "info-foreground": { "$value": "oklch(0.985 0 0)" }
+    },
+    "dark": {
+      "background": { "$value": "oklch(0.145 0 0)" },
+      "foreground": { "$value": "oklch(0.985 0 0)" },
+      "card": { "$value": "oklch(0.205 0 0)" },
+      "card-foreground": { "$value": "oklch(0.985 0 0)" },
+      "popover": { "$value": "oklch(0.205 0 0)" },
+      "popover-foreground": { "$value": "oklch(0.985 0 0)" },
+      "primary": { "$value": "oklch(0.922 0 0)" },
+      "primary-foreground": { "$value": "oklch(0.205 0 0)" },
+      "secondary": { "$value": "oklch(0.269 0 0)" },
+      "secondary-foreground": { "$value": "oklch(0.985 0 0)" },
+      "muted": { "$value": "oklch(0.269 0 0)" },
+      "muted-foreground": { "$value": "oklch(0.708 0 0)" },
+      "accent": { "$value": "oklch(0.269 0 0)" },
+      "accent-foreground": { "$value": "oklch(0.985 0 0)" },
+      "destructive": { "$value": "oklch(0.704 0.191 22.216)" },
+      "border": { "$value": "oklch(1 0 0 / 10%)" },
+      "input": { "$value": "oklch(1 0 0 / 15%)" },
+      "ring": { "$value": "oklch(0.556 0 0)" },
+      "success": { "$value": "oklch(0.723 0.219 149.579)" },
+      "success-foreground": { "$value": "oklch(0.145 0 0)" },
+      "warning": { "$value": "oklch(0.828 0.189 84.429)" },
+      "warning-foreground": { "$value": "oklch(0.145 0 0)" },
+      "info": { "$value": "oklch(0.707 0.165 254.624)" },
+      "info-foreground": { "$value": "oklch(0.145 0 0)" }
+    }
+  },
+  "font": {
+    "$type": "fontFamily",
+    "sans": {
+      "$value": ["Geist", "ui-sans-serif", "system-ui", "sans-serif"],
+      "$extensions": { "com.bitrate-labs.google-fonts": "Geist:wght@100..900" }
+    },
+    "display": {
+      "$value": ["Geist", "ui-sans-serif", "system-ui", "sans-serif"],
+      "$extensions": { "com.bitrate-labs.google-fonts": "Geist:wght@100..900" }
+    },
+    "mono": {
+      "$value": ["Geist Mono", "ui-monospace", "SFMono-Regular", "monospace"],
+      "$extensions": { "com.bitrate-labs.google-fonts": "Geist+Mono:wght@100..900" }
+    }
+  },
+  "radius": { "$type": "dimension", "$value": "0.625rem" }
+}

@@ -1,0 +1,34 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import { RadiusScale, RoleSwatches, ShadowScale, SpacingScale, TypeScale } from "./token-swatches";
+
+<Meta title="Docs/Tokens" />
+
+# Tokens
+
+Every value on this page is read from the built CSS variables, so it shows what products get.
+
+The source files are in `tokens/` (shared scales and role names) and `brands/` (one file per brand). `npm run build:tokens` writes them to `dist/`.
+
+## Colour roles
+
+Each brand gives every role a light and a dark value. Components use the roles through utilities such as `bg-primary` and `text-muted-foreground`, never a palette colour.
+
+<RoleSwatches />
+
+## Type scale
+
+<TypeScale />
+
+## Spacing
+
+<SpacingScale />
+
+## Radius
+
+Each brand sets one `--radius`. The steps are fixed multiples of it.
+
+<RadiusScale />
+
+## Shadows
+
+<ShadowScale />

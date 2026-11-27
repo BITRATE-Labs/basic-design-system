@@ -1,0 +1,176 @@
+{
+  "$description": "perkcord: indigo on warm paper, from the default marketplace palette (converted from HSL).",
+  "color": {
+    "$type": "color",
+    "light": {
+      "background": {
+        "$value": "#f8f6f1"
+      },
+      "foreground": {
+        "$value": "#13192a"
+      },
+      "card": {
+        "$value": "#fdfdfb"
+      },
+      "card-foreground": {
+        "$value": "#13192a"
+      },
+      "popover": {
+        "$value": "#fdfdfb"
+      },
+      "popover-foreground": {
+        "$value": "#13192a"
+      },
+      "primary": {
+        "$value": "#323d8f"
+      },
+      "primary-foreground": {
+        "$value": "#fcfbf8"
+      },
+      "secondary": {
+        "$value": "#eeeae2"
+      },
+      "secondary-foreground": {
+        "$value": "#1f273d"
+      },
+      "muted": {
+        "$value": "#edeae3"
+      },
+      "muted-foreground": {
+        "$value": "#575d70"
+      },
+      "accent": {
+        "$value": "#efd9c8"
+      },
+      "accent-foreground": {
+        "$value": "#13192a"
+      },
+      "destructive": {
+        "$value": "#ef4343"
+      },
+      "border": {
+        "$value": "#d1cabd"
+      },
+      "input": {
+        "$value": "#d1cabd"
+      },
+      "ring": {
+        "$value": "#323d8f"
+      },
+      "success": {
+        "$value": "#22704c"
+      },
+      "success-foreground": {
+        "$value": "#fcfbf8"
+      },
+      "warning": {
+        "$value": "#8a5512"
+      },
+      "warning-foreground": {
+        "$value": "#fcfbf8"
+      },
+      "info": {
+        "$value": "#1f5f8f"
+      },
+      "info-foreground": {
+        "$value": "#fcfbf8"
+      }
+    },
+    "dark": {
+      "background": {
+        "$value": "#0c0f17"
+      },
+      "foreground": {
+        "$value": "#f3efe7"
+      },
+      "card": {
+        "$value": "#131720"
+      },
+      "card-foreground": {
+        "$value": "#f3efe7"
+      },
+      "popover": {
+        "$value": "#11141d"
+      },
+      "popover-foreground": {
+        "$value": "#f3efe7"
+      },
+      "primary": {
+        "$value": "#8a98ef"
+      },
+      "primary-foreground": {
+        "$value": "#10131e"
+      },
+      "secondary": {
+        "$value": "#242833"
+      },
+      "secondary-foreground": {
+        "$value": "#f3efe7"
+      },
+      "muted": {
+        "$value": "#242833"
+      },
+      "muted-foreground": {
+        "$value": "#a9afbc"
+      },
+      "accent": {
+        "$value": "#3c2d20"
+      },
+      "accent-foreground": {
+        "$value": "#f3efe7"
+      },
+      "destructive": {
+        "$value": "#db2424"
+      },
+      "border": {
+        "$value": "#323743"
+      },
+      "input": {
+        "$value": "#323743"
+      },
+      "ring": {
+        "$value": "#8a98ef"
+      },
+      "success": {
+        "$value": "#7fd1a8"
+      },
+      "success-foreground": {
+        "$value": "#10131e"
+      },
+      "warning": {
+        "$value": "#f0c06a"
+      },
+      "warning-foreground": {
+        "$value": "#10131e"
+      },
+      "info": {
+        "$value": "#7fbfec"
+      },
+      "info-foreground": {
+        "$value": "#10131e"
+      }
+    }
+  },
+  "font": {
+    "$type": "fontFamily",
+    "sans": {
+      "$value": ["Space Grotesk", "ui-sans-serif", "system-ui", "sans-serif"],
+      "$extensions": {
+        "com.bitrate-labs.google-fonts": "Space+Grotesk:wght@300..700"
+      }
+    },
+    "display": {
+      "$value": ["Space Grotesk", "ui-sans-serif", "system-ui", "sans-serif"],
+      "$extensions": {
+        "com.bitrate-labs.google-fonts": "Space+Grotesk:wght@300..700"
+      }
+    },
+    "mono": {
+      "$value": ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"]
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "$value": "0.5rem"
+  }
+}
