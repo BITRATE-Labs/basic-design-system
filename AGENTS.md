@@ -18,7 +18,7 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 | `tokens/`                  | Shared scales and role names (DTCG JSON)                                                       |
 | `brands/`                  | One DTCG file per brand: every role in light and dark, fonts, radius                           |
 | `scripts/build-tokens.mjs` | Style Dictionary build into `dist/` (git-ignored)                                              |
-| `src/components/ui/`       | Stock shadcn components, exactly as the CLI wrote them                                         |
+| `src/components/ui/`       | Stock shadcn components as the CLI wrote them, plus the UI SDK items (see below)               |
 | `src/lib/utils.ts`         | `cn`                                                                                           |
 | `registry.json`            | shadcn registry: every installable item                                                        |
 | `src/stories/`             | One stories file per component, plus `Examples/`                                               |
@@ -43,6 +43,15 @@ Shared popups portal to the end of `<body>` at `z-50`. Products wrap the app roo
 - `@ui-sdk/core` and `@ui-sdk/react` stay on the same exact version in `package.json` and `registry.json` (a test checks). Read the changelog on every bump: behaviour changes ship in patch releases. ui-sdk is Storybook-only until the owner decides on its beta terms.
 - The official ui-sdk skill is vendored in `.agents/skills/ui-sdk` (see its `SOURCE.md`). It applies to ui-sdk code only. Where it says to prefer ui-sdk parts everywhere, this file wins: stock shadcn first, except on agent-operated surfaces.
 - `npm run test:agent` drives the `Agents` stories through the bridge in the built Storybook (any platform; CI runs it).
+
+## UI SDK components (beta)
+
+- `command`, `calendar`, `date-picker`, `otp-input` and `token-input` (which also exports the Trigger Menu parts for its `@` and `#` suggestions) wrap UI SDK's starter components (`@ui-sdk/react` and `@ui-sdk/core`, Apache-2.0). Everything else in `src/components/ui/` is stock shadcn on Base UI.
+- UI SDK is a **beta dependency, pinned exactly** to `0.1.0-beta.17` in `package.json` and in each registry item's `dependencies`; `tests/registry.test.ts` fails if they drift or if core and react differ. Its patch releases change behaviour, so upgrade on purpose: read the changelog, bump both packages and every registry pin together, and re-check the stories.
+- Why these come from UI SDK: shadcn's command, calendar and input-otp sit on third-party libraries (cmdk, react-day-picker with date-fns, input-otp), shadcn has no date picker field or token input, and UI SDK parts are visible to its agent bridge. Stock shadcn first still holds for everything else.
+- Style them by copying the class patterns of the matching stock file (radius, border, ring, spacing, role tokens). UI SDK sets each part's `data-slot` itself and replaces one you pass, so do not pass it. Animate exits on `data-ending-style`, not `data-closed:animate-out`. shadcn's `tailwind.css` redefines `data-selected:` to match only `data-selected="true"`, and UI SDK writes it empty, so use `data-[selected]:`. Wrap `buttonVariants(...)` in `cn` when you use it on a UI SDK part, or `border-transparent` beats the variant's border. Wrapper `className` takes a string, not UI SDK's state function.
+- UI SDK popups use the browser top layer, need no z-index, and keep the browser's popover border, padding and background unless the class sets them (date picker and trigger menu content do). `src/index.css` declares `@layer ui-sdk;` before Tailwind; products must do the same in their global stylesheet.
+- Owner decision pending: whether a live product may ship this beta under Vercel's beta terms (upstream issue vercel-labs/ui#867).
 
 ## Lab convention
 
