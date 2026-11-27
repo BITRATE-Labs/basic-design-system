@@ -15,7 +15,7 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 
 | Path                       | What                                                                                           |
 | -------------------------- | ---------------------------------------------------------------------------------------------- |
-| `tokens/`                  | Shared scales and role names (DTCG JSON)                                                       |
+| `tokens/`                  | Shared scales and role names (DTCG JSON); `tokens/css/`: theme CSS for the stock components    |
 | `brands/`                  | One DTCG file per brand: every role in light and dark, fonts, radius                           |
 | `scripts/build-tokens.mjs` | Style Dictionary build into `dist/` (git-ignored)                                              |
 | `src/components/ui/`       | Stock shadcn as the CLI wrote it, except the changes listed below, plus the UI SDK items       |
@@ -37,9 +37,20 @@ Every change to a file in `src/components/ui/` is listed here with its reason. R
 - `tooltip`, `popover`, `dropdown-menu`: Content forwards `container` to the Base UI Portal (see Layers).
 - `scroll-area`: the unused `import * as React from "react"` is removed, because `noUnusedLocals` fails the typecheck on it.
 - `combobox`: the icon-only trigger, clear and chip-remove buttons get `aria-label`s ("Open popup", "Clear selection", "Remove", as in the Base UI combobox docs), because stock leaves them without an accessible name and the stock `ComboboxInput` gives a product no way to pass one. The trigger also gets `tabIndex={-1}`: Base UI marks its addon `aria-hidden` while the list is open, and the input already opens the list from the keyboard.
-- `alert`: the destructive description uses `text-destructive`, not `text-destructive/90`, because the 90% tint fails WCAG AA on the card in the basic brand (4.49:1).
+- `button`: writes `data-variant` and `data-size`, so theme CSS (`tokens/css/`) can tell ghost from outline and find icon sizes; the variant classes overlap and a consumer `className` can add `size-*` to any button.
+- `alert`: writes `data-variant`, so theme CSS can draw the destructive callout from the status roles.
 
 The CLI writes `font-heading` on the dialog, sheet, card, alert-dialog and empty titles only when `src/index.css` itself contains `--font-heading:`. It does not, so titles use `font-sans`; adding that variable there changes all five at once.
+
+## Theme CSS
+
+`tokens/css/*.css` is appended to `dist/theme.css` by the token build and styles the stock components through their `data-slot` (and the Button's `data-variant`/`data-size`) attributes. It is unlayered so it beats stock utilities without `!important`. `colour-focus-touch.css` holds:
+
+- Status: success, warning, info and destructive each have `-soft`, `-soft-foreground` and `-line` roles (derived per brand: text 4.5:1 on its wash, line 3:1 on background and card; `tests/tokens.test.ts` checks both). The destructive Button, Badge and menu item and the destructive Alert read them. Stock Alert has no success, warning or info variant, so those are `<Alert data-tone="success">` (also `warning`, `info`, `destructive`); the title names the status, because forced colours draw every line alike.
+- Hover wash: `--accent` is 5% of primary over the popover, with `--accent-foreground` the normal text colour; ghost buttons and table rows hover on the same 5% as a translucent wash. Outline buttons keep their stock hover.
+- Focus: a solid 2px outline in `--ring` on `:focus-visible`, 3px out on form controls, 5px out on buttons and links, 2px inside within menus, lists, tabs, scroll areas and the sliding nav. `--ring` reaches 3:1 on every surface it can sit on in each brand (tested).
+- Touch: on `pointer: coarse`, buttons, select triggers, tabs and switches get an invisible 44px hit area (checkboxes and radios 44px wide only, since they stack about 31px apart); menu, select and combobox rows grow to 44px tall, which changes their layout.
+- Each part has its forced-colours, `prefers-contrast: more`, reduced-motion and reduced-transparency path in the same file.
 
 ## Layers
 
