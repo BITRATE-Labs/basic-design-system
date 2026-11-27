@@ -74,12 +74,6 @@ const contrastAllowlist: Record<string, string> = {
   "perkcord:light:card/destructive": "product destructive red on white, 3.78:1",
   // Product blue as link text on the light-theme page.
   "vrdex:light:background/primary": "product primary blue, 4.40:1",
-  // The stock destructive Button and Badge: each brand's destructive red as text on its
-  // own 10% (light) or 20% (dark) tint. Passing needs a darker red or a restyled variant.
-  "basic:light:destructive-tint/destructive": "shadcn neutral red on its tint, 3.99:1",
-  "chronote:light:destructive-tint/destructive": "Mantine red.6 on its tint, 2.78:1",
-  "loominist:light:destructive-tint/destructive": "product destructive red on its tint, 4.41:1",
-  "perkcord:light:destructive-tint/destructive": "product destructive red on its tint, 3.14:1",
 };
 
 function contrastPairs(vars: Record<string, string>): [string, string][] {
@@ -117,15 +111,6 @@ describe.each(brandNames)("brand %s contrast", (brand) => {
       bg: painted(vars[bg]),
       fg: painted(vars[fg]),
     }));
-    // The stock destructive Button and Badge put destructive text on its own tint over
-    // the page: bg-destructive/10 in light mode, /20 in dark. Alpha blending is in sRGB.
-    const red = painted(vars["--destructive"]);
-    const tint = mode === "light" ? 0.1 : 0.2;
-    checks.push({
-      key: `${brand}:${mode}:destructive-tint/destructive`,
-      bg: painted(vars["--background"]).mix(red, tint, { space: "srgb" }),
-      fg: red,
-    });
     const failures: string[] = [];
     for (const { key, bg, fg } of checks) {
       const ratio = bg.contrast(fg, "WCAG21");
@@ -133,6 +118,51 @@ describe.each(brandNames)("brand %s contrast", (brand) => {
       if (ratio < 4.5 && !allowed) failures.push(`${key} ${ratio.toFixed(2)}:1`);
       if (ratio >= 4.5 && allowed) failures.push(`${key} passes; remove it from the allowlist`);
     }
+    expect(failures).toEqual([]);
+  });
+});
+
+// Non-text contrast (WCAG 1.4.11, 3:1) for the colours theme CSS draws as indicators:
+// the focus outline on every surface it can sit on (a menu item's highlight is --accent,
+// a tabs list is --muted), and each status line on the page and on cards. These roles are
+// derived for this design system, so nothing here is allowlisted. A translucent ring is
+// measured composited over each surface.
+describe.each(brandNames)("brand %s indicators", (brand) => {
+  it.each(["light", "dark"])("%s mode reaches 3:1", (mode) => {
+    const blocks = parseBlocks(readFileSync(path.join(root, `dist/brands/${brand}.css`), "utf8"));
+    const selector =
+      mode === "light"
+        ? `[data-brand="${brand}"]`
+        : `[data-brand="${brand}"].dark, .dark [data-brand="${brand}"]`;
+    const vars = blocks.get(selector) ?? {};
+    const over = (fg: Color, bg: Color) => {
+      const opaque = fg.clone();
+      opaque.alpha = 1;
+      return bg.mix(opaque, fg.alpha, { space: "srgb" });
+    };
+    const failures: string[] = [];
+    const check = (key: string, fg: Color, bg: Color) => {
+      const ratio = over(fg, bg).contrast(bg, "WCAG21");
+      if (ratio < 3) failures.push(`${brand}:${mode}:${key} ${ratio.toFixed(2)}:1`);
+    };
+    for (const surface of ["background", "card", "popover", "muted", "accent"])
+      check(`${surface}/ring`, painted(vars["--ring"]), painted(vars[`--${surface}`]));
+    for (const status of ["success", "warning", "info", "destructive"])
+      for (const surface of ["background", "card"])
+        check(
+          `${surface}/${status}-line`,
+          painted(vars[`--${status}-line`]),
+          painted(vars[`--${surface}`]),
+        );
+    // prefers-contrast: more raises the hover wash to 12% of primary (tokens/css); its text
+    // must still reach 4.5:1 and the ring 3:1 on it.
+    const strong = painted(vars["--popover"]).mix(painted(vars["--primary"]), 0.12, {
+      space: "srgb",
+    });
+    const text = strong.contrast(painted(vars["--accent-foreground"]), "WCAG21");
+    if (text < 4.5)
+      failures.push(`${brand}:${mode}:accent-more/accent-foreground ${text.toFixed(2)}:1`);
+    check("accent-more/ring", painted(vars["--ring"]), strong);
     expect(failures).toEqual([]);
   });
 });

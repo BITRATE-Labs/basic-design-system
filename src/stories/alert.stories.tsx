@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { CircleAlertIcon, InfoIcon } from "lucide-react";
+import { CircleAlertIcon, CircleCheckIcon, InfoIcon, TriangleAlertIcon } from "lucide-react";
 import { Alert, AlertAction, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 
@@ -42,6 +42,36 @@ export const Destructive: Story = {
         The sample file is larger than 10 MB. Choose a smaller file.
       </AlertDescription>
     </Alert>
+  ),
+};
+
+// Stock Alert has no success, warning or info variant; theme CSS draws them from
+// data-tone with the status soft, soft-foreground and line roles. The title names the
+// status, because forced colours draw every line in the same colour.
+export const Tones: Story = {
+  render: () => (
+    <div className="grid gap-3">
+      <Alert data-tone="success">
+        <CircleCheckIcon />
+        <AlertTitle>Success: sample export finished</AlertTitle>
+        <AlertDescription>The sample report is ready to download.</AlertDescription>
+      </Alert>
+      <Alert data-tone="warning">
+        <TriangleAlertIcon />
+        <AlertTitle>Warning: storage almost full</AlertTitle>
+        <AlertDescription>The sample workspace has used 92% of its space.</AlertDescription>
+      </Alert>
+      <Alert data-tone="info">
+        <InfoIcon />
+        <AlertTitle>Info: maintenance on Sunday</AlertTitle>
+        <AlertDescription>Sample services pause for ten minutes at 02:00.</AlertDescription>
+      </Alert>
+      <Alert variant="destructive">
+        <CircleAlertIcon />
+        <AlertTitle>Error: upload failed</AlertTitle>
+        <AlertDescription>The sample file is larger than 10 MB.</AlertDescription>
+      </Alert>
+    </div>
   ),
 };
 

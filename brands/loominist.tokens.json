@@ -40,7 +40,7 @@
         "$value": "#54595c"
       },
       "accent": {
-        "$value": "#f0dcc8"
+        "$value": "#f5efe6"
       },
       "accent-foreground": {
         "$value": "#080e11"
@@ -74,6 +74,42 @@
       },
       "info-foreground": {
         "$value": "#faf7f0"
+      },
+      "success-soft": {
+        "$value": "#e0e5da"
+      },
+      "success-soft-foreground": {
+        "$value": "#2f7048"
+      },
+      "success-line": {
+        "$value": "#629272"
+      },
+      "warning-soft": {
+        "$value": "#eae3d3"
+      },
+      "warning-soft-foreground": {
+        "$value": "#7f5a0e"
+      },
+      "warning-line": {
+        "$value": "#a0844b"
+      },
+      "info-soft": {
+        "$value": "#dfe3e3"
+      },
+      "info-soft-foreground": {
+        "$value": "#2d6189"
+      },
+      "info-line": {
+        "$value": "#688ca7"
+      },
+      "destructive-soft": {
+        "$value": "#f1ddd9"
+      },
+      "destructive-soft-foreground": {
+        "$value": "#b4323c"
+      },
+      "destructive-line": {
+        "$value": "#cb6b71"
       }
     },
     "dark": {
@@ -114,10 +150,10 @@
         "$value": "#b4babd"
       },
       "accent": {
-        "$value": "#e7a064"
+        "$value": "#1b1f20"
       },
       "accent-foreground": {
-        "$value": "#080e11"
+        "$value": "#f3eee3"
       },
       "destructive": {
         "$value": "#ff7d86"
@@ -148,6 +184,42 @@
       },
       "info-foreground": {
         "$value": "#080e11"
+      },
+      "success-soft": {
+        "$value": "#283934"
+      },
+      "success-soft-foreground": {
+        "$value": "#8cc49a"
+      },
+      "success-line": {
+        "$value": "#4d6c5a"
+      },
+      "warning-soft": {
+        "$value": "#39382b"
+      },
+      "warning-soft-foreground": {
+        "$value": "#e8c26a"
+      },
+      "warning-line": {
+        "$value": "#766841"
+      },
+      "info-soft": {
+        "$value": "#283640"
+      },
+      "info-soft-foreground": {
+        "$value": "#8fb8d8"
+      },
+      "info-line": {
+        "$value": "#50687a"
+      },
+      "destructive-soft": {
+        "$value": "#3d2b30"
+      },
+      "destructive-soft-foreground": {
+        "$value": "#ff7d86"
+      },
+      "destructive-line": {
+        "$value": "#965157"
       }
     }
   },
