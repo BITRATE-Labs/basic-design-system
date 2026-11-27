@@ -18,6 +18,7 @@ Stock shadcn structure, with these decisions shared by every product:
 - **Touch:** icon buttons and other small controls get 44px targets on coarse pointers.
 - **Surfaces:** per brand. Flat stock surfaces by default; perkcord uses lit-edge glass. Storybook **Docs / Surfaces**.
 - **Selection:** the weighted segmented control and the sliding tabs.
+- **Lists:** drasil's one-surface ruled list on the stock Item (`<ItemGroup data-variant="ruled">`); tables stay stock. Storybook **Docs / List versus table**.
 
 Tokens live in `tokens/` and `brands/`; the rules that apply them ship in `theme.css`. `AGENTS.md` ("Look") lists the file behind each.
 
@@ -50,7 +51,7 @@ cd ../my-product && npx shadcn@latest add ../built/combobox.json
 
 The script rewrites the tag-pinned same-repo dependencies to the built files, as paths relative to the product's directory: the CLI cannot resolve a local dependency given as an absolute Windows path ("unknown scheme").
 
-Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `sliding-tabs`, `segmented-control`, `kbd`, `tooltip`, `popover`, `textarea`, `select`, `checkbox`, `switch`, `radio-group`, `input-group`, `combobox`, `alert`, `sonner` (toasts), `skeleton`, `spinner`, `empty`, `badge`, `progress`, `card`, `avatar`, `table`, `scroll-area`, `sheet`, `alert-dialog`, `direction`.
+Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `sliding-tabs`, `segmented-control`, `kbd`, `tooltip`, `popover`, `textarea`, `select`, `checkbox`, `switch`, `radio-group`, `input-group`, `combobox`, `alert`, `sonner` (toasts), `skeleton`, `spinner`, `empty`, `badge`, `progress`, `card`, `avatar`, `table`, `item`, `scroll-area`, `sheet`, `alert-dialog`, `direction`.
 
 UI SDK items (`command`, `calendar`, `date-picker`, `otp-input`, `token-input`, `agent`) are Storybook-only for now and not installable (see UI SDK below).
 
