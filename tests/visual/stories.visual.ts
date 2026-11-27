@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { expect, type Page, test } from "@playwright/test";
+import { type APIRequestContext, expect, type Page, request, test } from "@playwright/test";
 import { brands } from "../../dist/tokens";
 
 // Every non-Lab story x every built brand x light and dark.
@@ -25,6 +25,45 @@ const brandFonts = (brand: string): string[] => {
     .filter((spec): spec is string => !!spec);
   return [...new Set(specs.map((spec) => spec.split(":")[0].replaceAll("+", " ")))];
 };
+
+// Every story page fetches every brand's Google Fonts stylesheet and font files. Across
+// thousands of parallel pages Google throttles some of those requests, so fetch each URL
+// once per worker (with retries) and serve the rest from memory.
+type Cached = { status: number; headers: Record<string, string>; body: Buffer };
+const fontResponses = new Map<string, Promise<Cached>>();
+let fontRequest: Promise<APIRequestContext> | undefined;
+async function fetchFont(url: string, headers: Record<string, string>): Promise<Cached> {
+  fontRequest ??= request.newContext();
+  const api = await fontRequest;
+  for (let attempt = 1; ; attempt++) {
+    try {
+      const res = await api.get(url, { headers, timeout: 15_000 });
+      if (res.ok()) {
+        // The body comes back decoded, so drop the encoding headers that described it.
+        const kept = res.headers();
+        delete kept["content-encoding"];
+        delete kept["content-length"];
+        return { status: res.status(), headers: kept, body: await res.body() };
+      }
+      if (attempt >= 4) throw new Error(`${url} returned ${res.status()}`);
+    } catch (error) {
+      if (attempt >= 4) throw error;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500 * attempt));
+  }
+}
+test.beforeEach(async ({ page }) => {
+  await page.route(/^https:\/\/fonts\.(googleapis|gstatic)\.com\//, async (route) => {
+    const url = route.request().url();
+    let response = fontResponses.get(url);
+    if (!response) {
+      response = fetchFont(url, route.request().headers());
+      fontResponses.set(url, response);
+      response.catch(() => fontResponses.delete(url));
+    }
+    await route.fulfill(await response);
+  });
+});
 
 // document.fonts.ready alone races: a face nobody has laid out yet is not loading, so
 // ready resolves and the screenshot shows the fallback. Load every family, weight and
