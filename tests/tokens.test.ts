@@ -76,6 +76,13 @@ const contrastAllowlist: Record<string, string> = {
   "perkcord:dark:card/destructive": "product destructive red, 3.66:1",
   // Product blue as link text on the light-theme page.
   "vrdex:light:background/primary": "product primary blue, 4.40:1",
+  // The stock destructive Button and Badge: each brand's destructive red as text on its
+  // own 10% (light) or 20% (dark) tint. Passing needs a darker red or a restyled variant.
+  "basic:light:destructive-tint/destructive": "shadcn neutral red on its tint, 3.99:1",
+  "chronote:light:destructive-tint/destructive": "Mantine red.6 on its tint, 2.78:1",
+  "loominist:light:destructive-tint/destructive": "product destructive red on its tint, 4.41:1",
+  "perkcord:light:destructive-tint/destructive": "product destructive red on its tint, 3.09:1",
+  "perkcord:dark:destructive-tint/destructive": "product destructive red on its tint, 3.40:1",
 };
 
 function contrastPairs(vars: Record<string, string>): [string, string][] {
@@ -97,6 +104,9 @@ function contrastPairs(vars: Record<string, string>): [string, string][] {
   ];
 }
 
+// Browsers clip out-of-gamut colours (the basic brand's OKLCH red) to sRGB before painting.
+const painted = (value: string) => new Color(value).to("srgb").toGamut({ method: "clip" });
+
 describe.each(brandNames)("brand %s contrast", (brand) => {
   it.each(["light", "dark"])("%s mode meets WCAG AA", (mode) => {
     const blocks = parseBlocks(readFileSync(path.join(root, `dist/brands/${brand}.css`), "utf8"));
@@ -105,10 +115,23 @@ describe.each(brandNames)("brand %s contrast", (brand) => {
         ? `[data-brand="${brand}"]`
         : `[data-brand="${brand}"].dark, .dark [data-brand="${brand}"]`;
     const vars = blocks.get(selector) ?? {};
+    const checks = contrastPairs(vars).map(([bg, fg]) => ({
+      key: `${brand}:${mode}:${bg.slice(2)}/${fg.slice(2)}`,
+      bg: painted(vars[bg]),
+      fg: painted(vars[fg]),
+    }));
+    // The stock destructive Button and Badge put destructive text on its own tint over
+    // the page: bg-destructive/10 in light mode, /20 in dark. Alpha blending is in sRGB.
+    const red = painted(vars["--destructive"]);
+    const tint = mode === "light" ? 0.1 : 0.2;
+    checks.push({
+      key: `${brand}:${mode}:destructive-tint/destructive`,
+      bg: painted(vars["--background"]).mix(red, tint, { space: "srgb" }),
+      fg: red,
+    });
     const failures: string[] = [];
-    for (const [bg, fg] of contrastPairs(vars)) {
-      const key = `${brand}:${mode}:${bg.slice(2)}/${fg.slice(2)}`;
-      const ratio = new Color(vars[bg]).contrast(new Color(vars[fg]), "WCAG21");
+    for (const { key, bg, fg } of checks) {
+      const ratio = bg.contrast(fg, "WCAG21");
       const allowed = key in contrastAllowlist;
       if (ratio < 4.5 && !allowed) failures.push(`${key} ${ratio.toFixed(2)}:1`);
       if (ratio >= 4.5 && allowed) failures.push(`${key} passes; remove it from the allowlist`);

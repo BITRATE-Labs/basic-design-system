@@ -18,7 +18,7 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 | `tokens/`                  | Shared scales and role names (DTCG JSON)                                                       |
 | `brands/`                  | One DTCG file per brand: every role in light and dark, fonts, radius                           |
 | `scripts/build-tokens.mjs` | Style Dictionary build into `dist/` (git-ignored)                                              |
-| `src/components/ui/`       | Stock shadcn components, exactly as the CLI wrote them                                         |
+| `src/components/ui/`       | Stock shadcn components, as the CLI wrote them except for the changes listed below             |
 | `src/lib/utils.ts`         | `cn`                                                                                           |
 | `registry.json`            | shadcn registry: every installable item                                                        |
 | `src/stories/`             | One stories file per component, plus `Examples/`                                               |
@@ -30,9 +30,20 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 | `docs/`                    | Repository docs, such as the lint preset                                                       |
 | `.github/workflows/`       | CI, Pages deploy, baseline regeneration, PR reviewer caller                                    |
 
+## Changes from stock
+
+Every change to a file in `src/components/ui/` is listed here with its reason. Regenerating a file with `npx shadcn@<pinned version> add <name> --overwrite` must reproduce it apart from these.
+
+- `tooltip`, `popover`, `dropdown-menu`: Content forwards `container` to the Base UI Portal (see Layers).
+- `scroll-area`: the unused `import * as React from "react"` is removed, because `noUnusedLocals` fails the typecheck on it.
+- `combobox`: the icon-only trigger, clear and chip-remove buttons get `aria-label`s ("Open popup", "Clear selection", "Remove", as in the Base UI combobox docs), because stock leaves them without an accessible name and the stock `ComboboxInput` gives a product no way to pass one. The trigger also gets `tabIndex={-1}`: Base UI marks its addon `aria-hidden` while the list is open, and the input already opens the list from the keyboard.
+- `alert`: the destructive description uses `text-destructive`, not `text-destructive/90`, because the 90% tint fails WCAG AA on the card in the basic brand (4.49:1).
+
+The CLI writes `font-heading` on the dialog, sheet, card, alert-dialog and empty titles only when `src/index.css` itself contains `--font-heading:`. It does not, so titles use `font-sans`; adding that variable there changes all five at once.
+
 ## Layers
 
-Shared popups portal to the end of `<body>` at `z-50`. Products wrap the app root in an element with `isolate` and in `TooltipProvider`; z-index inside that root never covers a popup. Anything else portaled to `<body>` (third-party widgets) goes inside the root or stays below z-index 50; the shared `Toaster` renders in place at z-index 999999999, so it is mounted inside the root. Inside a top-layer element (a modal `<dialog>`, or an element shown with the `popover` attribute), popups take `container` pointing at it, and it gets `overflow-visible`. `tooltip`, `popover` and `dropdown-menu` differ from stock in one place for this: their Content component forwards `container` to the Base UI Portal, which the stock files do not expose. Use the shared Tooltip for hover hints, never the native `title` attribute. Tooltip text is visual only: Base UI gives the popup no role and the trigger no `aria-describedby`, so an icon-only trigger needs an `aria-label`, usually the tooltip text (the lint preset reports a `TooltipTrigger` rendering an icon-size `Button` without one). The `Layering` stories prove each case with a hit test; keep them passing when changing a popup. Details: Storybook **Docs / Layers**.
+Shared popups portal to the end of `<body>` at `z-50`. Products wrap the app root in an element with `isolate` and in `TooltipProvider`; z-index inside that root never covers a popup. Anything else portaled to `<body>` (third-party widgets) goes inside the root or stays below z-index 50; the shared `Toaster` renders in place at z-index 999999999, so it is mounted inside the root. An open modal's overlay covers toasts, so products show success toasts after the modal closes. Inside a top-layer element (a modal `<dialog>`, or an element shown with the `popover` attribute), popups take `container` pointing at it, and it gets `overflow-visible`. `tooltip`, `popover` and `dropdown-menu` forward `container` for this (see Changes from stock). Use the shared Tooltip for hover hints, never the native `title` attribute. Tooltip text is visual only: Base UI gives the popup no role and the trigger no `aria-describedby`, so an icon-only trigger needs an `aria-label`, usually the tooltip text (the lint preset reports a `TooltipTrigger` rendering an icon-size `Button` without one). The `Layering` stories prove each case with a hit test; keep them passing when changing a popup. Details: Storybook **Docs / Layers**.
 
 ## Lab convention
 

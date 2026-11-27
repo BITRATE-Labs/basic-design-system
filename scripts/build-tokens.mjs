@@ -130,8 +130,6 @@ const themeLines = (roleNames) => [
   ...roleNames.map((r) => `  --color-${r}: var(--${r});`),
   "  --font-sans: var(--font-sans);",
   "  --font-display: var(--font-display);",
-  // Stock shadcn components (DialogTitle) use font-heading.
-  "  --font-heading: var(--font-display);",
   "  --font-mono: var(--font-mono);",
   "  --radius-sm: calc(var(--radius) * 0.6);",
   "  --radius-md: calc(var(--radius) * 0.8);",

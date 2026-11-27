@@ -42,6 +42,7 @@
     "storybook": "npm run build:tokens && storybook dev -p 6006",
     "build-storybook": "npm run build:tokens && storybook build",
     "registry:check": "shadcn registry validate ./registry.json",
+    "registry:build-local": "node scripts/build-registry-local.mjs",
     "test:visual": "node scripts/test-visual.mjs"
   },
   "devDependencies": {

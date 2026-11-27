@@ -41,6 +41,12 @@ const ref = useRef<HTMLDivElement>(null);
 
 `TooltipContent`, `PopoverContent` and `DropdownMenuContent` take `container`. The shared Dialog needs none of this, so prefer it to a native `<dialog>`, which the lint preset reports.
 
+## Modals: toasts and nested dialogs
+
+An open Dialog, Sheet or AlertDialog covers the whole page with its overlay at `z-50`, and that includes the `Toaster` inside the root: a toast shown while a modal is open is dimmed and cannot be clicked or reached with the keyboard. Show success toasts after the modal closes. Errors that need the user's attention while the modal is open go inside the modal, for example as a `FieldError` or an `Alert`.
+
+An AlertDialog opened from inside a Dialog, the usual confirmation flow, gets no backdrop of its own: Base UI [renders only the bottom-most backdrop](https://base-ui.com/react/components/dialog) when dialogs are nested, and the stock components add nothing for the nested case. The alert sits on top of the dialog and holds focus, and Escape closes only the alert, but the dialog stays undimmed around it.
+
 ## What the Layering stories check
 
 Each story under **Layering** opens a tooltip or popover and checks with the browser's own hit test that the popup is painted on top and not clipped:
@@ -54,3 +60,5 @@ Each story under **Layering** opens a tooltip or popover and checks with the bro
 - inside an element with the `popover` attribute, with `container` and `overflow-visible`
 - above an overlay portaled to the body with z-index 49
 - over a toast from the shared `Toaster`, mounted inside the root
+- an AlertDialog opened from the shared Dialog, with no backdrop of its own
+- a toast shown while a Dialog or Sheet is open, which the overlay covers

@@ -35,6 +35,12 @@ import designSystem from "@bitrate-labs/design-system/eslint";
 export default defineConfig([tseslint.configs.recommended, designSystem]);
 ```
 
+On a fresh Vite app: `npm create vite@latest -- --template react-ts` ships oxlint, not ESLint, and TypeScript 7. typescript-eslint 8 supports TypeScript only below 6.1 until its TypeScript 7 work lands ([typescript-eslint#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940)), so `npm install` fails with a peer-dependency error, and forcing it makes ESLint fail on load. Pin TypeScript 6 and add ESLint yourself:
+
+```sh
+npm install --save-dev --save-exact typescript@6.0.3 eslint typescript-eslint
+```
+
 Two things to know:
 
 - ESLint replaces a rule's options rather than merging them. If your config also sets `no-restricted-syntax` or `no-restricted-imports` for the same files, the later entry wins. Copy the preset's entries into yours if you need both.

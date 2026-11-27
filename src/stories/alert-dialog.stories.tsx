@@ -14,6 +14,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { openModal } from "./popup-test-utils";
 
 function SampleAlertDialog({
   size = "default",
@@ -56,16 +57,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// The popup renders in a portal outside the story canvas, so open states query the whole page.
-async function expectOpen(canvas: { getByRole: typeof screen.getByRole }) {
-  canvas.getByRole("button", { name: "Delete item" }).click();
-  const dialog = await screen.findByRole("alertdialog");
-  await waitFor(() => expect(dialog).toBeVisible());
-  return dialog;
-}
-
 const open: Story["play"] = async ({ canvas }) => {
-  await expectOpen(canvas);
+  await openModal(canvas, "Delete item", "alertdialog");
 };
 
 export const Closed: Story = {};
@@ -93,7 +86,7 @@ export const KeyboardOpenAndEscape: Story = {
 // Clicking the backdrop does not dismiss an alert dialog; the user must choose.
 export const BackdropClickKeepsOpen: Story = {
   play: async ({ canvas, userEvent }) => {
-    const dialog = await expectOpen(canvas);
+    const dialog = await openModal(canvas, "Delete item", "alertdialog");
     const backdrop = document.querySelector<HTMLElement>("[data-slot=alert-dialog-overlay]")!;
     await userEvent.pointer({ keys: "[MouseLeft]", target: backdrop, coords: { x: 5, y: 5 } });
     await new Promise((resolve) => setTimeout(resolve, 200));

@@ -13,6 +13,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { openModal } from "./popup-test-utils";
 
 type Side = "top" | "right" | "bottom" | "left";
 
@@ -50,20 +51,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// The sheet renders in a portal outside the story canvas, so open states query the whole
-// page, and wait for the slide-in transition so the screenshot shows the final position.
-async function expectOpen(canvas: { getByRole: typeof screen.getByRole }, name = "Open sheet") {
-  canvas.getByRole("button", { name }).click();
-  const sheet = await screen.findByRole("dialog");
-  await waitFor(() => expect(sheet).toHaveAttribute("data-open"));
-  await waitFor(() => expect(sheet).not.toHaveAttribute("data-starting-style"));
-  await Promise.all(sheet.getAnimations().map((a) => a.finished));
-  await waitFor(() => expect(sheet).toBeVisible());
-  return sheet;
-}
-
 const open: Story["play"] = async ({ canvas }) => {
-  await expectOpen(canvas);
+  await openModal(canvas, "Open sheet");
 };
 
 export const Closed: Story = {};
@@ -102,7 +91,7 @@ export const WithForm: Story = {
     </Sheet>
   ),
   play: async ({ canvas }) => {
-    await expectOpen(canvas, "Edit item");
+    await openModal(canvas, "Edit item");
   },
 };
 
