@@ -64,8 +64,13 @@ async function expectIndicatorUnder(root: HTMLElement, item: HTMLElement) {
   );
 }
 
-const lefts = (items: HTMLElement[]) =>
-  items.map((i) => Math.round(i.getBoundingClientRect().left));
+const lefts = (items: HTMLElement[]) => items.map((i) => i.getBoundingClientRect().left);
+
+// No item moved by a whole pixel (sub-pixel text rounding aside).
+async function expectUnmoved(items: HTMLElement[], before: number[]) {
+  const moved = lefts(items).map((left, i) => Math.abs(left - before[i]));
+  await expect(Math.max(...moved)).toBeLessThan(1);
+}
 
 function SlidingSample({
   items = panels.map((p) => p.label),
@@ -112,7 +117,7 @@ export const Default: Story = {
     await userEvent.click(canvas.getByRole("tab", { name: "Files" }));
     await expectIndicatorUnder(canvasElement, canvas.getByRole("tab", { name: "Files" }));
     // The semibold selected label keeps its width: nothing moves.
-    await expect(lefts(tabs)).toEqual(before);
+    await expectUnmoved(tabs, before);
     await userEvent.keyboard("{ArrowRight}{Enter}");
     await expect(canvas.getByRole("tab", { name: "Settings" })).toHaveAttribute(
       "aria-selected",
@@ -181,7 +186,7 @@ export const NavigationBarStory: Story = {
     );
     await expect(canvasElement.querySelectorAll('[aria-current="page"]')).toHaveLength(1);
     await expectIndicatorUnder(nav, canvas.getByRole("link", { name: "Discussions" }));
-    await expect(lefts(items)).toEqual(before);
+    await expectUnmoved(items, before);
     canvas.getByRole("link", { name: "Discussions" }).blur();
   },
 };
