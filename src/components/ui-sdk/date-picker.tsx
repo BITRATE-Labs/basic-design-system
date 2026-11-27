@@ -15,7 +15,7 @@ import { cn } from "cn"
 import { CalendarIcon } from "lucide-react"
 
 import { buttonVariants } from "@/components/ui/button"
-import { CalendarMonth, calendarVars } from "@/components/ui/calendar"
+import { CalendarMonth, calendarVars } from "@/components/ui-sdk/calendar"
 
 type Styled<T extends React.ElementType> = Omit<React.ComponentProps<T>, "className"> & {
   className?: string

@@ -53,15 +53,34 @@ The script rewrites the tag-pinned same-repo dependencies to the built files, as
 
 Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `sliding-tabs`, `segmented-control`, `kbd`, `tooltip`, `popover`, `textarea`, `select`, `checkbox`, `switch`, `radio-group`, `input-group`, `combobox`, `alert`, `sonner` (toasts), `skeleton`, `spinner`, `empty`, `badge`, `progress`, `card`, `avatar`, `table`, `item`, `scroll-area`, `sheet`, `alert-dialog`, `direction`, `use-dirty-dismiss`.
 
-UI SDK items (`command`, `calendar`, `date-picker`, `otp-input`, `token-input`, `agent`) are Storybook-only for now and not installable (see UI SDK below).
+UI SDK items: `sdk-agent`, `sdk-command`, `sdk-calendar`, `sdk-date-picker`, `sdk-otp-input`, `sdk-token-input` (see UI SDK below).
 
 ### UI SDK
 
 [UI SDK](https://github.com/vercel-labs/ui) (`@ui-sdk/core` and `@ui-sdk/react`, Apache-2.0) supplies the components shadcn builds on third-party libraries or does not ship (command, calendar, date picker, OTP input, token input) and the agent bridge that lets an AI agent operate them. Everything else stays stock shadcn on Base UI.
 
-It is a **beta, pinned exactly** to `0.1.0-beta.17`, and its patch releases change behaviour. Until the owner decides whether a live product may ship it under Vercel's beta terms, its items stay in `registry-ui-sdk/registry.json`, which the shadcn CLI does not read. When they become installable: set `save-exact=true` in the product's `.npmrc` (npm otherwise writes `^0.1.0-beta.17`, which admits later betas), and add `@layer ui-sdk;` as the first line of the global stylesheet, above `@import "tailwindcss"`.
+It is allowed in products as a **beta, pinned exactly** to `0.1.0-beta.17`. Its patch releases change behaviour. UI SDK's README refers to Vercel's public beta terms; check them before shipping it in a commercial product.
 
-To bump it: read the release notes, run `npm install --save-exact @ui-sdk/core@<version> @ui-sdk/react@<version>`, change every `@ui-sdk/*` pin in `registry-ui-sdk/registry.json` to the same version, then run `npm test` (fails if any pin differs), `npm run build-storybook`, `npm run test:agent` and the visual check.
+Install:
+
+1. Set `save-exact=true` in the product's `.npmrc`. The CLI installs `@ui-sdk/core@0.1.0-beta.17` and `@ui-sdk/react@0.1.0-beta.17` with the product's own save settings, and npm otherwise writes `^0.1.0-beta.17`, which admits later betas.
+2. Add the items like any other, for example `npx shadcn@latest add BITRATE-Labs/basic-design-system/sdk-date-picker#v0.1.0`. Their files land in `ui-sdk/` under the `components` alias (`src/components/ui-sdk/` with this repository's `components.json`). The lint preset allows `@ui-sdk/*` imports only there.
+3. Add `@layer ui-sdk;` as the first line of the global stylesheet, above `@import "tailwindcss"`.
+4. Wrap the app root in `AgentProvider` (from `sdk-agent`) beside the isolated root and `TooltipProvider`:
+
+   ```tsx
+   <div className="isolate">
+     <TooltipProvider>
+       <AgentProvider>{children}</AgentProvider>
+     </TooltipProvider>
+   </div>
+   ```
+
+5. Check the pin in CI with `npx check-ui-sdk-pin`, shipped in this package. It fails unless `package.json` declares, and `node_modules` holds, both packages at exactly the version this release pins.
+
+Known gaps, as measured in this repository: the bridge sees only UI SDK components; the `data-agent-*` marks do not reach portaled content unless placed on the portaled element; a refused confirm step can still switch tabs; `TokenInput` must not sit inside the shared Dialog; WebMCP is untested against a real browser implementation.
+
+To bump it, bump both packages together: read the changelog, run `npm install --save-exact @ui-sdk/core@<version> @ui-sdk/react@<version>`, change every `@ui-sdk/*` pin in `registry.json` to the same version, then run `npm test` (fails if any pin differs), `npm run build-storybook`, `npm run test:agent` and the visual check. A product bumps by taking the design system release that carries the new pin.
 
 ### Tokens (after the first tag)
 
@@ -106,7 +125,7 @@ Tooltips, popovers, menus and dialogs portal to the end of `<body>`. Wrap the ap
 
 ### Agents
 
-An AI agent can operate ui-sdk components through ui-sdk's agent bridge. Add the `agent` item and wrap the app root in `AgentProvider`; steps on controls marked `data-agent-confirm` ask the person first. Only the UI SDK items are agent-drivable: the bridge does not see the stock Base UI components, so a page built from them shows the agent nothing. Marks do not cross portals, so a portaled element carries its own. ui-sdk is in beta, so this is Storybook-only for now. See Storybook **Docs / Agents**.
+An AI agent can operate ui-sdk components through ui-sdk's agent bridge. Add the `sdk-agent` item and wrap the app root in `AgentProvider`; steps on controls marked `data-agent-confirm` ask the person first. Only the UI SDK items are agent-drivable: the bridge does not see the stock Base UI components, so a page built from them shows the agent nothing. Marks do not cross portals, so a portaled element carries its own. Setup and known gaps are under UI SDK above; details in Storybook **Docs / Agents**.
 
 ### Lint preset
 

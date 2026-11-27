@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { expect } from "storybook/test";
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar } from "@/components/ui-sdk/calendar";
 
 // `today` is fixed so screenshots do not change from day to day.
 const today = "2026-10-14";

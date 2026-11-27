@@ -34,6 +34,9 @@ async function lint(fixture: string, location: string) {
 
 const outside = "src/features/orders";
 const inside = "src/components/ui";
+// Where the sdk-* registry items land in a product: the components alias (@/components,
+// src/components with the repo's components.json) plus their ui-sdk/ target.
+const insideSdk = "src/components/ui-sdk";
 
 describe("lint preset", () => {
   it("reports each raw element outside components/ui, but not a hidden input", async () => {
@@ -46,6 +49,13 @@ describe("lint preset", () => {
     expect(await lint("primitive-imports.tsx", outside)).toEqual(
       [1, 2, 3].map((line) => ({ rule: "no-restricted-imports", line })),
     );
+  });
+
+  it("reports each UI SDK import outside components/ui-sdk, and allows it there", async () => {
+    expect(await lint("ui-sdk-imports.tsx", outside)).toEqual(
+      [1, 2, 3].map((line) => ({ rule: "no-restricted-imports", line })),
+    );
+    expect(await lint("ui-sdk-imports.tsx", insideSdk)).toEqual([]);
   });
 
   it("reports palette and arbitrary colour classes", async () => {
@@ -70,13 +80,18 @@ describe("lint preset", () => {
     expect(await lint("token-classes.tsx", outside)).toEqual([]);
   });
 
-  it.each([
-    "raw-elements.tsx",
-    "primitive-imports.tsx",
-    "color-classes.tsx",
-    "title-attribute.tsx",
-    "icon-tooltip-trigger.tsx",
-  ])("exempts %s inside components/ui", async (fixture) => {
-    expect(await lint(fixture, inside)).toEqual([]);
+  it.each(
+    [
+      "raw-elements.tsx",
+      "primitive-imports.tsx",
+      "color-classes.tsx",
+      "title-attribute.tsx",
+      "icon-tooltip-trigger.tsx",
+    ].flatMap((fixture) => [
+      [fixture, inside],
+      [fixture, insideSdk],
+    ]),
+  )("exempts %s inside %s", async (fixture, location) => {
+    expect(await lint(fixture, location)).toEqual([]);
   });
 });

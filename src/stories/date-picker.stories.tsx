@@ -7,7 +7,7 @@ import {
   DatePickerGroup,
   DatePickerInput,
   DatePickerTrigger,
-} from "@/components/ui/date-picker";
+} from "@/components/ui-sdk/date-picker";
 import { Label } from "@/components/ui/label";
 
 // `today` is fixed so screenshots do not change from day to day.
