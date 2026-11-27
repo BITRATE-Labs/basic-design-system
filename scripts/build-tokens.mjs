@@ -1,6 +1,6 @@
 // Builds dist/ from the DTCG sources with Style Dictionary.
 //
-//   tokens/scales.tokens.json  shared scales (spacing, text, shadow, duration)
+//   tokens/scales.tokens.json  shared scales (spacing, text, shadow, duration, ease)
 //   tokens/roles.tokens.json   shared role names; each aliases {brand.*}
 //   brands/<name>.tokens.json  one file per brand; every *.tokens.json there is built
 //
@@ -30,7 +30,7 @@ const root = path.resolve(import.meta.dirname, "..");
 const dist = path.join(root, "dist");
 const DEFAULT_BRAND = "basic";
 const MODES = ["light", "dark"];
-const transforms = ["name/kebab", "fontFamily/css", "shadow/css/shorthand"];
+const transforms = ["name/kebab", "fontFamily/css", "shadow/css/shorthand", "cubicBezier/css"];
 
 const readJson = async (file) => JSON.parse(await readFile(file, "utf8"));
 
