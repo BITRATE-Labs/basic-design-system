@@ -65,6 +65,7 @@
     "@base-ui/react": "1.9.0",
     "class-variance-authority": "0.7.1",
     "cn": "0.5.2",
+    "eslint-plugin-better-tailwindcss": "4.11.0",
     "lucide-react": "1.81.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",
