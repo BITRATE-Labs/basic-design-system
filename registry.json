@@ -423,6 +423,20 @@
       ]
     },
     {
+      "name": "item",
+      "type": "registry:ui",
+      "title": "Item",
+      "description": "Stock shadcn/ui item on Base UI. <ItemGroup data-variant=\"ruled\"> is the one-surface ruled list (theme.css).",
+      "dependencies": ["@base-ui/react", "class-variance-authority", "cn"],
+      "registryDependencies": ["BITRATE-Labs/basic-design-system/separator#v0.1.0"],
+      "files": [
+        {
+          "path": "src/components/ui/item.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "scroll-area",
       "type": "registry:ui",
       "title": "Scroll Area",

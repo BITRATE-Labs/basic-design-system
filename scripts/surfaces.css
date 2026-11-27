@@ -20,6 +20,7 @@
   :where([data-surface="glass"])
     :is(
       [data-slot="card"],
+      [data-slot="item-group"][data-variant="ruled"],
       [data-slot="dialog-content"],
       [data-slot="alert-dialog-content"],
       [data-slot="popover-content"],
@@ -47,8 +48,15 @@
     border-top-color: var(--surface-edge-top);
   }
 
-  /* Opaque fills (the fallback). Panels paint --background, as Perkcord's GlassPanel does. */
-  :where([data-surface="glass"]) [data-slot="card"] {
+  /* A ruled list rules its rows with the lit edge, as faint as the panel's own edge. */
+  :where([data-surface="glass"]) [data-slot="item-group"][data-variant="ruled"] {
+    --ruled-rule: var(--surface-edge);
+  }
+
+  /* Opaque fills (the fallback). Panels paint --background, as Perkcord's GlassPanel does.
+     A standalone ruled list (tokens/css/ruled-list.css) is a panel too. */
+  :where([data-surface="glass"])
+    :is([data-slot="card"], [data-slot="item-group"][data-variant="ruled"]) {
     background-color: var(--background);
   }
 
@@ -155,7 +163,10 @@
   @supports (backdrop-filter: blur(7px)) {
     @media (not (prefers-reduced-transparency: reduce)) and (not (prefers-contrast: more)) and (not (forced-colors: active)) {
       :where([data-surface="glass"])
-        [data-slot="card"]:not([data-transparency="reduce"], [data-transparency="reduce"] *) {
+        :is([data-slot="card"], [data-slot="item-group"][data-variant="ruled"]):not(
+          [data-transparency="reduce"],
+          [data-transparency="reduce"] *
+        ) {
         background-color: var(--surface-fill-panel);
         backdrop-filter: var(--surface-blur);
       }
@@ -230,6 +241,7 @@
     :where([data-surface="glass"])
       :is(
         [data-slot="card"],
+        [data-slot="item-group"][data-variant="ruled"],
         [data-slot="dialog-content"],
         [data-slot="alert-dialog-content"],
         [data-slot="sheet-content"],
