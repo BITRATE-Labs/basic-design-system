@@ -45,6 +45,10 @@ The CLI writes `font-heading` on the dialog, sheet, card, alert-dialog and empty
 
 Shared popups portal to the end of `<body>` at `z-50`. Products wrap the app root in an element with `isolate` and in `TooltipProvider`; z-index inside that root never covers a popup. Anything else portaled to `<body>` (third-party widgets) goes inside the root or stays below z-index 50; the shared `Toaster` renders in place at z-index 999999999, so it is mounted inside the root. An open modal's overlay covers toasts, so products show success toasts after the modal closes. Inside a top-layer element (a modal `<dialog>`, or an element shown with the `popover` attribute), popups take `container` pointing at it, and it gets `overflow-visible`. `tooltip`, `popover` and `dropdown-menu` forward `container` for this (see Changes from stock). Use the shared Tooltip for hover hints, never the native `title` attribute. Tooltip text is visual only: Base UI gives the popup no role and the trigger no `aria-describedby`, so an icon-only trigger needs an `aria-label`, usually the tooltip text (the lint preset reports a `TooltipTrigger` rendering an icon-size `Button` without one). The `Layering` stories prove each case with a hit test; keep them passing when changing a popup. Details: Storybook **Docs / Layers**.
 
+## Additions beyond stock
+
+- `sliding-tabs.tsx` is not a shadcn component. It composes the stock `tabs.tsx` (which stays unchanged) with Base UI's `Tabs.Indicator`, and adds `SlidingNav` for link navigation, because shadcn ships no sliding selection. Its motion comes from the `--duration-indicator` and `--ease-indicator` tokens. Details: Storybook **Docs / Sliding tabs**.
+
 ## Lab convention
 
 - Options for the owner to compare go in `src/lab/<topic>/`, with titles starting `Lab/`. Storybook sorts them last.

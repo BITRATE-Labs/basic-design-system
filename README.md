@@ -36,7 +36,7 @@ cd ../my-product && npx shadcn@latest add ../built/combobox.json
 
 The script rewrites the tag-pinned same-repo dependencies to the built files, as paths relative to the product's directory: the CLI cannot resolve a local dependency given as an absolute Windows path ("unknown scheme").
 
-Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `kbd`, `tooltip`, `popover`, `textarea`, `select`, `checkbox`, `switch`, `radio-group`, `input-group`, `combobox`, `alert`, `sonner` (toasts), `skeleton`, `spinner`, `empty`, `badge`, `progress`, `card`, `avatar`, `table`, `scroll-area`, `sheet`, `alert-dialog`.
+Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `sliding-tabs`, `kbd`, `tooltip`, `popover`, `textarea`, `select`, `checkbox`, `switch`, `radio-group`, `input-group`, `combobox`, `alert`, `sonner` (toasts), `skeleton`, `spinner`, `empty`, `badge`, `progress`, `card`, `avatar`, `table`, `scroll-area`, `sheet`, `alert-dialog`, `direction`.
 
 ### Tokens (after the first tag)
 
