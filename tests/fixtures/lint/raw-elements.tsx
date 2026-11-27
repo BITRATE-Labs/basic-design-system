@@ -10,6 +10,7 @@ export function RawElements() {
       <textarea name="notes" />
       <input type="checkbox" name="agree" />
       <input type="hidden" name="draft" value="sample-1" />
+      <progress value={40} max={100} />
     </form>
   );
 }
