@@ -192,7 +192,7 @@ describe("ruled list", () => {
   const hover = pct(focusCss, /--wash-hover: (\d+)%/);
 
   it.each(brandNames.flatMap((b) => ["light", "dark"].map((m) => [b, m])))(
-    "%s %s keeps the washed-row description at 4.5:1",
+    "%s %s keeps the washed-row description at 4.5:1 and selected a step above hover",
     (brand, mode) => {
       const blocks = parseBlocks(readFileSync(path.join(root, `dist/brands/${brand}.css`), "utf8"));
       const vars =
@@ -223,6 +223,11 @@ describe("ruled list", () => {
         for (const [name, wash] of Object.entries(washes)) {
           const ratio = wash.contrast(text, "WCAG21");
           if (ratio < 4.5) failures.push(`${surface}/${name} ${ratio.toFixed(2)}:1`);
+        }
+        // The selected row sits a step above a hovered one, not only by its rail.
+        const step = (wash: typeof under) => wash.contrast(under, "WCAG21");
+        if (step(washes.selected) <= step(washes.hover)) {
+          failures.push(`${surface} selected is not a step above hover`);
         }
       }
       expect(failures).toEqual([]);

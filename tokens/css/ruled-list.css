@@ -5,7 +5,8 @@
  * drasil's one-surface list (.inbox-list, .inbox-row): one surface, hairline rules between
  * rows and no box per row, following its rule to count visible layers before adding one.
  * Its values: 18px by 20px row padding, 14px gap, a 4px rail that is always there (so
- * selecting shifts nothing), the selected row about 4% ink, the checked row a 10% (dark 14%)
+ * selecting shifts nothing), the selected row a step of ink (7%, a step above the hover
+ * wash, as in the lab the owner picked), the checked row a 10% (dark 14%)
  * primary wash, and both at once a gradient of the two. The washes are translucent, so they
  * read over a flat card and over a glass one.
  *
@@ -19,7 +20,7 @@
   --ruled-pad-block: 1.125rem;
   --ruled-pad-inline: 1.25rem;
   --ruled-rail: var(--primary);
-  --ruled-wash-selected: color-mix(in srgb, var(--foreground) 4%, transparent);
+  --ruled-wash-selected: color-mix(in srgb, var(--foreground) 7%, transparent);
   --ruled-checked-share: 10%;
   --ruled-wash-checked: color-mix(in srgb, var(--primary) var(--ruled-checked-share), transparent);
   --ruled-wash-hover: color-mix(in srgb, var(--primary) var(--wash-hover), transparent);
@@ -80,6 +81,13 @@
 @media (max-width: 760px) {
   [data-slot="item-group"][data-variant="ruled"] {
     --ruled-pad-inline: 1.125rem;
+  }
+}
+
+/* Phone width (40rem): a row's actions drop below its text instead of squeezing it. */
+@media (max-width: 40rem) {
+  [data-slot="item-group"][data-variant="ruled"] > [data-slot="item"] > [data-slot="item-actions"] {
+    flex-basis: 100%;
   }
 }
 
@@ -154,25 +162,10 @@
   outline-offset: var(--focus-ring-offset-inset);
 }
 
-/* Secondary actions shown on hover: <ItemActions data-reveal="hover">. Hidden only where the
-   pointer can hover (touch always sees them), and still in the tab order, so keyboard focus
-   inside the row shows them; an open menu from one keeps them shown. */
-[data-slot="item-actions"][data-reveal="hover"] {
-  transition: opacity var(--duration-fast) var(--ease-standard);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  [data-slot="item"]:not(:hover, :focus-within, :has([aria-expanded="true"]))
-    > [data-slot="item-actions"][data-reveal="hover"] {
-    opacity: 0;
-    pointer-events: none;
-  }
-}
-
 /* Reduced transparency: the washes become opaque over the card. */
 @media (prefers-reduced-transparency: reduce) {
   [data-slot="item-group"][data-variant="ruled"] {
-    --ruled-wash-selected: color-mix(in srgb, var(--foreground) 4%, var(--card));
+    --ruled-wash-selected: color-mix(in srgb, var(--foreground) 7%, var(--card));
     --ruled-wash-checked: color-mix(
       in srgb,
       var(--primary) var(--ruled-checked-share),
