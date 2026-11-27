@@ -29,7 +29,15 @@ The repository is a [shadcn GitHub registry](https://ui.shadcn.com/docs/registry
 
 Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `kbd`, `tooltip`, `popover`.
 
-UI SDK items (beta, pinned exactly to `@ui-sdk/react` and `@ui-sdk/core` `0.1.0-beta.17`): `command`, `calendar`, `date-picker`, `otp-input`, `token-input`. They need `@layer ui-sdk;` as the first line of the product's global stylesheet, above `@import "tailwindcss"`.
+UI SDK items: `command`, `calendar`, `date-picker`, `otp-input`, `token-input` and `agent` (see UI SDK below).
+
+### UI SDK
+
+[UI SDK](https://github.com/vercel-labs/ui) (`@ui-sdk/core` and `@ui-sdk/react`, Apache-2.0) supplies the components shadcn builds on third-party libraries or does not ship (command, calendar, date picker, OTP input, token input) and the agent bridge that lets an AI agent operate them. Everything else stays stock shadcn on Base UI.
+
+It is a **beta, pinned exactly** to `0.1.0-beta.17`, and its patch releases change behaviour. Products need `@layer ui-sdk;` as the first line of their global stylesheet, above `@import "tailwindcss"`.
+
+To bump it: read the release notes, run `npm install --save-exact @ui-sdk/core@<version> @ui-sdk/react@<version>`, change every `@ui-sdk/*` pin in `registry.json` to the same version, then run `npm test` (fails if any pin differs), `npm run build-storybook`, `npm run test:agent` and the visual check.
 
 ### Tokens (after the first tag)
 
