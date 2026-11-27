@@ -1,0 +1,31 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Docs/Sliding tabs" />
+
+# Sliding tabs
+
+A selection line that slides to the chosen item. Two components share it:
+
+- **`SlidingTabsList` and `SlidingTabsTrigger`** go inside the stock `Tabs` in place of `TabsList` and `TabsTrigger`. They are the tabs pattern: `tablist`, `tab`, `tabpanel`, arrow keys.
+- **`SlidingNav` and `SlidingNavLink`** are a `<nav>` of links between pages. The current link gets `active`, which sets `aria-current="page"`. Pass a router link with `render`, for example `<SlidingNavLink active render={<Link href="/guides" />}>Guides</SlidingNavLink>`. Links are reached with Tab, not arrow keys.
+
+## Behaviour
+
+- The line sits at the bottom of the selected item, 3px tall, in `--primary`. It moves and resizes with a transition on `translate`, `width` and `height`.
+- On first paint it appears in place; it never slides in from zero.
+- It follows the item after resizes, font loads and wrapping onto another row, and scrolls with a list that overflows sideways. It stays in place inside a scaled or zoomed ancestor, such as a dialog opening.
+- Right-to-left layouts work. Wrap a right-to-left app in `DirectionProvider` (registry item `direction`) with `direction="rtl"` as well as setting `dir`, so arrow keys follow the reading direction.
+- To draw a hairline under the bar, use an inset shadow on the bar or its wrapper, for example `shadow-[inset_0_-1px_0_var(--color-border)]`, not a border. The line then sits inside the bar's box and the indicator covers it.
+- With reduced motion, the line jumps straight to the new item.
+- Labels use the stock tabs colours. Hover only brightens the label to `--foreground`; the selected item is also semibold. Hidden copies in both weights reserve the width, so selection never moves the other items.
+- A focused link shows a 2px `--primary` outline inside its box.
+- Tabs get Base UI's measurements from `Tabs.Indicator`. The navigation bar measures the current link itself with the same CSS variables (`--active-tab-left`, `--active-tab-top`, `--active-tab-width`, `--active-tab-height`).
+
+## Motion tokens
+
+| Token                  | Default                       | Use                                                    |
+| ---------------------- | ----------------------------- | ------------------------------------------------------ |
+| `--duration-indicator` | `250ms`                       | How long the line takes to move                        |
+| `--ease-indicator`     | `cubic-bezier(0, 0, 0.58, 1)` | Its easing (CSS `ease-out`); Tailwind `ease-indicator` |
+
+Both live in `tokens/scales.tokens.json`. A brand that wants different motion sets the variables under its own selector, for example `[data-brand="sample"] { --duration-indicator: 200ms; }`.
