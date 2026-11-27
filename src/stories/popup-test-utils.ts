@@ -1,6 +1,6 @@
 import { expect, waitFor } from "storybook/test";
 
-// Shared play-function helpers for tooltip and popover stories. Popups render in a
+// Shared play-function helpers for popup stories. Popups render in a
 // portal outside the story canvas, so they are queried from the whole page.
 
 // Waits for an open popup of the given slot, optionally containing `text`.
@@ -18,6 +18,8 @@ async function findPopup(slot: string, text?: string | RegExp) {
 
 export const findTooltip = (text?: string | RegExp) => findPopup("tooltip-content", text);
 export const findPopover = (text?: string | RegExp) => findPopup("popover-content", text);
+export const findSelect = (text?: string | RegExp) => findPopup("select-content", text);
+export const findCombobox = (text?: string | RegExp) => findPopup("combobox-content", text);
 
 // Hovers until the tooltip opens. Base UI attaches its hover listeners after the first
 // render, so a hover sent the instant a story mounts can arrive before they exist.

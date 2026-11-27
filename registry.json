@@ -163,6 +163,106 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "textarea",
+      "type": "registry:ui",
+      "title": "Textarea",
+      "description": "Stock shadcn/ui textarea.",
+      "dependencies": ["cn"],
+      "files": [
+        {
+          "path": "src/components/ui/textarea.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "Stock shadcn/ui select on Base UI.",
+      "dependencies": ["@base-ui/react", "cn", "lucide-react"],
+      "files": [
+        {
+          "path": "src/components/ui/select.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "Stock shadcn/ui checkbox on Base UI.",
+      "dependencies": ["@base-ui/react", "cn", "lucide-react"],
+      "files": [
+        {
+          "path": "src/components/ui/checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "Stock shadcn/ui switch on Base UI.",
+      "dependencies": ["@base-ui/react", "cn"],
+      "files": [
+        {
+          "path": "src/components/ui/switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "Radio Group",
+      "description": "Stock shadcn/ui radio group on Base UI.",
+      "dependencies": ["@base-ui/react", "cn"],
+      "files": [
+        {
+          "path": "src/components/ui/radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input-group",
+      "type": "registry:ui",
+      "title": "Input Group",
+      "description": "Stock shadcn/ui input group: addons and buttons inside an input or textarea.",
+      "dependencies": ["class-variance-authority", "cn"],
+      "registryDependencies": [
+        "BITRATE-Labs/basic-design-system/button#v0.1.0",
+        "BITRATE-Labs/basic-design-system/input#v0.1.0",
+        "BITRATE-Labs/basic-design-system/textarea#v0.1.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/input-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "description": "Stock shadcn/ui combobox on Base UI.",
+      "dependencies": ["@base-ui/react", "cn", "lucide-react"],
+      "registryDependencies": [
+        "BITRATE-Labs/basic-design-system/button#v0.1.0",
+        "BITRATE-Labs/basic-design-system/input-group#v0.1.0"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/combobox.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

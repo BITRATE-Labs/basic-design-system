@@ -11,9 +11,9 @@ const files = ["**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}"];
 const rawElements = {
   button: "Button",
   dialog: "Dialog",
-  input: "Input",
-  select: "a shared component",
-  textarea: "a shared component",
+  input: "Input, Checkbox, RadioGroup or Switch",
+  select: "Select or Combobox",
+  textarea: "Textarea",
 };
 
 // Tailwind utilities that take a colour.
@@ -34,7 +34,8 @@ export default [
       "no-restricted-syntax": [
         "error",
         ...Object.entries(rawElements).map(([element, replacement]) => ({
-          selector: `JSXOpeningElement[name.name="${element}"]`,
+          // A hidden input carries form data and renders nothing, so no component replaces it.
+          selector: `JSXOpeningElement[name.name="${element}"]:not(:has(JSXAttribute[name.name="type"][value.value="hidden"]))`,
           message: `Use ${replacement} from components/ui instead of a raw <${element}>.`,
         })),
         {
