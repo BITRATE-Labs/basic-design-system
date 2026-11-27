@@ -1,0 +1,57 @@
+/* Lab scaffolding for the product-ideas stories. Not part of any option. */
+
+/* Page backgrounds the surfaces sit on. Calm is the brand's page colour; busy is an
+   image-free pattern in the brand's own roles, so translucency has something to show. */
+.lab-page {
+  border-radius: calc(var(--radius) * 1.4);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.lab-page[data-busy] {
+  background-image:
+    radial-gradient(
+      circle at 18% 22%,
+      color-mix(in srgb, var(--primary) 55%, transparent) 0 9rem,
+      transparent 9.05rem
+    ),
+    radial-gradient(
+      circle at 82% 58%,
+      color-mix(in srgb, var(--destructive) 40%, transparent) 0 7rem,
+      transparent 7.05rem
+    ),
+    radial-gradient(
+      circle at 48% 88%,
+      color-mix(in srgb, var(--info) 45%, transparent) 0 8rem,
+      transparent 8.05rem
+    ),
+    repeating-linear-gradient(
+      45deg,
+      color-mix(in srgb, var(--foreground) 14%, transparent) 0 2px,
+      transparent 2px 14px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      color-mix(in srgb, var(--primary) 20%, transparent) 0 6px,
+      transparent 6px 22px
+    );
+}
+
+/* Body text behind the surfaces, so blur and fill are judged against type, not only shapes. */
+.lab-page-text {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  padding: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--foreground) 70%, transparent);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* A popup pinned into its column (see stage.tsx) has no backdrop: several are open at once
+   and their overlays would blur the comparison. */
+:has(> [data-lab-pinned]) > :is([data-slot="dialog-overlay"], [data-slot="sheet-overlay"]) {
+  display: none;
+}
