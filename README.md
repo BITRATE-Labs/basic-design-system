@@ -64,7 +64,7 @@ A Git install builds `dist/` on install (the `prepare` script). The package brin
 @import "shadcn/tailwind.css";
 @import "@bitrate-labs/design-system/tokens.css"; /* scales + the basic brand */
 @import "@bitrate-labs/design-system/brands/vrdex.css"; /* your brand */
-@import "@bitrate-labs/design-system/theme.css"; /* Tailwind utilities, dark variant */
+@import "@bitrate-labs/design-system/theme.css"; /* Tailwind utilities, dark variant, component state styles */
 
 @layer base {
   * {

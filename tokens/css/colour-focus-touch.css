@@ -1,0 +1,268 @@
+/*
+ * State colour, focus and touch: theme CSS for the stock components, appended to
+ * dist/theme.css by scripts/build-tokens.mjs.
+ *
+ * These rules are unlayered on purpose: stock classes live in Tailwind's utilities layer,
+ * and unlayered rules beat every layer without !important. The one layered rule (touch,
+ * below) is in the base layer so that a utility such as `absolute` still wins over it.
+ * Buttons are matched by the stock `group/button` class (a Button rendered as a menu or
+ * tooltip trigger carries the trigger's data-slot) and by the data-variant and data-size
+ * attributes the Button writes (see AGENTS.md, Changes from stock).
+ */
+
+:root {
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 3px; /* inputs, checkboxes and other form controls */
+  --focus-ring-offset-action: 5px; /* buttons and links, as Loominist sets them */
+  --focus-ring-offset-inset: -2px; /* inside menus, lists, tabs and scroll areas */
+  --touch-target-min: 2.75rem; /* 44px, Perkcord's coarse-pointer minimum */
+  --wash-hover: 5%; /* Loominist's hover tint: share of primary in the hover wash */
+}
+
+/* --- Status: soft wash, line and text roles ------------------------------------------ */
+
+/* The destructive Button, Badge and menu item read the soft roles instead of the
+   destructive red at 10% or 20%, which missed 4.5:1 in several brands. Hover marks the
+   edge with the line rather than darkening the wash, so the text contrast holds. */
+:is(.group\/button, [data-slot="badge"])[data-variant="destructive"] {
+  background-color: var(--destructive-soft);
+  color: var(--destructive-soft-foreground);
+}
+
+@media (hover: hover) {
+  .group\/button[data-variant="destructive"]:hover,
+  a[data-slot="badge"][data-variant="destructive"]:hover {
+    border-color: var(--destructive-line);
+  }
+}
+
+[data-slot="dropdown-menu-item"][data-variant="destructive"],
+[data-slot="dropdown-menu-item"][data-variant="destructive"] > svg {
+  color: var(--destructive-soft-foreground);
+}
+
+[data-slot="dropdown-menu-item"][data-variant="destructive"]:is(:focus, [data-highlighted]) {
+  background-color: var(--destructive-soft);
+  color: var(--destructive-soft-foreground);
+}
+
+/* Alert tones. Stock Alert has only default and destructive variants, so success, warning
+   and info are a documented attribute: <Alert data-tone="success">. variant="destructive"
+   and data-tone="destructive" draw the same callout. */
+[data-slot="alert"]:is([data-variant="destructive"], [data-tone="destructive"]) {
+  --tone-soft: var(--destructive-soft);
+  --tone-text: var(--destructive-soft-foreground);
+  --tone-line: var(--destructive-line);
+}
+[data-slot="alert"][data-tone="success"] {
+  --tone-soft: var(--success-soft);
+  --tone-text: var(--success-soft-foreground);
+  --tone-line: var(--success-line);
+}
+[data-slot="alert"][data-tone="warning"] {
+  --tone-soft: var(--warning-soft);
+  --tone-text: var(--warning-soft-foreground);
+  --tone-line: var(--warning-line);
+}
+[data-slot="alert"][data-tone="info"] {
+  --tone-soft: var(--info-soft);
+  --tone-text: var(--info-soft-foreground);
+  --tone-line: var(--info-line);
+}
+
+[data-slot="alert"]:is([data-variant="destructive"], [data-tone]) {
+  border-color: var(--tone-line);
+  background-color: var(--tone-soft);
+  color: var(--tone-text);
+}
+
+[data-slot="alert"]:is([data-variant="destructive"], [data-tone]) [data-slot="alert-description"] {
+  color: inherit;
+}
+
+/* --- Hover and active wash ------------------------------------------------------------ */
+
+/* --accent is a faint tint of the brand's primary over the popover (brands/*.tokens.json),
+   which menus, select and combobox items already highlight on. Stock ghost buttons and
+   table rows hover on --muted and sit on any surface (page, card, sidebar), so they take
+   the same 5% of primary as a translucent wash over whatever is under them, as Loominist
+   paints it. A selected row keeps its stock --muted; text keeps its normal colour. Outline
+   buttons keep their stock hover: in dark mode their resting fill is lighter than the
+   wash, so the tint would read as the button going dark. */
+@media (hover: hover) {
+  .group\/button[data-variant="ghost"]:hover,
+  [data-slot="table-row"]:not([data-state="selected"]):hover {
+    background-color: color-mix(in srgb, var(--primary) var(--wash-hover), transparent);
+    color: var(--foreground);
+  }
+}
+
+.group\/button[data-variant="ghost"][aria-expanded="true"],
+[data-slot="table-row"]:not([data-state="selected"]):has([aria-expanded="true"]) {
+  background-color: color-mix(in srgb, var(--primary) var(--wash-hover), transparent);
+  color: var(--foreground);
+}
+
+/* Reduced transparency: the opaque --accent (mixed over the popover) instead. */
+@media (prefers-reduced-transparency: reduce) {
+  @media (hover: hover) {
+    .group\/button[data-variant="ghost"]:hover,
+    [data-slot="table-row"]:not([data-state="selected"]):hover {
+      background-color: var(--accent);
+    }
+  }
+  .group\/button[data-variant="ghost"][aria-expanded="true"],
+  [data-slot="table-row"]:not([data-state="selected"]):has([aria-expanded="true"]) {
+    background-color: var(--accent);
+  }
+}
+
+/* More contrast asked for: a stronger wash (tests/tokens.test.ts checks its text and ring).
+   The selectors match the brand files' own, and win by coming later. */
+@media (prefers-contrast: more) {
+  :root,
+  .dark,
+  [data-brand],
+  [data-brand].dark,
+  .dark [data-brand] {
+    --accent: color-mix(in srgb, var(--primary) 12%, var(--popover));
+    --wash-hover: 12%;
+  }
+}
+
+/* Forced colours drop author backgrounds, and with them the wash. */
+@media (forced-colors: active) {
+  :is(
+    [data-slot="dropdown-menu-item"],
+    [data-slot="dropdown-menu-checkbox-item"],
+    [data-slot="dropdown-menu-radio-item"],
+    [data-slot="dropdown-menu-sub-trigger"],
+    [data-slot="select-item"],
+    [data-slot="combobox-item"]
+  ):is([data-highlighted], :focus) {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+    --focus-ring-color: HighlightText;
+  }
+}
+
+/* --- Focus ---------------------------------------------------------------------------- */
+
+/* One solid outline in the ring colour replaces the stock translucent ring, which is a
+   box-shadow (cleared here through Tailwind's ring variable, so other shadows stay). */
+:is(
+  .group\/button,
+  a,
+  [data-slot="badge"],
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="select-trigger"],
+  [data-slot="checkbox"],
+  [data-slot="radio-group-item"],
+  [data-slot="switch"],
+  [data-slot="tabs-trigger"],
+  [data-slot="scroll-area-viewport"],
+  [data-slot="dropdown-menu-item"],
+  [data-slot="dropdown-menu-checkbox-item"],
+  [data-slot="dropdown-menu-radio-item"],
+  [data-slot="dropdown-menu-sub-trigger"],
+  [data-slot="select-item"]
+):focus-visible,
+[data-slot="input-group"]:has([data-slot="input-group-control"]:focus-visible),
+[data-slot="field-label"]:has(> [data-slot="field"]):has(:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color, var(--ring));
+  outline-offset: var(--focus-ring-offset);
+  --tw-ring-shadow: 0 0 #0000;
+}
+
+:is(.group\/button, a, [data-slot="badge"]):focus-visible {
+  outline-offset: var(--focus-ring-offset-action);
+}
+
+/* Inside a container that clips, the outline is drawn inside the item. */
+:is(
+    [data-slot="dropdown-menu-content"],
+    [data-slot="dropdown-menu-sub-content"],
+    [data-slot="select-content"],
+    [data-slot="combobox-content"],
+    [data-slot="tabs-list"],
+    [data-slot="scroll-area-viewport"],
+    [data-slot="sliding-nav"],
+    [data-slot="table-container"]
+  )
+  :focus-visible,
+[data-slot="scroll-area-viewport"]:focus-visible {
+  outline-offset: var(--focus-ring-offset-inset);
+}
+
+/* A choice card (a field inside its label) shows the outline on the card only. */
+[data-slot="field-label"]:has(> [data-slot="field"]) :focus-visible {
+  outline: none;
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --focus-ring-width: 3px;
+  }
+}
+
+/* Forced colours keep outlines (the stock box-shadow ring vanished there); the system
+   highlight follows the user's palette. */
+@media (forced-colors: active) {
+  :root {
+    --focus-ring-color: Highlight;
+  }
+}
+
+/* Stock buttons transition everything, so the outline grows out to its offset. */
+@media (prefers-reduced-motion: reduce) {
+  :focus-visible {
+    transition-property: none;
+  }
+}
+
+/* --- Touch: 44px targets on coarse pointers -------------------------------------------- */
+
+/* Buttons, select triggers, tabs and switches get an invisible hit area of at least 44px
+   around them (checkboxes and radios 44px wide), so layout does not change. Menu, select
+   and combobox rows are stacked, where hit areas would overlap, so they grow instead. */
+@layer base {
+  @media (pointer: coarse) {
+    .group\/button,
+    [data-slot="select-trigger"] {
+      position: relative;
+    }
+  }
+}
+
+@media (pointer: coarse) {
+  :is(.group\/button, [data-slot="select-trigger"])::after,
+  [data-slot="tabs-trigger"]::before {
+    content: "";
+    position: absolute;
+    inset-inline: min(0px, calc((100% - var(--touch-target-min)) / 2));
+    inset-block: min(0px, calc((100% - var(--touch-target-min)) / 2));
+  }
+
+  /* These already widen their hit area with ::after (-0.75rem by -0.5rem). Checkboxes and
+     radios stack about 31px apart in a group, so only their width grows: a 44px height
+     would overlap the next row's and toggle the wrong item. */
+  :is([data-slot="checkbox"], [data-slot="radio-group-item"], [data-slot="switch"])::after {
+    inset-inline: min(-0.75rem, calc((100% - var(--touch-target-min)) / 2));
+  }
+  [data-slot="switch"]::after {
+    inset-block: min(-0.5rem, calc((100% - var(--touch-target-min)) / 2));
+  }
+
+  :is(
+    [data-slot="dropdown-menu-item"],
+    [data-slot="dropdown-menu-checkbox-item"],
+    [data-slot="dropdown-menu-radio-item"],
+    [data-slot="dropdown-menu-sub-trigger"],
+    [data-slot="select-item"],
+    [data-slot="combobox-item"]
+  ) {
+    min-height: var(--touch-target-min);
+  }
+}

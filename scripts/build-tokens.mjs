@@ -3,6 +3,7 @@
 //   tokens/scales.tokens.json  shared scales (spacing, text, shadow, duration, ease)
 //   tokens/roles.tokens.json   shared role names; each aliases {brand.*}
 //   brands/<name>.tokens.json  one file per brand; every *.tokens.json there is built
+//   tokens/css/*.css           theme CSS for the stock components, appended to dist/theme.css
 //
 // Brand file shape (see brands/basic.tokens.json):
 //   {
@@ -194,6 +195,18 @@ async function main() {
       "@custom-variant dark (&:is(.dark *));\n\n" +
       `@theme inline {\n${[...themeLines(roleNames), ...scaleTheme].join("\n")}\n}\n`,
   );
+
+  // Theme CSS: every tokens/css/*.css file, in name order, appended to dist/theme.css as
+  // written. These are rules on the stock components' data-slot attributes (state colour,
+  // focus, touch), so products get them from the theme.css import they already have.
+  const themeCssDir = path.join(root, "tokens/css");
+  const themeCss = (await readdir(themeCssDir)).filter((f) => f.endsWith(".css")).sort();
+  for (const f of themeCss) {
+    const css = await readFile(path.join(themeCssDir, f), "utf8");
+    await writeFile(path.join(dist, "theme.css"), `\n/* tokens/css/${f} */\n${css}`, {
+      flag: "a",
+    });
+  }
 
   console.log(`tokens: built ${brandNames.length} brand(s): ${brandNames.join(", ")}`);
 }
