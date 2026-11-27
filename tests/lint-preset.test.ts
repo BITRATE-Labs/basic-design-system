@@ -38,7 +38,7 @@ const inside = "src/components/ui";
 describe("lint preset", () => {
   it("reports each raw element outside components/ui, but not a hidden input", async () => {
     expect(await lint("raw-elements.tsx", outside)).toEqual(
-      [4, 5, 6, 7, 10, 11].map((line) => ({ rule: "no-restricted-syntax", line })),
+      [4, 5, 6, 7, 10, 11, 13].map((line) => ({ rule: "no-restricted-syntax", line })),
     );
   });
 

@@ -14,6 +14,7 @@ const rawElements = {
   input: "Input, Checkbox, RadioGroup or Switch",
   select: "Select or Combobox",
   textarea: "Textarea",
+  progress: "Progress",
 };
 
 // Tailwind utilities that take a colour.
