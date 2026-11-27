@@ -66,6 +66,10 @@ Then set the brand on the root element: `<html data-brand="vrdex">`. Dark mode i
 
 Tooltips, popovers, menus and dialogs portal to the end of `<body>`. Wrap the app in one element with the `isolate` class and, inside it, `TooltipProvider`; then popups always sit above the page, whatever z-index the page uses. Anything else portaled to `<body>`, such as a toast library, goes inside that element or stays below z-index 50. Inside a top-layer element (a modal `<dialog>`, or an element with the `popover` attribute), pass it as the popup's `container` and give it `overflow-visible`. Tooltip text is visual only, so an icon-only trigger needs an `aria-label`. The rule and its checks are in Storybook under **Docs / Layers**.
 
+### Agents
+
+An AI agent can operate ui-sdk components through ui-sdk's agent bridge. Add the `agent` item and wrap the app root in `AgentProvider`; steps on controls marked `data-agent-confirm` ask the person first. The bridge does not see the stock Base UI components, and ui-sdk is in beta, so this is Storybook-only for now. See Storybook **Docs / Agents**.
+
 ### Lint preset
 
 `@bitrate-labs/design-system/eslint` is a flat ESLint config that keeps product code on the shared components and role colours. It can be installed from a pinned Git tag before npm publishing; see [docs/lint-preset.md](docs/lint-preset.md).

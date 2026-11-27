@@ -3,3 +3,4 @@ storybook-static
 package-lock.json
 src/components/ui
 src/lib/utils.ts
+.agents/skills/ui-sdk

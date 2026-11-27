@@ -42,7 +42,8 @@
     "storybook": "npm run build:tokens && storybook dev -p 6006",
     "build-storybook": "npm run build:tokens && storybook build",
     "registry:check": "shadcn registry validate ./registry.json",
-    "test:visual": "node scripts/test-visual.mjs"
+    "test:visual": "node scripts/test-visual.mjs",
+    "test:agent": "playwright test --project=agent"
   },
   "devDependencies": {
     "@base-ui/react": "1.9.0",
@@ -56,6 +57,8 @@
     "@types/node": "24.19.4",
     "@types/react": "19.3.3",
     "@types/react-dom": "19.3.0",
+    "@ui-sdk/core": "0.1.0-beta.17",
+    "@ui-sdk/react": "0.1.0-beta.17",
     "@vitejs/plugin-react": "6.3.0",
     "class-variance-authority": "0.7.1",
     "cn": "0.5.2",
