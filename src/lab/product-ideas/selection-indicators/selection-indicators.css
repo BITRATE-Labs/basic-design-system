@@ -1,0 +1,167 @@
+/*
+ * Lab: Perkcord's weighted segmented control (sliding-radio-group.tsx), written as it
+ * would ship: role tokens and named custom properties, no brand values. Perkcord draws
+ * every colour from its primary, so each one here is a mix of --primary, --muted or
+ * --foreground and follows the brand.
+ *
+ * Unlayered on purpose: these rules restyle the stock RadioGroup's Tailwind utilities
+ * (which sit in @layer utilities) without !important.
+ */
+
+[data-slot="segmented-control"] {
+  /* Perkcord: bg-primary/15, ring-1 ring-primary/30, hover bg-primary/10, track bg-muted/50. */
+  --segmented-thumb-fill: color-mix(in oklab, var(--primary) 15%, transparent);
+  --segmented-thumb-ring: color-mix(in oklab, var(--primary) 30%, transparent);
+  --segmented-hover-fill: color-mix(in oklab, var(--primary) 10%, transparent);
+  --segmented-track-fill: color-mix(in oklab, var(--muted) 50%, transparent);
+  --segmented-focus-color: var(--primary);
+  /* Perkcord: rounded-lg track, rounded-md thumb and segments (8px and 6px there). */
+  --segmented-track-radius: var(--radius-lg);
+  --segmented-thumb-radius: var(--radius-md);
+  /* Perkcord: motion-safe:duration-200 ease-out on inset-inline-start and width. */
+  --segmented-thumb-duration: 200ms;
+  --segmented-thumb-ease: ease-out;
+  /* Perkcord: min-h-11 (44px) text-sm, compact min-h-7 (28px) text-xs. */
+  --segmented-height: 2.75rem;
+  --segmented-font-size: var(--text-sm);
+  --segmented-line-height: var(--text-sm--line-height);
+  --segmented-padding-inline: 0.25rem;
+
+  min-width: 0;
+}
+
+[data-slot="segmented-control"][data-size="compact"] {
+  --segmented-height: 1.75rem;
+  --segmented-font-size: var(--text-xs);
+  --segmented-line-height: var(--text-xs--line-height);
+}
+
+@media (width >= 40rem) {
+  [data-slot="segmented-control"][data-size="default"] {
+    --segmented-padding-inline: 0.5rem; /* Perkcord: sm:px-2 */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="segmented-control"] {
+    --segmented-thumb-duration: 0s;
+  }
+}
+
+/* Lab preview only: the toolbar cannot emulate the media query, so stories set this. */
+[data-preview-motion="reduce"] [data-slot="segmented-control"] {
+  --segmented-thumb-duration: 0s;
+}
+
+[data-slot="segmented-control"][data-disabled] {
+  opacity: 0.75; /* Perkcord: fieldset disabled:opacity-75 */
+}
+
+[data-slot="segmented-control-legend"] {
+  display: block;
+  margin-block-end: 0.5rem;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+[data-slot="segmented-control"][data-size="compact"] > [data-slot="segmented-control-legend"] {
+  /* Perkcord: the compact legend is sr-only. */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+[data-slot="segmented-control-track"] {
+  border: 1px solid var(--border);
+  border-radius: var(--segmented-track-radius);
+  background: var(--segmented-track-fill);
+  padding: 0.125rem; /* Perkcord: p-0.5 */
+}
+
+[data-slot="segmented-control-track"] > [data-slot="radio-group"] {
+  position: relative;
+  isolation: isolate;
+  gap: 0;
+}
+
+[data-slot="segmented-control-thumb"] {
+  pointer-events: none;
+  position: absolute;
+  inset-block: 0;
+  z-index: -1;
+  border-radius: var(--segmented-thumb-radius);
+  background: var(--segmented-thumb-fill);
+  box-shadow: 0 0 0 1px var(--segmented-thumb-ring);
+  transition:
+    inset-inline-start var(--segmented-thumb-duration) var(--segmented-thumb-ease),
+    width var(--segmented-thumb-duration) var(--segmented-thumb-ease);
+}
+
+[data-slot="segmented-control-segment"] {
+  position: relative;
+  min-width: 0;
+}
+
+[data-slot="segmented-control-segment"] > [data-slot="radio-group-item"] {
+  cursor: pointer;
+}
+
+[data-slot="segmented-control-segment"] > [data-slot="radio-group-item"][data-disabled] {
+  cursor: not-allowed;
+}
+
+[data-slot="segmented-control-label"] {
+  display: flex;
+  min-height: var(--segmented-height);
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  border-radius: var(--segmented-thumb-radius);
+  padding-inline: var(--segmented-padding-inline);
+  text-align: center;
+  font-size: var(--segmented-font-size);
+  line-height: var(--segmented-line-height);
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
+[data-slot="segmented-control"][data-size="compact"] [data-slot="segmented-control-label"] {
+  white-space: nowrap;
+}
+
+/* The hidden input Base UI renders sits between the radio and the label, hence ~. */
+[data-slot="radio-group-item"][data-checked] ~ [data-slot="segmented-control-label"] {
+  color: var(--foreground);
+}
+
+[data-slot="radio-group-item"]:not([data-disabled]):hover ~ [data-slot="segmented-control-label"] {
+  background: var(--segmented-hover-fill);
+}
+
+[data-slot="radio-group-item"]:focus-visible ~ [data-slot="segmented-control-label"] {
+  /* Perkcord: outline-2 -outline-offset-2 outline-primary, inside the segment. */
+  outline: 2px solid var(--segmented-focus-color);
+  outline-offset: -2px;
+}
+
+[data-slot="radio-group-item"][data-disabled] ~ [data-slot="segmented-control-label"] {
+  opacity: 0.5;
+}
+
+@media (forced-colors: active) {
+  /* Forced colours drop the tinted fill and the box-shadow ring, so draw the thumb as a border. */
+  [data-slot="segmented-control-thumb"] {
+    forced-color-adjust: none;
+    background: transparent;
+    box-shadow: none;
+    border: 2px solid Highlight;
+  }
+}
