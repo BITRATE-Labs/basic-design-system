@@ -34,6 +34,15 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 
 Shared popups portal to the end of `<body>` at `z-50`. Products wrap the app root in an element with `isolate` and in `TooltipProvider`; z-index inside that root never covers a popup. Anything else portaled to `<body>` (toasts, third-party widgets) goes inside the root or stays below z-index 50. Inside a top-layer element (a modal `<dialog>`, or an element shown with the `popover` attribute), popups take `container` pointing at it, and it gets `overflow-visible`. `tooltip`, `popover` and `dropdown-menu` differ from stock in one place for this: their Content component forwards `container` to the Base UI Portal, which the stock files do not expose. Use the shared Tooltip for hover hints, never the native `title` attribute. Tooltip text is visual only: Base UI gives the popup no role and the trigger no `aria-describedby`, so an icon-only trigger needs an `aria-label`, usually the tooltip text (the lint preset reports a `TooltipTrigger` rendering an icon-size `Button` without one). The `Layering` stories prove each case with a hit test; keep them passing when changing a popup. Details: Storybook **Docs / Layers**.
 
+## Agents
+
+- The ui-sdk agent bridge lives in `src/components/ui-sdk/agent.tsx` (registry item `agent`). Products wrap the app root in `AgentProvider`; Storybook wraps every story in it and puts the bridge on `window.agent`. Details: Storybook **Docs / Agents**.
+- The bridge sees ui-sdk components only. The stock Base UI components in `src/components/ui` are invisible to it. On a surface an agent operates, use ui-sdk parts for every control and do not mix in Base UI controls.
+- Mark controls with `data-agent-confirm`, `data-agent-secret` and `data-agent-hidden` only. Never write an `allow` that returns `true` for a step with `confirm`.
+- `@ui-sdk/core` and `@ui-sdk/react` stay on the same exact version in `package.json` and `registry.json` (a test checks). Read the changelog on every bump: behaviour changes ship in patch releases. ui-sdk is Storybook-only until the owner decides on its beta terms.
+- The official ui-sdk skill is vendored in `.agents/skills/ui-sdk` (see its `SOURCE.md`). It applies to ui-sdk code only. Where it says to prefer ui-sdk parts everywhere, this file wins: stock shadcn first, except on agent-operated surfaces.
+- `npm run test:agent` drives the `Agents` stories through the bridge in the built Storybook (any platform; CI runs it).
+
 ## Lab convention
 
 - Options for the owner to compare go in `src/lab/<topic>/`, with titles starting `Lab/`. Storybook sorts them last.

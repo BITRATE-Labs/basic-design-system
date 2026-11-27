@@ -163,6 +163,20 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "agent",
+      "type": "registry:component",
+      "title": "Agent bridge",
+      "description": "ui-sdk agent bridge and AgentProvider for the app root: confirm steps go to the person, WebMCP is opt-in. Sees ui-sdk components only. Beta: see Docs / Agents.",
+      "dependencies": ["@ui-sdk/core@0.1.0-beta.17", "@ui-sdk/react@0.1.0-beta.17"],
+      "files": [
+        {
+          "path": "src/components/ui-sdk/agent.tsx",
+          "type": "registry:component",
+          "target": "components/ui-sdk/agent.tsx"
+        }
+      ]
     }
   ]
 }
