@@ -2,13 +2,19 @@
 
 `@bitrate-labs/design-system/eslint` is an ESLint flat config. It keeps product code on the shared components and the colour role tokens. Everything under `**/components/ui/**` is exempt, because that is where the stock shadcn components live.
 
-| Rule                                       | Reports                                                                                                                                                                     |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `no-restricted-syntax`                     | Raw `<button>`, `<dialog>`, `<input>`, `<select>` and `<textarea>` JSX                                                                                                      |
-| `no-restricted-imports`                    | Imports from `@base-ui/*`, `@radix-ui/*` and `radix-ui`                                                                                                                     |
-| `better-tailwindcss/no-restricted-classes` | Tailwind palette colour classes (`bg-red-500`, `hover:text-neutral-400`, `bg-black/10`) and arbitrary colour values (`bg-[#fff]`, `text-[rgb(0,0,0)]`, `fill-[oklch(...)]`) |
+| Rule                                       | Reports                                                                                                                                                                                                    |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `no-restricted-syntax`                     | Raw `<button>`, `<dialog>`, `<input>`, `<select>` and `<textarea>` JSX; the `title` attribute on `<a>`, `<button>` and `<Button>`; a `TooltipTrigger` rendering an icon-size `Button` with no `aria-label` |
+| `no-restricted-imports`                    | Imports from `@base-ui/*`, `@radix-ui/*` and `radix-ui`                                                                                                                                                    |
+| `better-tailwindcss/no-restricted-classes` | Tailwind palette colour classes (`bg-red-500`, `hover:text-neutral-400`, `bg-black/10`), arbitrary colour values (`bg-[#fff]`, `text-[rgb(0,0,0)]`, `fill-[oklch(...)]`)                                   |
 
 Role classes such as `bg-primary`, `text-muted-foreground` and `border-border` pass. Classes are read from `className`, `class` and the class helpers that eslint-plugin-better-tailwindcss knows by default, including `cn` and `cva`.
+
+### `title` and tooltip triggers
+
+The native `title` tooltip cannot be styled, does not show on keyboard focus or touch, and does not stack with shared popups. The rule reports `title` only on `<a>`, `<button>` and `<Button>`. It leaves other elements alone, because `title` is correct on `<input>` (the `pattern` hint), `<abbr>` and `<iframe>`, and many components take a `title` prop that is not the attribute. A `title` on another component that forwards it to a link or button is not caught.
+
+Tooltip text is visual only: Base UI gives the popup no `role="tooltip"` and the trigger no `aria-describedby`, as its [tooltip guidelines](https://base-ui.com/react/components/tooltip) say. The rule reports a `TooltipTrigger` whose `render` is a `Button` with an `icon` size (`icon`, `icon-sm`...) and no `aria-label` or `aria-labelledby` on either element. An icon-only trigger built another way is not caught.
 
 ## Turn it on
 

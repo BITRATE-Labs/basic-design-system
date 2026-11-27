@@ -37,6 +37,22 @@ export default [
           selector: `JSXOpeningElement[name.name="${element}"]`,
           message: `Use ${replacement} from components/ui instead of a raw <${element}>.`,
         })),
+        {
+          // Only links and buttons: `title` is legitimate on <input> (pattern hint),
+          // <abbr> and <iframe>, and many components take a `title` prop of their own.
+          selector:
+            'JSXOpeningElement[name.name=/^(a|button|Button)$/] > JSXAttribute[name.name="title"]',
+          message:
+            "The native title tooltip cannot be styled, never shows on keyboard focus or touch, and does not layer with shared popups. Use Tooltip from components/ui.",
+        },
+        {
+          // Tooltip text is visual only (Base UI gives it no role or aria-describedby), so an
+          // icon-only trigger needs its own name. The aria-label may sit on either element.
+          selector:
+            'JSXOpeningElement[name.name="TooltipTrigger"]:not(:has(JSXAttribute[name.name=/^aria-label(ledby)?$/])) > JSXAttribute[name.name="render"] JSXOpeningElement[name.name="Button"]:has(JSXAttribute[name.name="size"][value.value=/^icon/])',
+          message:
+            "Tooltip text is visual only and does not name its trigger. Give the icon-only Button an aria-label, usually the tooltip text.",
+        },
       ],
       "no-restricted-imports": [
         "error",
@@ -52,7 +68,7 @@ export default [
     },
   },
   {
-    name: "@bitrate-labs/design-system/colors",
+    name: "@bitrate-labs/design-system/classes",
     files,
     ignores: componentsUi,
     plugins: { "better-tailwindcss": betterTailwindcss },

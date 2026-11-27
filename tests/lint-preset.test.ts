@@ -54,14 +54,29 @@ describe("lint preset", () => {
     );
   });
 
+  it("reports an icon-only tooltip trigger without an aria-label", async () => {
+    expect(await lint("icon-tooltip-trigger.tsx", outside)).toEqual(
+      [8, 11].map((line) => ({ rule: "no-restricted-syntax", line })),
+    );
+  });
+
+  it("reports title on links and buttons only", async () => {
+    expect(await lint("title-attribute.tsx", outside)).toEqual(
+      [7, 8].map((line) => ({ rule: "no-restricted-syntax", line })),
+    );
+  });
+
   it("allows token classes", async () => {
     expect(await lint("token-classes.tsx", outside)).toEqual([]);
   });
 
-  it.each(["raw-elements.tsx", "primitive-imports.tsx", "color-classes.tsx"])(
-    "exempts %s inside components/ui",
-    async (fixture) => {
-      expect(await lint(fixture, inside)).toEqual([]);
-    },
-  );
+  it.each([
+    "raw-elements.tsx",
+    "primitive-imports.tsx",
+    "color-classes.tsx",
+    "title-attribute.tsx",
+    "icon-tooltip-trigger.tsx",
+  ])("exempts %s inside components/ui", async (fixture) => {
+    expect(await lint(fixture, inside)).toEqual([]);
+  });
 });
