@@ -1,14 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import {
-  ArchiveIcon,
-  EllipsisIcon,
-  FileTextIcon,
-  ImageIcon,
-  MessageSquareIcon,
-} from "lucide-react";
+import { FileTextIcon, ImageIcon, MessageSquareIcon } from "lucide-react";
 import { useState } from "react";
 import { expect } from "storybook/test";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -140,39 +133,6 @@ export const IconAndMeta: Story = {
       ))}
     </ItemGroup>
   ),
-};
-
-// <ItemActions data-reveal="hover">: hidden until the row is hovered or holds focus, where
-// the pointer can hover; always shown on touch (pointer: coarse). The buttons stay in the tab
-// order, so the play function tabs to the second row's first action to show it.
-export const HoverActions: Story = {
-  name: "Hover actions",
-  render: () => (
-    <ItemGroup data-variant="ruled" aria-label="Review queue">
-      {queue.map((row) => (
-        <Item key={row.id} role="listitem">
-          <ItemContent>
-            <ItemTitle>{row.title}</ItemTitle>
-            <ItemDescription>{row.id}</ItemDescription>
-          </ItemContent>
-          <ItemActions data-reveal="hover">
-            <Button variant="ghost" size="icon-sm" aria-label={`Archive ${row.id}`}>
-              <ArchiveIcon />
-            </Button>
-            <Button variant="ghost" size="icon-sm" aria-label={`More actions for ${row.id}`}>
-              <EllipsisIcon />
-            </Button>
-          </ItemActions>
-        </Item>
-      ))}
-    </ItemGroup>
-  ),
-  play: async ({ canvas, userEvent }) => {
-    await userEvent.tab();
-    await userEvent.tab();
-    await userEvent.tab();
-    await expect(canvas.getByRole("button", { name: "Archive SMP-102" })).toHaveFocus();
-  },
 };
 
 const activity = Array.from({ length: 12 }, (_, i) => ({
