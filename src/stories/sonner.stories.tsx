@@ -22,7 +22,11 @@ const meta = {
     (Story, { globals, parameters }) => (
       <div className="min-h-96">
         <Story />
-        <Toaster theme={toasterTheme(globals)} expand={parameters.expand === true} />
+        <Toaster
+          theme={toasterTheme(globals)}
+          expand={parameters.expand === true}
+          visibleToasts={4}
+        />
       </div>
     ),
   ],
