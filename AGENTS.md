@@ -30,6 +30,10 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 | `docs/`                    | Repository docs, such as the lint preset                                                       |
 | `.github/workflows/`       | CI, Pages deploy, baseline regeneration, PR reviewer caller                                    |
 
+## Layers
+
+Shared popups portal to the end of `<body>` and stack themselves; product code never sets a z-index. Products wrap the app root in an element with `isolate` and in `TooltipProvider`. Inside a native modal `<dialog>`, popups take `container` pointing at the dialog, and the dialog gets `overflow-visible`. `tooltip`, `popover` and `dropdown-menu` differ from stock in one place for this: their Content component forwards `container` to the Base UI Portal, which the stock files do not expose. Use the shared Tooltip for hover hints, never the native `title` attribute. The `Layering` stories prove each case with a hit test; keep them passing when changing a popup. Details: Storybook **Docs / Layers**.
+
 ## Lab convention
 
 - Options for the owner to compare go in `src/lab/<topic>/`, with titles starting `Lab/`. Storybook sorts them last.
