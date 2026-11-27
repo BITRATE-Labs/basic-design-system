@@ -1,12 +1,15 @@
 import { defineConfig } from "@playwright/test";
 
-// Visual check over the built static Storybook (npm run build-storybook first).
-// Baselines are Linux-only; run through `npm run test:visual`, which skips elsewhere.
+// Checks over the built static Storybook (npm run build-storybook first).
+// visual: baselines are Linux-only; run through `npm run test:visual`, which skips elsewhere.
+// agent: drives stories through the ui-sdk agent bridge; `npm run test:agent`, any platform.
 const port = 6008;
 
 export default defineConfig({
-  testDir: "tests/visual",
-  testMatch: "*.visual.ts",
+  projects: [
+    { name: "visual", testDir: "tests/visual", testMatch: "*.visual.ts" },
+    { name: "agent", testDir: "tests/agent", testMatch: "*.agent.ts" },
+  ],
   snapshotPathTemplate: "{testDir}/__screenshots__/{arg}{ext}",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,

@@ -11,7 +11,11 @@ if (process.platform !== "linux") {
   process.exit(0);
 }
 
-const { status } = spawnSync("npx", ["playwright", "test", ...process.argv.slice(2)], {
-  stdio: "inherit",
-});
+const { status } = spawnSync(
+  "npx",
+  ["playwright", "test", "--project=visual", ...process.argv.slice(2)],
+  {
+    stdio: "inherit",
+  },
+);
 process.exit(status ?? 1);

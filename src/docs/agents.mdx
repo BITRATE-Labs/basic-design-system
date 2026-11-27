@@ -1,0 +1,86 @@
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+import * as AgentStories from "../stories/agents.stories";
+
+<Meta title="Docs/Agents" />
+
+# Agents
+
+An AI agent can read and operate a page through the [ui-sdk](https://ui-sdk.dev/docs/agents) agent bridge: `snapshot()` lists the components with their state and actions, `act({ steps })` runs actions in order, and `query()` finds components and list items. Every change an agent makes reaches the component's normal change callback, marked as the agent's.
+
+ui-sdk is in beta (`0.1.0-beta.17`, pinned exactly). Behaviour changes ship in patch releases, and whether its beta terms allow a live product to ship it is still an open question for the owner. Until that is settled, this is Storybook-only: the `agent` item and the other UI SDK items are kept in `registry-ui-sdk/registry.json`, which the shadcn CLI does not read. Once they are installable, set `save-exact=true` in the product's `.npmrc`: npm otherwise saves `^0.1.0-beta.17`, and `@ui-sdk/react`'s `^` peer range on `@ui-sdk/core` admits later betas too.
+
+## What the bridge covers
+
+**Only ui-sdk components.** "Agent-drivable" means the UI SDK items only: a page built from the stock components shows the agent nothing (`snapshot()` returns `[]`). The bridge does not see the stock shadcn components on Base UI: `button`, `input`, `field`, `dialog`, `dropdown-menu`, `tabs`, `tooltip`, `popover` and the rest of `src/components/ui` are invisible to it, and the agent tests check that. A wrapper over a Base UI component can expose its open or value state, but nothing inside its portal, so it is not offered here. On a surface an agent operates, every control the agent must touch is a ui-sdk part, and Base UI controls are not mixed in: the agent would see half the page.
+
+## Set up the app root
+
+Add the `agent` registry item and wrap the app root in `AgentProvider`, next to the isolated root and `TooltipProvider` from **Docs / Layers**. It changes no layering.
+
+```tsx
+import { AgentProvider } from "@/components/ui-sdk/agent";
+
+<body>
+  <div className="isolate">
+    <TooltipProvider>
+      <AgentProvider>{children}</AgentProvider>
+    </TooltipProvider>
+  </div>
+</body>;
+```
+
+The global stylesheet declares `@layer ui-sdk;` above `@import "tailwindcss"`.
+
+- `agent` (exported from the same file) is the page's one bridge. It is created when the module loads, in the browser only. Hand its `snapshot`, `act` and `query` to your model with `agentTools` from `@ui-sdk/react/agent`.
+- Every step on a `data-agent-confirm` control asks the person. By default that is the browser's `confirm()` dialog, which an agent cannot answer. Pass `confirm={(text, { signal }) => …}` to use your own prompt; resolve `true` to let the step run, and close the prompt when `signal` aborts.
+- `webmcp` offers the same three tools to the browser's own agent through WebMCP, only where `document.modelContext` exists. It is off by default. Confirm steps still ask the person.
+
+In this Storybook every story is wrapped in `AgentProvider` with `webmcp` on, and the bridge is on `window.agent`, so you can try it from the browser console on any story's canvas:
+
+```js
+await agent.act({ steps: [{ ref: "Edit workspace", action: "press" }] });
+agent.snapshot();
+```
+
+## Operating a page
+
+An agent opens the dialog, switches to Notifications, fills both fields and presses Save changes, in two `act` calls. Name every control (`FieldLabel`, `DialogTitle`, `aria-label` on a tab list): the agent finds controls by name. A field on another tab is still reachable, since the step switches to it first, so keep values above the tab panels.
+
+<Canvas of={AgentStories.WorkspaceDialog} />
+
+## Ask the person first: `data-agent-confirm`
+
+Put `data-agent-confirm="<what it does>"` on anything an agent must not do alone, such as delete, pay or send. It covers the element and everything inside it in the DOM (see portals below). The sentence is shown to the person, so write it for them. When they say no, the step fails with "The person said no".
+
+<Canvas of={AgentStories.ConfirmRequired} />
+
+## Keep it from the agent: `data-agent-hidden`
+
+Components inside `data-agent-hidden` are left out of `snapshot()` and `query()`, and a step that names one is told to ask the person. Use `data-agent-secret` instead for a field the agent may fill but never read; password and one-time-code fields are secret already.
+
+<Canvas of={AgentStories.HiddenRegion} />
+
+## Marks do not cross portals
+
+The three marks are read from DOM ancestors, not from the React tree. Content that a portal moves out of a marked element is not covered by it: the shared Popover, Dialog, DropdownMenu and Tooltip contents all portal to `<body>`, and so does any `createPortal`. In ui-sdk `0.1.0-beta.17`, a field portaled out of `data-agent-hidden` is listed with its value and can be overwritten, and a button portaled out of `data-agent-confirm` runs without asking the person.
+
+Put the mark on the portaled element itself, for example `<PopoverContent data-agent-hidden>` or a wrapper `div` inside the portal. The agent tests check this story, and also pin the ui-sdk behaviour, so they will say when the rule is no longer needed. ui-sdk's own popups render in place (top layer, no portal) and keep their ancestors' marks.
+
+<Canvas of={AgentStories.PortaledMarks} />
+
+## Tell an agent's change from a person's
+
+Change callbacks get `details.source === "agent"` for an agent's change, and `details.cancel()` refuses it; the step then fails with "didn't take". Put checks there, not in click or key handlers, which an agent's change never runs. A step that cannot find its component looks behind the other tabs, and each look reaches `onValueChange` with source `agent`, so do not send analytics or URL updates from those changes without checking.
+
+`AgentProvider` also shows and announces every state change an agent makes ("Assistant changed Settings sections") in a polite live region at the bottom right, so the person sees it. A press that changes no component state, such as a submit button, is not announced there; show the result as the app normally would.
+
+<Canvas of={AgentStories.AgentChanges} />
+
+## Known gaps
+
+- The bridge still sees the page behind an open ui-sdk modal. Labels inside a dialog must differ from the page's.
+- Marks do not cross portals (above).
+- A step on a control inside a closed tab opens that tab before it asks the person, and the tab stays open when they say no. Treat tab changes with source `agent` as navigation, not intent.
+- There is no way to remove a bridge; it lives as long as the page.
+
+`npm run test:agent` drives each story above through the bridge in the built Storybook.
