@@ -1,0 +1,75 @@
+/*
+ * Loominist brand tint as the hover and active wash (lab preview).
+ *
+ * Loominist paints these states with its brand colour at a low alpha over the surface:
+ *   brand.css:83-86     outline button hover   #e7a0640d (5%) and a brand-colour border
+ *   setup.css:211-214   checked choice card    #e7a06408 (3%)
+ *   application.css:37-41  current nav link   #e7a06412 (7%) and brand-colour text
+ *   application.css:51-53  nav link hover     brand-colour text
+ * The brand colour is var(--primary) here, so every brand gets its own tint. Mixing in
+ * srgb against the opaque surface gives exactly the colour the hex alpha paints.
+ * Loominist has no light theme; the light values are its dark percentages unchanged.
+ *
+ * Shipping shape: the --tint-* values and the --accent override are brand CSS. The
+ * slot rules below are needed because stock ghost and outline buttons and table rows
+ * hover on --muted, not --accent. [data-lab-state="hover"] only draws the hover state
+ * at rest for the side-by-side comparison.
+ */
+
+[data-idea="brand-tint"] {
+  --tint-selected: 3%;
+  --tint-hover: 5%;
+  --tint-active: 7%;
+  --tint-wash-hover: color-mix(in srgb, var(--primary) var(--tint-hover), var(--background));
+  --tint-wash-selected: color-mix(in srgb, var(--primary) var(--tint-selected), var(--background));
+  --tint-wash-active: color-mix(in srgb, var(--primary) var(--tint-active), var(--background));
+  /* Menu and sub-menu highlights use the accent role on the popover surface. */
+  --accent: color-mix(in srgb, var(--primary) var(--tint-hover), var(--popover));
+  --accent-foreground: var(--popover-foreground);
+}
+
+[data-idea="brand-tint"]
+  [data-slot="button"]:is([data-variant="ghost"], [data-variant="outline"]):is(
+    :hover,
+    [aria-expanded="true"],
+    [data-lab-state="hover"]
+  ) {
+  background-color: var(--tint-wash-hover);
+  color: var(--foreground);
+}
+
+[data-idea="brand-tint"]
+  [data-slot="button"][data-variant="outline"]:is(
+    :hover,
+    [aria-expanded="true"],
+    [data-lab-state="hover"]
+  ) {
+  border-color: var(--primary);
+}
+
+[data-idea="brand-tint"] [data-slot="table-row"]:is(:hover, [data-lab-state="hover"]) {
+  background-color: var(--tint-wash-hover);
+}
+
+[data-idea="brand-tint"] [data-slot="table-row"][data-state="selected"] {
+  background-color: var(--tint-wash-selected);
+}
+
+[data-idea="brand-tint"] [data-slot="sliding-nav"] a:is(:hover, [data-lab-state="hover"]) {
+  color: var(--primary);
+}
+
+[data-idea="brand-tint"] [data-slot="sliding-nav"] a[aria-current="page"] {
+  background-color: var(--tint-wash-active);
+  color: var(--primary);
+}
+
+/* Forced colours drop every author background, so the wash disappears. Give the
+   highlighted menu item the system highlight instead, which stock does not. */
+@media (forced-colors: active) {
+  [data-idea="brand-tint"] [data-slot="dropdown-menu-item"]:is(:focus, [data-lab-state="hover"]) {
+    forced-color-adjust: none;
+    background-color: Highlight;
+    color: HighlightText;
+  }
+}
