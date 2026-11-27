@@ -24,13 +24,16 @@
 /* The destructive Button, Badge and menu item read the soft roles instead of the
    destructive red at 10% or 20%, which missed 4.5:1 in several brands. Hover marks the
    edge with the line rather than darkening the wash, so the text contrast holds. */
-:is(.group\/button, [data-slot="badge"])[data-variant="destructive"] {
+/* buttonVariants({ variant: "destructive" }) used as a className (a trigger or link styled as
+   a button) writes no data-variant, so its variant class identifies it too. */
+:is(.group\/button, [data-slot="badge"])[data-variant="destructive"],
+.group\/button.bg-destructive\/10 {
   background-color: var(--destructive-soft);
   color: var(--destructive-soft-foreground);
 }
 
 @media (hover: hover) {
-  .group\/button[data-variant="destructive"]:hover,
+  .group\/button:is([data-variant="destructive"], .bg-destructive\/10):hover,
   a[data-slot="badge"][data-variant="destructive"]:hover {
     border-color: var(--destructive-line);
   }
@@ -130,16 +133,27 @@
   }
 }
 
-/* Forced colours drop author backgrounds, and with them the wash. */
+/* Forced colours drop author backgrounds, and with them the wash. The extra [data-slot]
+   outranks the destructive item's soft wash (0,3,0), and the item's icon and shortcut take
+   HighlightText too, since forced-color-adjust: none passes their author colours through. */
 @media (forced-colors: active) {
   :is(
-    [data-slot="dropdown-menu-item"],
-    [data-slot="dropdown-menu-checkbox-item"],
-    [data-slot="dropdown-menu-radio-item"],
-    [data-slot="dropdown-menu-sub-trigger"],
-    [data-slot="select-item"],
-    [data-slot="combobox-item"]
-  ):is([data-highlighted], :focus) {
+      [data-slot="dropdown-menu-item"],
+      [data-slot="dropdown-menu-checkbox-item"],
+      [data-slot="dropdown-menu-radio-item"],
+      [data-slot="dropdown-menu-sub-trigger"],
+      [data-slot="select-item"],
+      [data-slot="combobox-item"]
+    )[data-slot]:is([data-highlighted], :focus),
+  :is(
+      [data-slot="dropdown-menu-item"],
+      [data-slot="dropdown-menu-checkbox-item"],
+      [data-slot="dropdown-menu-radio-item"],
+      [data-slot="dropdown-menu-sub-trigger"],
+      [data-slot="select-item"],
+      [data-slot="combobox-item"]
+    )[data-slot]:is([data-highlighted], :focus)
+    * {
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText;
@@ -162,15 +176,13 @@
   [data-slot="radio-group-item"],
   [data-slot="switch"],
   [data-slot="tabs-trigger"],
+  [data-slot="tabs-content"],
   [data-slot="scroll-area-viewport"],
   [data-slot="dropdown-menu-item"],
   [data-slot="dropdown-menu-checkbox-item"],
   [data-slot="dropdown-menu-radio-item"],
   [data-slot="dropdown-menu-sub-trigger"],
-  [data-slot="select-item"],
-  [data-slot="dropdown-menu-content"],
-  [data-slot="dropdown-menu-sub-content"],
-  [data-slot="select-content"]
+  [data-slot="select-item"]
 ):focus-visible,
 [data-slot="input-group"]:has([data-slot="input-group-control"]:focus-visible),
 [data-slot="field-label"]:has(> [data-slot="field"]):has(:focus-visible) {
@@ -183,8 +195,7 @@
   outline-offset: var(--focus-ring-offset-action);
 }
 
-/* Inside a container that clips, the outline is drawn inside the item. A menu or select
-   list that holds focus itself (no item highlighted yet) draws it inside its own edge. */
+/* Inside a container that clips, the outline is drawn inside the item. */
 :is(
     [data-slot="dropdown-menu-content"],
     [data-slot="dropdown-menu-sub-content"],
@@ -196,13 +207,20 @@
     [data-slot="table-container"]
   )
   :focus-visible,
+[data-slot="scroll-area-viewport"]:focus-visible {
+  outline-offset: var(--focus-ring-offset-inset);
+}
+
+/* A menu or select list that holds focus itself (no item highlighted yet) is never outlined,
+   as in Perkcord: the ring would box the whole popup and cover its edge. Without this, a list
+   inside a native modal dialog showed the browser's default outline. */
 :is(
-  [data-slot="scroll-area-viewport"],
   [data-slot="dropdown-menu-content"],
   [data-slot="dropdown-menu-sub-content"],
-  [data-slot="select-content"]
+  [data-slot="select-content"],
+  [data-slot="combobox-content"]
 ):focus-visible {
-  outline-offset: var(--focus-ring-offset-inset);
+  outline: none;
 }
 
 /* A choice card (a field inside its label) shows the outline on the card only. */
@@ -239,14 +257,15 @@
 @layer base {
   @media (pointer: coarse) {
     .group\/button,
-    [data-slot="select-trigger"] {
+    [data-slot="select-trigger"],
+    a[data-slot="badge"] {
       position: relative;
     }
   }
 }
 
 @media (pointer: coarse) {
-  :is(.group\/button, [data-slot="select-trigger"])::after,
+  :is(.group\/button, [data-slot="select-trigger"], a[data-slot="badge"])::after,
   [data-slot="tabs-trigger"]::before {
     content: "";
     position: absolute;
@@ -264,9 +283,19 @@
     inset-block: min(-0.5rem, calc((100% - var(--touch-target-min)) / 2));
   }
   /* A segmented control's radio already covers its whole segment; a wider hit area would
-     reach into the next segment. */
+     reach into the next segment, so only the small size grows, and only in height. */
   [data-slot="segmented-control-segment"] > [data-slot="radio-group-item"]::after {
-    inset: 0;
+    inset-inline: 0;
+    inset-block: min(0px, calc((100% - var(--touch-target-min)) / 2));
+  }
+
+  /* Sliding tabs scroll sideways, and the scroller clips a hit area outside the trigger, so
+     their triggers grow to 44px instead (a layout change on coarse pointers only). */
+  [data-slot="tabs-list"]:has(> [data-slot="tabs-indicator"]) {
+    height: auto;
+  }
+  [data-slot="tabs-list"]:has(> [data-slot="tabs-indicator"]) > [data-slot="tabs-trigger"] {
+    min-height: var(--touch-target-min);
   }
 
   :is(

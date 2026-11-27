@@ -67,12 +67,12 @@ const contrastAllowlist: Record<string, string> = {
   // Mantine red.6 / red.5 as error text.
   "chronote:light:background/destructive": "Mantine red.6, 3.12:1",
   "chronote:light:card/destructive": "Mantine red.6 on white, 3.28:1",
-  // Brand indigo as link text on the light page.
+  // Brand indigo as link text and as the selected sliding tab label on the light page.
   "chronote:light:background/primary": "product brand indigo, 4.35:1",
   // The product's destructive red used as error text.
   "perkcord:light:background/destructive": "product destructive red, 3.57:1",
   "perkcord:light:card/destructive": "product destructive red on white, 3.78:1",
-  // Product blue as link text on the light-theme page.
+  // Product blue as link text and as the selected sliding tab label on the light page.
   "vrdex:light:background/primary": "product primary blue, 4.40:1",
 };
 
@@ -224,5 +224,71 @@ describe("surfaces", () => {
     expect(theme).toContain('[data-transparency="reduce"]');
     const rules = readFileSync(path.join(root, "scripts/surfaces.css"), "utf8");
     expect(rules.replace(/\/\*[\s\S]*?\*\//g, "")).not.toContain("!important");
+  });
+});
+
+// Page text over the perkcord backdrop. axe cannot measure text on a gradient (it reports it
+// "incomplete"), so the backdrop's extreme points are composited here from its known stops
+// and checked against the roles used as page text. Each point names the literal it is built
+// from, and the first test fails if the backdrop stops using it. Perkcord's own scene values
+// that fall short stay as the product has them, listed with their ratio (Docs / Surfaces).
+const backdropAllowlist: Record<string, string> = {
+  "perkcord:light:sky-top/destructive": "product destructive red over the sky, 2.88:1",
+  "perkcord:light:tree-line/destructive": "product destructive red over the tree line, 2.72:1",
+};
+
+type BackdropPoint = {
+  name: string;
+  literal: string;
+  under: string;
+  scrim: number;
+  tint?: [string, number];
+};
+const backdropPoints: Record<string, BackdropPoint[]> = {
+  // Light: the sky's top stop under the 20% scrim, and the tree line (#0f2a1c at the product's
+  // 0.16) over the sky's #e2f2ec stop under the scrim at that height (about 30%).
+  light: [
+    { name: "sky-top", literal: "#c4dfed", under: "#c4dfed", scrim: 0.2 },
+    {
+      name: "tree-line",
+      literal: "#e2f2ec",
+      under: "#e2f2ec",
+      scrim: 0.3,
+      tint: ["#0f2a1c", 0.16],
+    },
+  ],
+  // Dark: the night glow's brightest stop under the 50% scrim (light text's worst case).
+  dark: [{ name: "night-glow", literal: "#204230", under: "#204230", scrim: 0.5 }],
+};
+
+describe.each(glass)("brand %s page text over the backdrop", (brand) => {
+  const css = readFileSync(path.join(root, `dist/brands/${brand}.css`), "utf8");
+  const blocks = parseBlocks(css);
+  it.each(["light", "dark"] as const)("%s mode", (mode) => {
+    const vars =
+      blocks.get(
+        mode === "light"
+          ? `[data-brand="${brand}"]`
+          : `[data-brand="${brand}"].dark, .dark [data-brand="${brand}"]`,
+      ) ?? {};
+    const light = blocks.get(`[data-brand="${brand}"]`) ?? {};
+    const backdrop = vars["--surface-backdrop"] ?? light["--surface-backdrop"] ?? "";
+    const bg = painted(vars["--background"]);
+    const failures: string[] = [];
+    for (const point of backdropPoints[mode]) {
+      expect(backdrop, `${mode} backdrop uses ${point.literal}`).toContain(point.literal);
+      if (point.tint) expect(backdrop).toContain(encodeURIComponent(point.tint[0]));
+      let under = painted(point.under);
+      if (point.tint) under = under.mix(painted(point.tint[0]), point.tint[1], { space: "srgb" });
+      const shown = under.mix(bg, point.scrim, { space: "srgb" });
+      for (const role of ["foreground", "muted-foreground", "destructive", "primary"]) {
+        const key = `${brand}:${mode}:${point.name}/${role}`;
+        const ratio = shown.contrast(painted(vars[`--${role}`]), "WCAG21");
+        const allowed = key in backdropAllowlist;
+        if (ratio < 4.5 && !allowed) failures.push(`${key} ${ratio.toFixed(2)}:1`);
+        if (ratio >= 4.5 && allowed) failures.push(`${key} passes; remove it from the allowlist`);
+      }
+    }
+    expect(failures).toEqual([]);
   });
 });

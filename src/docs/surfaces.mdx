@@ -18,11 +18,13 @@ Glass replaces the stock ring with a real 1px border at 13% foreground and a bri
 | Tooltip                                           | opaque `--popover`         | none                        | `0 18px 44px -20px` |
 | Card with `data-fill="uniform"`                   | 82% of `--background`      | as Card, no sheen           | as Card             |
 
-The Tooltip takes the popover colours in a glass brand, as Perkcord's tooltip does, instead of stock's inverted fill.
+The Tooltip takes the popover colours in a glass brand, as Perkcord's tooltip does, instead of stock's inverted fill; a `Kbd` inside it keeps its normal muted look.
+
+Glass menus also take Perkcord's menu geometry and highlight: items 36px tall with 6px by 10px padding, a 10px gap and 6px corners, menus at least 176px wide, and a highlight of 10% primary (the system's wash elsewhere is 5%) with normal text. The destructive item keeps the system's soft wash, which is contrast-checked; coarse pointers still get 44px rows.
 
 ## The page backdrop
 
-Glass only reads as glass when something is behind it. Put `data-surface-backdrop` on `<body>` or the app root to paint the brand's backdrop there (fixed to the viewport). For perkcord it is the product's community scene drawn in CSS gradients: a pale blue-to-mint sky with soft clouds and a tree-line haze along the bottom in light mode, a green night glow in dark mode, under a scrim of the page colour. Flat brands ignore the attribute, so it is safe to set everywhere; Storybook sets it on every story.
+Glass only reads as glass when something is behind it. Put `data-surface-backdrop` on `<body>` or the app root to paint the brand's backdrop there (fixed to the viewport). For perkcord it is the product's community scene with synthetic art in place of its images: in light mode a pale blue-to-mint sky with drawn clouds, in dark mode a green night glow with a star field at the product's 0.57, and in both a ridge and two rows of spruces along the bottom 45vh at the product's forest opacity (0.16 light, 0.36 dark), all under a scrim of the page colour. The art is inline SVG in the token, so there is nothing to host. The blur needs that detail behind it: over a smooth gradient a translucent panel looks like a flat card. Flat brands ignore the attribute, so it is safe to set everywhere; Storybook sets it on every story.
 
 ```html
 <html data-brand="perkcord">
@@ -31,6 +33,17 @@ Glass only reads as glass when something is behind it. Put `data-surface-backdro
   </body>
 </html>
 ```
+
+## Known contrast over the backdrop
+
+axe cannot measure text on a gradient, so `tests/tokens.test.ts` composites the backdrop's extreme points from its stops and checks the roles used as page text. Perkcord's destructive red, already below 4.5:1 on its plain page (3.57:1), falls further over the scene. It stays as the product has it and is listed in the test's backdrop allowlist:
+
+| Pair (perkcord light)                                   | Ratio  |
+| ------------------------------------------------------- | ------ |
+| `--destructive` text over the sky's top under the scrim | 2.88:1 |
+| `--destructive` text over the tree line under the scrim | 2.72:1 |
+
+Foreground, muted and primary text reach 4.5:1 at every point in both modes (primary lowest, 4.53:1 over the light tree line). Field errors and invalid labels are the affected text; on a card they sit on the card's fill instead.
 
 ## Long lists
 

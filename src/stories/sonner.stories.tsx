@@ -55,7 +55,15 @@ type Story = StoryObj<typeof meta>;
 
 export const Closed: Story = { play: async () => {} };
 
-export const Default: Story = {};
+// theme/motion.css retimes the toast; sonner's own transition must not win the cascade.
+export const Default: Story = {
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Show toast" }));
+    const [shown] = await findToasts();
+    const slow = getComputedStyle(document.documentElement).getPropertyValue("--duration-slow");
+    await expect(getComputedStyle(shown).transitionDuration).toBe(`${parseFloat(slow) / 1000}s`);
+  },
+};
 
 export const Types: Story = {
   parameters: { expand: true },
