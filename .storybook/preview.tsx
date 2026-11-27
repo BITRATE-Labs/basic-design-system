@@ -2,6 +2,7 @@ import { withThemeByClassName } from "@storybook/addon-themes";
 import type { Decorator, Preview, ReactRenderer } from "@storybook/react-vite";
 import { brands } from "../dist/tokens";
 import { TooltipProvider } from "../src/components/ui/tooltip";
+import { agent, AgentProvider } from "../src/components/ui-sdk/agent";
 import "../src/index.css";
 
 // Sets data-brand on <html> so the page background follows --background too.
@@ -16,6 +17,17 @@ const withTooltipProvider: Decorator = (Story) => (
     <Story />
   </TooltipProvider>
 );
+
+// Every story is agent-drivable: the bridge sees each ui-sdk part it renders, and
+// window.agent lets the browser console and tests/agent drive it (Docs / Agents).
+const withAgent: Decorator = (Story) => {
+  (window as { agent?: typeof agent }).agent = agent;
+  return (
+    <AgentProvider webmcp>
+      <Story />
+    </AgentProvider>
+  );
+};
 
 const preview: Preview = {
   globalTypes: {
@@ -37,6 +49,7 @@ const preview: Preview = {
     },
   },
   decorators: [
+    withAgent,
     withTooltipProvider,
     withBrand,
     withThemeByClassName<ReactRenderer>({
