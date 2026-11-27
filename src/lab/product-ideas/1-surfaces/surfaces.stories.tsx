@@ -57,12 +57,13 @@ import SettingsForm from "@/stories/settings-form.stories";
 import { ColumnHeading, LabPage, pinned, PinSlot } from "./stage";
 import "./surfaces.css";
 
-type Idea = "stock" | "lit-edge" | "glass";
+type Idea = "stock" | "lit-edge" | "glass" | "glass-contrast";
 
 const ideaAttr: Record<Idea, string | undefined> = {
   stock: undefined,
   "lit-edge": "lit-edge",
   glass: "lit-edge glass",
+  "glass-contrast": "lit-edge glass glass-contrast",
 };
 
 const labels: Record<Idea, { title: string; source: string }> = {
@@ -74,6 +75,11 @@ const labels: Record<Idea, { title: string; source: string }> = {
   glass: {
     title: "Lit-edge glass",
     source: "Perkcord: the same with a translucent fill and backdrop blur",
+  },
+  "glass-contrast": {
+    title: "Lit-edge glass, adjusted for contrast",
+    source:
+      "Not Perkcord: glass on menus only, at 92%; panels, dialogs, sheets and popovers opaque",
   },
 };
 
@@ -199,6 +205,8 @@ function SurfaceColumn({
   );
 }
 
+const cols: Record<number, string> = { 2: "grid-cols-2", 3: "grid-cols-3" };
+
 function CompareSurfaces({
   busy,
   ideas = ["stock", "lit-edge", "glass"],
@@ -208,13 +216,13 @@ function CompareSurfaces({
 }) {
   return (
     <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-3 gap-6 px-6">
+      <div className={`grid ${cols[ideas.length]} gap-6 px-6`}>
         {ideas.map((idea) => (
           <ColumnHeading key={idea} {...labels[idea]} />
         ))}
       </div>
       <LabPage busy={busy} className="p-6">
-        <div className="grid grid-cols-3 gap-6">
+        <div className={`grid ${cols[ideas.length]} gap-6`}>
           {ideas.map((idea) => (
             <SurfaceColumn key={idea} idea={idea} id={`${idea}-${busy ? "busy" : "calm"}`} />
           ))}
@@ -246,6 +254,14 @@ export const Compare: Story = {
 export const CompareOverBusyBackground: Story = {
   name: "Compare over a busy background",
   render: () => <CompareSurfaces busy />,
+  play: settle,
+};
+
+// Perkcord's 36% panel fill drops muted and destructive text below 4.5:1 over a busy page in
+// several brands (see the notes); this compares it with glass kept on menus only, at 92%.
+export const GlassAdjustedForContrast: Story = {
+  name: "Glass adjusted for contrast, over a busy background",
+  render: () => <CompareSurfaces busy ideas={["glass", "glass-contrast"]} />,
   play: settle,
 };
 
@@ -372,4 +388,9 @@ export const LitEdgeInAPage: Story = {
 export const GlassInAPage: Story = {
   name: "Glass in a page",
   render: () => <InAPage idea="glass" />,
+};
+
+export const GlassAdjustedInAPage: Story = {
+  name: "Glass adjusted for contrast in a page",
+  render: () => <InAPage idea="glass-contrast" />,
 };

@@ -1,11 +1,11 @@
 /*
  * Lab: 6. Lists and rows. Two ideas, each applied by scope so the stock components stay untouched.
  *
- *   data-idea~="ruled-list"      drasil's one-surface ruled list (apps/web/app/globals.css, .inbox-list
+ *   data-idea~="ruled-list"      drasil's one-surface ruled list (globals.css, .inbox-list
  *                                and .inbox-row), with the rail drawn as Chronote's inset shadow
- *                                (uiTokens.ts accentInset) and selecta's focus-within highlight and
- *                                phone-width wrap (apps/web/app/globals.css, .ui-track-row).
- *   data-idea~="reveal-actions"  Chronote's hover-reveal secondary actions (src/frontend/index.css,
+ *                                (uiTokens.ts accentInset), and a smaller internal app's
+ *                                focus-within highlight and phone-width wrap (.ui-track-row).
+ *   data-idea~="reveal-actions"  Chronote's hover-reveal secondary actions (index.css,
  *                                .ask-feedback-actions). Hidden only under (hover: hover).
  *
  * The rules are unlayered on purpose: stock components style themselves with Tailwind utilities,
@@ -32,7 +32,7 @@
   --ruled-row-selected: color-mix(in oklab, var(--foreground) 7%, var(--ruled-list-surface));
   /* drasil --accent-soft is its accent at about 10% over the panel in light (#e4f7ee over #fff). */
   --ruled-row-checked: color-mix(in oklab, var(--primary) 10%, var(--ruled-list-surface));
-  /* selecta lifts the row on hover and focus-within. */
+  /* A smaller internal app lifts the row on hover and focus-within. */
   --ruled-row-focus: color-mix(in oklab, var(--foreground) 4%, var(--ruled-list-surface));
   --ruled-row-duration: 160ms;
   --ruled-row-ease: ease;
@@ -94,7 +94,7 @@
   transition: box-shadow var(--ruled-row-duration) var(--ruled-row-ease);
 }
 
-/* Hover and focus-within (selecta): keyboard users get the same row feedback as the mouse. */
+/* Hover and focus-within (a smaller internal app): keyboard users get the same row feedback as the mouse. */
 [data-idea~="ruled-list"] [role="list"] > [data-slot="card"]:is(:hover, :focus-within),
 [data-idea~="ruled-list"]
   [data-slot="table-body"]
@@ -129,7 +129,26 @@
   background: linear-gradient(0deg, var(--ruled-row-checked), var(--ruled-row-selected));
 }
 
-/* Phone width (selecta, 40rem): the actions drop below the text instead of squeezing it. */
+/* Adjusted for contrast (not drasil): on the selected and checked washes the stock muted
+   description drops below 4.5:1 (basic light 3.76:1, where stock is 4.74:1). This variant
+   darkens it toward the foreground on washed, hovered and focused rows only. */
+[data-idea~="ruled-list-contrast"] {
+  --ruled-row-washed-muted: color-mix(in oklab, var(--muted-foreground), var(--foreground) 50%);
+}
+
+[data-idea~="ruled-list-contrast"]
+  [role="list"]
+  > [data-slot="card"]:is(
+    :hover,
+    :focus-within,
+    [aria-current="true"],
+    :has([data-slot="checkbox"][data-checked])
+  )
+  [data-slot="card-description"] {
+  color: var(--ruled-row-washed-muted);
+}
+
+/* Phone width (a smaller internal app, 40rem): the actions drop below the text instead of squeezing it. */
 @media (max-width: 40rem) {
   [data-idea~="ruled-list"]
     [role="list"]
@@ -170,6 +189,14 @@
 [data-idea~="reveal-actions"] {
   --reveal-actions-duration: 120ms;
   --reveal-actions-ease: ease;
+}
+
+/* Chronote's stylesheet asks for this 120ms fade, but its always-on colour-scheme rule
+   (html[data-mantine-color-scheme] #root *, higher specificity) replaces the transition list
+   and leaves opacity out, so in production the actions appear at once. data-reveal-timing=
+   "as-rendered" shows that. */
+[data-idea~="reveal-actions"][data-reveal-timing="as-rendered"] {
+  --reveal-actions-duration: 0ms;
 }
 
 [data-idea~="reveal-actions"] [data-reveal-target] {

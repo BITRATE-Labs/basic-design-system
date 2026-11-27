@@ -2,7 +2,7 @@
  * drasil status triads (lab preview): every status has a text colour, a soft wash and a
  * line, and a callout can be drawn as a left rule with no box.
  *
- * Source: drasil apps/web/app/globals.css (origin/main e30a726a)
+ * Source: drasil globals.css
  *   1-55     light triads (--ok, --warn, --danger, --info with -bg and -line)
  *   177-225  dark triads, retuned rather than inverted
  *   614-652  .status: border = line, background = wash, colour = text

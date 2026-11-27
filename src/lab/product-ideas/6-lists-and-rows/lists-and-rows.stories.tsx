@@ -4,15 +4,19 @@ import { expect, userEvent, within } from "storybook/test";
 import "./lists-and-rows.css";
 import { Subjects } from "./rows";
 
-type Args = { revealActions: boolean };
+type Args = { revealActions: boolean; revealAsRendered: boolean };
 
 const meta = {
   title: "Lab/Product ideas/6. Lists and rows",
   parameters: { layout: "padded" },
-  args: { revealActions: false },
+  args: { revealActions: false, revealAsRendered: false },
   argTypes: {
     revealActions: {
       name: "Hover-reveal secondary actions (Chronote)",
+      control: "boolean",
+    },
+    revealAsRendered: {
+      name: "Reveal timing: on is Chronote as it renders (instant); off is its stylesheet's 120ms fade",
       control: "boolean",
     },
   },
@@ -25,17 +29,23 @@ function Option({
   label,
   idea,
   emulatePointer,
+  asRendered,
   children,
 }: {
   label: string;
   idea: string;
   emulatePointer?: "coarse";
+  asRendered?: boolean;
   children: ReactNode;
 }) {
   return (
     <section aria-label={label} className="flex min-w-0 flex-col gap-3">
       <h2 className="text-sm font-medium text-muted-foreground">{label}</h2>
-      <div data-idea={idea || undefined} data-emulate-pointer={emulatePointer}>
+      <div
+        data-idea={idea || undefined}
+        data-emulate-pointer={emulatePointer}
+        data-reveal-timing={asRendered ? "as-rendered" : undefined}
+      >
         {children}
       </div>
     </section>
@@ -46,12 +56,27 @@ const ideas = (base: string, reveal: boolean) =>
   [base, reveal ? "reveal-actions" : ""].filter(Boolean).join(" ");
 
 export const Compare: Story = {
-  render: ({ revealActions }) => (
-    <div className="grid gap-8 lg:grid-cols-2">
-      <Option label="Stock: a stack of Cards and the stock Table" idea={ideas("", revealActions)}>
+  render: ({ revealActions, revealAsRendered }) => (
+    <div className="grid gap-8 lg:grid-cols-2 2xl:grid-cols-3">
+      <Option
+        label="Stock: a stack of Cards and the stock Table"
+        idea={ideas("", revealActions)}
+        asRendered={revealAsRendered}
+      >
         <Subjects />
       </Option>
-      <Option label="One-surface ruled list (drasil)" idea={ideas("ruled-list", revealActions)}>
+      <Option
+        label="One-surface ruled list (drasil)"
+        idea={ideas("ruled-list", revealActions)}
+        asRendered={revealAsRendered}
+      >
+        <Subjects />
+      </Option>
+      <Option
+        label="One-surface ruled list (drasil), adjusted for contrast: darker muted text on washed rows"
+        idea={ideas("ruled-list ruled-list-contrast", revealActions)}
+        asRendered={revealAsRendered}
+      >
         <Subjects />
       </Option>
     </div>
@@ -64,7 +89,7 @@ export const CompareWithRevealActions: Story = {
   render: Compare.render,
 };
 
-// Ruled list, keyboard focus on the third row's checkbox: the focus-within highlight (selecta),
+// Ruled list, keyboard focus on the third row's checkbox: the focus-within highlight (a smaller internal app),
 // beside the selected rail on row 2 and the checked wash on rows 2 and 3.
 export const RuledListFocusWithin: Story = {
   name: "Ruled list: focus within a row",

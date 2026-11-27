@@ -2,10 +2,12 @@
  * Loominist focus outline (lab preview): a solid 2px outline in the brand colour, offset
  * from the control, and drawn inside the item where a container would clip it.
  *
- * Source: Loominist (origin/main)
+ * Source: Loominist
  *   setup.css:155-159, rules/system-sheet.css:60-61  inputs and controls: 2px solid, offset 3px
  *   setup.css:215-218, application.css:46-50         cards and header links: offset 4px
  *   brand/brand.css:88-91                            a, button, summary: offset 5px
+ * Here buttons and links take 5px and form controls 3px; the 4px of cards and header links
+ * has no stock counterpart in the subjects.
  * Loominist's --ring is its brand colour, so the outline uses var(--primary) here (in
  * several brands --ring is a grey or a translucent tint). The inset -2px inside menus,
  * lists and scroll areas is Chronote's and Perkcord's (MeetingSources.module.css, menu
@@ -18,7 +20,10 @@
 
 [data-idea="focus-outline"] {
   --focus-ring-width: 2px;
+  /* Loominist's form controls (setup.css inputs, selects and textareas; a checkbox there is a
+     native input) sit 3px out; its brand-wide a, button and summary rule sits 5px out. */
   --focus-ring-offset: 3px;
+  --focus-ring-offset-action: 5px;
   --focus-ring-offset-inset: -2px;
   --focus-ring-color: var(--primary);
 }
@@ -38,6 +43,11 @@
   outline: var(--focus-ring-width) solid var(--focus-ring-color);
   outline-offset: var(--focus-ring-offset);
   box-shadow: none;
+}
+
+[data-idea="focus-outline"]
+  :is([data-slot="button"], a):is(:focus-visible, [data-lab-state="focus"]) {
+  outline-offset: var(--focus-ring-offset-action);
 }
 
 /* Inputs also take the brand colour on their border, as Loominist's setup inputs do. */
@@ -60,6 +70,30 @@
 [data-idea="focus-outline"]
   [data-slot="scroll-area-viewport"]:is(:focus-visible, [data-lab-state="focus"]) {
   outline-offset: var(--focus-ring-offset-inset);
+}
+
+/* Perkcord pairs the inset outline on menu items with a primary/10 wash, not the solid
+   --accent highlight: in brands where --accent is the primary (loominist) the outline would
+   vanish into it. Stock already gives destructive items a destructive/10 wash. Stock also
+   paints the item's descendants in --accent-foreground, so they inherit the item colour. */
+[data-idea="focus-outline"]
+  [data-slot="dropdown-menu-item"]:not([data-variant="destructive"]):is(
+    :focus,
+    [data-highlighted],
+    [data-lab-state="focus"]
+  ) {
+  background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+  color: var(--popover-foreground);
+}
+
+[data-idea="focus-outline"]
+  [data-slot="dropdown-menu-item"]:not([data-variant="destructive"]):is(
+    :focus,
+    [data-highlighted],
+    [data-lab-state="focus"]
+  )
+  * {
+  color: inherit;
 }
 
 /* Forced colours remove box-shadow, which is the whole stock ring; an outline survives.

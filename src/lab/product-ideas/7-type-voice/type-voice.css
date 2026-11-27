@@ -1,7 +1,7 @@
 /*
  * Lab: 7. Type voice. Two ideas, applied by scope; the stock components keep their own classes.
  *
- *   data-idea~="role-scale"       Perkcord's role-named type scale (apps/web/app/globals.css,
+ *   data-idea~="role-scale"       Perkcord's role-named type scale (globals.css,
  *                                 @theme static, and the h1/h2/h3 base styles). Shipped, these are
  *                                 Tailwind @theme text tokens (--text-title plus
  *                                 --text-title--line-height and --text-title--font-weight), so
