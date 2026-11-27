@@ -8,6 +8,8 @@ export function RawElements() {
         <option>Small</option>
       </select>
       <textarea name="notes" />
+      <input type="checkbox" name="agree" />
+      <input type="hidden" name="draft" value="sample-1" />
     </form>
   );
 }
