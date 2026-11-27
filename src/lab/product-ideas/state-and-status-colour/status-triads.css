@@ -1,0 +1,131 @@
+/*
+ * drasil status triads (lab preview): every status has a text colour, a soft wash and a
+ * line, and a callout can be drawn as a left rule with no box.
+ *
+ * Source: drasil apps/web/app/globals.css (origin/main e30a726a)
+ *   1-55     light triads (--ok, --warn, --danger, --info with -bg and -line)
+ *   177-225  dark triads, retuned rather than inverted
+ *   614-652  .status: border = line, background = wash, colour = text
+ *   1453-1468 .cleanup-coverage: border-left 3px solid <line>, padding-left 10px
+ *
+ * Two colour sources:
+ *   data-status-colours="drasil"  drasil's own hex values (its green brand), for reference
+ *   data-status-colours="roles"   the same triad derived from each brand's success,
+ *                                 warning, info and destructive roles with color-mix
+ * The role mix percentages are fitted to drasil's triads (wash about 13% light, 19% dark;
+ * line about 45% light, 47% dark). The text mix (60% role, 40% card foreground) is not
+ * drasil's: it is the highest role share that keeps 4.5:1 on the wash in all five brands.
+ *
+ * Two forms on the stock Alert, selected by data-idea, toned by data-tone:
+ *   data-idea="status-triad"    line border, wash background, toned text
+ *   data-idea="status-callout"  3px inline-start rule, 10px padding, no box
+ */
+
+[data-status-colours="roles"] {
+  --status-wash-mix: 13%;
+  --status-line-mix: 45%;
+  --status-text-mix: 60%;
+  --success-text: color-mix(
+    in oklab,
+    var(--success) var(--status-text-mix),
+    var(--card-foreground)
+  );
+  --success-soft: color-mix(in srgb, var(--success) var(--status-wash-mix), var(--card));
+  --success-line: color-mix(in srgb, var(--success) var(--status-line-mix), var(--card));
+  --warning-text: color-mix(
+    in oklab,
+    var(--warning) var(--status-text-mix),
+    var(--card-foreground)
+  );
+  --warning-soft: color-mix(in srgb, var(--warning) var(--status-wash-mix), var(--card));
+  --warning-line: color-mix(in srgb, var(--warning) var(--status-line-mix), var(--card));
+  --info-text: color-mix(in oklab, var(--info) var(--status-text-mix), var(--card-foreground));
+  --info-soft: color-mix(in srgb, var(--info) var(--status-wash-mix), var(--card));
+  --info-line: color-mix(in srgb, var(--info) var(--status-line-mix), var(--card));
+  --destructive-text: color-mix(
+    in oklab,
+    var(--destructive) var(--status-text-mix),
+    var(--card-foreground)
+  );
+  --destructive-soft: color-mix(in srgb, var(--destructive) var(--status-wash-mix), var(--card));
+  --destructive-line: color-mix(in srgb, var(--destructive) var(--status-line-mix), var(--card));
+}
+
+.dark [data-status-colours="roles"] {
+  --status-wash-mix: 19%;
+  --status-line-mix: 47%;
+}
+
+[data-status-colours="drasil"] {
+  --success-text: #0a7b4b;
+  --success-soft: #e4f7ee;
+  --success-line: #9adbb9;
+  --warning-text: #9a5b00;
+  --warning-soft: #fff3d6;
+  --warning-line: #e3b45e;
+  --info-text: #245bb3;
+  --info-soft: #eaf1ff;
+  --info-line: #a8bfee;
+  --destructive-text: #b42318;
+  --destructive-soft: #fff0ee;
+  --destructive-line: #eea39c;
+}
+
+.dark [data-status-colours="drasil"] {
+  --success-text: #77dba9;
+  --success-soft: #123525;
+  --success-line: #2f895f;
+  --warning-text: #ffd27a;
+  --warning-soft: #352812;
+  --warning-line: #7d5a1c;
+  --info-text: #9bbcff;
+  --info-soft: #142747;
+  --info-line: #35598f;
+  --destructive-text: #ff9b94;
+  --destructive-soft: #351817;
+  --destructive-line: #86403b;
+}
+
+[data-slot="alert"][data-tone="success"] {
+  --tone-text: var(--success-text);
+  --tone-soft: var(--success-soft);
+  --tone-line: var(--success-line);
+}
+[data-slot="alert"][data-tone="warning"] {
+  --tone-text: var(--warning-text);
+  --tone-soft: var(--warning-soft);
+  --tone-line: var(--warning-line);
+}
+[data-slot="alert"][data-tone="info"] {
+  --tone-text: var(--info-text);
+  --tone-soft: var(--info-soft);
+  --tone-line: var(--info-line);
+}
+[data-slot="alert"][data-tone="destructive"] {
+  --tone-text: var(--destructive-text);
+  --tone-soft: var(--destructive-soft);
+  --tone-line: var(--destructive-line);
+}
+
+/* drasil's .status chip colours, without its uppercase 800-weight chip shape. */
+[data-idea="status-triad"] [data-slot="alert"][data-tone] {
+  border-color: var(--tone-line);
+  background-color: var(--tone-soft);
+  color: var(--tone-text);
+}
+[data-idea="status-triad"] [data-slot="alert"][data-tone] [data-slot="alert-description"] {
+  color: inherit;
+}
+
+/* drasil's .cleanup-coverage callout. Inline-start rather than left, so it flips in RTL. */
+[data-idea="status-callout"] [data-slot="alert"][data-tone] {
+  border: 0;
+  border-inline-start: 3px solid var(--tone-line);
+  border-radius: 0;
+  background-color: transparent;
+  padding-block: 0;
+  padding-inline: 10px 0;
+}
+
+/* Forced colours replace the line colour with the system text colour; the rule stays
+   visible, so the status must also be in the words (every title here names it). */
