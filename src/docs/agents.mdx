@@ -11,7 +11,7 @@ ui-sdk is in beta (`0.1.0-beta.17`, pinned exactly) and allowed in products. Beh
 
 ## What the bridge covers
 
-**Only ui-sdk components.** "Agent-drivable" means the UI SDK items only: a page built from the stock components shows the agent nothing (`snapshot()` returns `[]`). The bridge does not see the stock shadcn components on Base UI: `button`, `input`, `field`, `dialog`, `dropdown-menu`, `tabs`, `tooltip`, `popover` and the rest of `src/components/ui` are invisible to it, and the agent tests check that. A wrapper over a Base UI component can expose its open or value state, but nothing inside its portal, so it is not offered here. On a surface an agent operates, every control the agent must touch is a ui-sdk part, and Base UI controls are not mixed in: the agent would see half the page.
+**Only ui-sdk components.** "Agent-drivable" means the UI SDK items only: a page built from the stock components shows the agent nothing (`snapshot()` returns `[]`). The bridge does not see the stock shadcn components on Base UI: `button`, `input`, `field`, `dialog`, `dropdown-menu`, `tabs`, `tooltip`, `popover` and the rest of `src/components/ui` are invisible to it, and the agent tests check that. A wrapper over a Base UI component can expose its open or value state, but nothing inside its portal, so it is not offered here. A product's agent-drivable controls are the `sdk-*` registry items; a surface that needs an agent-pressable button or text field needs a new `sdk-*` wrapper, not a raw `@ui-sdk/*` import (the lint preset reports one). The stories below use raw UI SDK parts on purpose and are not a pattern to copy.
 
 ## Set up the app root
 

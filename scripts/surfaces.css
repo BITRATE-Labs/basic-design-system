@@ -28,6 +28,8 @@
       [data-slot="dropdown-menu-sub-content"],
       [data-slot="select-content"],
       [data-slot="combobox-content"],
+      [data-slot="date-picker-content"],
+      [data-slot="trigger-menu-content"],
       [data-slot="tooltip-content"]
     ) {
     border: 1px solid var(--surface-edge);
@@ -76,7 +78,9 @@
       [data-slot="dropdown-menu-content"],
       [data-slot="dropdown-menu-sub-content"],
       [data-slot="select-content"],
-      [data-slot="combobox-content"]
+      [data-slot="combobox-content"],
+      [data-slot="date-picker-content"],
+      [data-slot="trigger-menu-content"]
     ) {
     background-color: var(--popover);
     box-shadow: var(--surface-highlight), var(--surface-shadow-menu);
@@ -145,7 +149,9 @@
         [data-slot="dropdown-menu-radio-item"],
         [data-slot="dropdown-menu-sub-trigger"],
         [data-slot="select-item"],
-        [data-slot="combobox-item"]
+        [data-slot="combobox-item"],
+        [data-slot="trigger-menu-item"],
+        [data-slot="command-item"]
       ):is(:focus, [data-highlighted], [data-open], [data-popup-open]) {
       background-color: color-mix(in srgb, var(--primary) 10%, var(--popover));
     }
@@ -187,7 +193,9 @@
           [data-slot="dropdown-menu-content"],
           [data-slot="dropdown-menu-sub-content"],
           [data-slot="select-content"],
-          [data-slot="combobox-content"]
+          [data-slot="combobox-content"],
+          [data-slot="date-picker-content"],
+          [data-slot="trigger-menu-content"]
         ):not([data-transparency="reduce"], [data-transparency="reduce"] *) {
         background-color: var(--surface-fill-menu);
         backdrop-filter: var(--surface-blur-menu);
@@ -199,7 +207,9 @@
           [data-slot="dropdown-menu-content"],
           [data-slot="dropdown-menu-sub-content"],
           [data-slot="select-content"],
-          [data-slot="combobox-content"]
+          [data-slot="combobox-content"],
+          [data-slot="trigger-menu-content"],
+          [data-slot="dialog-content"]
         ):not([data-transparency="reduce"], [data-transparency="reduce"] *)
         :is(
           [data-slot="dropdown-menu-item"],
@@ -207,7 +217,9 @@
           [data-slot="dropdown-menu-radio-item"],
           [data-slot="dropdown-menu-sub-trigger"],
           [data-slot="select-item"],
-          [data-slot="combobox-item"]
+          [data-slot="combobox-item"],
+          [data-slot="trigger-menu-item"],
+          [data-slot="command-item"]
         ):is(:focus, [data-highlighted], [data-open], [data-popup-open]) {
         background-color: color-mix(in srgb, var(--primary) 10%, transparent);
       }
@@ -249,7 +261,9 @@
         [data-slot="dropdown-menu-content"],
         [data-slot="dropdown-menu-sub-content"],
         [data-slot="select-content"],
-        [data-slot="combobox-content"]
+        [data-slot="combobox-content"],
+        [data-slot="date-picker-content"],
+        [data-slot="trigger-menu-content"]
       ) {
       background-image: none;
     }

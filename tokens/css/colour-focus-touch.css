@@ -182,9 +182,13 @@
   [data-slot="dropdown-menu-checkbox-item"],
   [data-slot="dropdown-menu-radio-item"],
   [data-slot="dropdown-menu-sub-trigger"],
-  [data-slot="select-item"]
+  [data-slot="select-item"],
+  [data-slot="calendar-day"],
+  [data-slot="token-input-editor"]
 ):focus-visible,
 [data-slot="input-group"]:has([data-slot="input-group-control"]:focus-visible),
+[data-slot="date-picker-group"]:has([data-slot="date-picker-input"]:focus-visible),
+[data-slot="otp-input-slot"][data-active],
 [data-slot="field-label"]:has(> [data-slot="field"]):has(:focus-visible) {
   outline: var(--focus-ring-width) solid var(--focus-ring-color, var(--ring));
   outline-offset: var(--focus-ring-offset);
@@ -207,8 +211,17 @@
     [data-slot="table-container"]
   )
   :focus-visible,
-[data-slot="scroll-area-viewport"]:focus-visible {
+[data-slot="scroll-area-viewport"]:focus-visible,
+[data-slot="calendar-day"]:focus-visible {
   outline-offset: var(--focus-ring-offset-inset);
+}
+
+/* UI SDK fields (src/components/ui-sdk) draw the stock ring on focus-within or on the active
+   OTP slot; the outline above replaces it. The date picker group outlines only while its
+   input has focus: its trigger button outlines itself. */
+[data-slot="date-picker-group"]:focus-within,
+[data-slot="otp-input-slot"][data-active] {
+  --tw-ring-shadow: 0 0 #0000;
 }
 
 /* A menu or select list that holds focus itself (no item highlighted yet) is never outlined,
