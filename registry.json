@@ -140,6 +140,20 @@
       ]
     },
     {
+      "name": "segmented-control",
+      "type": "registry:ui",
+      "title": "Segmented control",
+      "description": "Single-choice control drawn as one track with a sliding thumb and weighted option widths, built on the stock radio group.",
+      "dependencies": ["@base-ui/react", "class-variance-authority", "cn"],
+      "registryDependencies": ["BITRATE-Labs/basic-design-system/radio-group#v0.1.0"],
+      "files": [
+        {
+          "path": "src/components/ui/segmented-control.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "kbd",
       "type": "registry:ui",
       "title": "Kbd",
@@ -195,7 +209,7 @@
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
-      "description": "Stock shadcn/ui select on Base UI.",
+      "description": "Stock shadcn/ui select on Base UI. Takes a portal container for top-layer elements.",
       "dependencies": ["@base-ui/react", "cn", "lucide-react"],
       "files": [
         {
@@ -265,7 +279,7 @@
       "name": "combobox",
       "type": "registry:ui",
       "title": "Combobox",
-      "description": "Stock shadcn/ui combobox on Base UI.",
+      "description": "Stock shadcn/ui combobox on Base UI. Takes a portal container for top-layer elements.",
       "dependencies": ["@base-ui/react", "cn", "lucide-react"],
       "registryDependencies": [
         "BITRATE-Labs/basic-design-system/button#v0.1.0",

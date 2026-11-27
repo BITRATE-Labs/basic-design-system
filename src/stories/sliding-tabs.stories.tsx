@@ -117,7 +117,7 @@ export const Default: Story = {
     const before = lefts(tabs);
     await userEvent.click(canvas.getByRole("tab", { name: "Files" }));
     await expectIndicatorUnder(canvasElement, canvas.getByRole("tab", { name: "Files" }));
-    // The semibold selected label keeps its width: nothing moves.
+    // Selection changes colour only, so nothing moves.
     await expectUnmoved(tabs, before);
     await userEvent.keyboard("{ArrowRight}{Enter}");
     await expect(canvas.getByRole("tab", { name: "Settings" })).toHaveAttribute(
