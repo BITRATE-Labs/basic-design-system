@@ -60,8 +60,10 @@ export const Default: Story = {
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("button", { name: "Show toast" }));
     const [shown] = await findToasts();
+    // The token reads "420ms" or "0.42s" depending on the engine; compare in seconds.
     const slow = getComputedStyle(document.documentElement).getPropertyValue("--duration-slow");
-    await expect(getComputedStyle(shown).transitionDuration).toBe(`${parseFloat(slow) / 1000}s`);
+    const seconds = parseFloat(slow) / (slow.trim().endsWith("ms") ? 1000 : 1);
+    await expect(parseFloat(getComputedStyle(shown).transitionDuration)).toBeCloseTo(seconds, 3);
   },
 };
 
