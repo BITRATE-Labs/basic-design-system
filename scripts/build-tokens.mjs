@@ -21,6 +21,9 @@
 //   dist/brands/<name>.css  roles scoped to [data-brand="<name>"]
 //   dist/brands/<name>.js   concrete hex/rgba values for JS theme objects (Mantine, MUI), + .d.ts
 //   dist/brands.css         imports every brand CSS file (Storybook)
+//
+// Surfaces: an optional "surface" block per brand (see the Surfaces section below) adds
+// --surface-* properties to that brand's CSS and the glass rules to dist/theme.css.
 import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import Color from "colorjs.io";
@@ -81,7 +84,7 @@ async function buildBrand(name) {
       shared: roles.filter((t) => t.path[0] !== "color"),
     };
   }
-  return { name, ...modes };
+  return { name, ...modes, surface: surfaceOf(name, file) };
 }
 
 // MUI and other JS colour helpers do not parse oklch, so JS outputs get sRGB:
@@ -140,6 +143,55 @@ const themeLines = (roleNames) => [
   "  --radius-4xl: calc(var(--radius) * 2.6);",
 ];
 
+// ---- Surfaces ---------------------------------------------------------------------------
+// A brand file may add "surface": { "style": { "$value": "flat" | "glass" }, "light": {...},
+// "dark": {...} }. Flat (the default, or no block) keeps stock surfaces. Glass needs every key
+// below in both modes; each is a CSS value written as --surface-<key> into the brand CSS, and
+// scripts/surfaces.css (the rules that use them) goes into dist/theme.css scoped to the glass
+// brands. Docs / Surfaces describes each value.
+const SURFACE_KEYS = [
+  "fill-panel",
+  "fill-dialog",
+  "fill-menu",
+  "fill-uniform",
+  "blur",
+  "blur-menu",
+  "sheen",
+  "edge",
+  "edge-top",
+  "highlight",
+  "shadow",
+  "shadow-menu",
+  "backdrop",
+];
+
+function surfaceOf(name, file) {
+  const style = file.surface?.style?.$value ?? "flat";
+  if (style === "flat") return null;
+  if (style !== "glass") throw new Error(`brands/${name}: surface.style must be flat or glass`);
+  const modes = {};
+  for (const mode of MODES) {
+    modes[mode] = SURFACE_KEYS.map((key) => {
+      const value = file.surface[mode]?.[key]?.$value;
+      if (typeof value !== "string")
+        throw new Error(`brands/${name}: missing surface.${mode}.${key}`);
+      return `  --surface-${key}: ${value};`;
+    }).join("\n");
+  }
+  return modes;
+}
+
+// The --surface-* lines go inside the brand's own light and dark blocks.
+const withSurface = (css, lines) => (lines ? css.replace(/}\n$/, `${lines}\n}\n`) : css);
+
+async function surfaceTheme(glassBrands) {
+  if (!glassBrands.length) return "";
+  const scope = glassBrands.map((n) => `[data-brand="${n}"]`).join(", ");
+  const css = await readFile(path.join(root, "scripts/surfaces.css"), "utf8");
+  return "\n" + css.replaceAll('[data-surface="glass"]', scope);
+}
+// ---- End surfaces ------------------------------------------------------------------------
+
 async function main() {
   await rm(dist, { recursive: true, force: true });
   await mkdir(path.join(dist, "brands"), { recursive: true });
@@ -159,8 +211,8 @@ async function main() {
     await writeFile(
       path.join(dist, "brands", `${b.name}.css`),
       header +
-        block(sel, [...b.light.colors, ...b.light.shared]) +
-        block(`${sel}.dark,\n.dark ${sel}`, b.dark.colors),
+        withSurface(block(sel, [...b.light.colors, ...b.light.shared]), b.surface?.light) +
+        withSurface(block(`${sel}.dark,\n.dark ${sel}`, b.dark.colors), b.surface?.dark),
     );
     await writeModule(path.join(dist, "brands", b.name), { default: brandValue(b) });
   }
@@ -192,7 +244,8 @@ async function main() {
     path.join(dist, "theme.css"),
     header +
       "@custom-variant dark (&:is(.dark *));\n\n" +
-      `@theme inline {\n${[...themeLines(roleNames), ...scaleTheme].join("\n")}\n}\n`,
+      `@theme inline {\n${[...themeLines(roleNames), ...scaleTheme].join("\n")}\n}\n` +
+      (await surfaceTheme(brands.filter((b) => b.surface).map((b) => b.name))),
   );
 
   console.log(`tokens: built ${brandNames.length} brand(s): ${brandNames.join(", ")}`);

@@ -11,6 +11,13 @@ const withBrand: Decorator = (Story, context) => {
   return <Story />;
 };
 
+// Glass brands paint their page backdrop behind every story, as the product does, so the
+// surfaces are judged over it. Flat brands ignore the attribute (Docs / Surfaces).
+const withSurfaceBackdrop: Decorator = (Story) => {
+  document.body.dataset.surfaceBackdrop = "";
+  return <Story />;
+};
+
 // Products wrap their app root in TooltipProvider once (shadcn's setup), so stories do too.
 const withTooltipProvider: Decorator = (Story) => (
   <TooltipProvider>
@@ -72,12 +79,15 @@ const preview: Preview = {
   parameters: {
     // Lab/ holds throwaway options (src/lab/README.md), so it always sorts last.
     options: {
-      storySort: { order: ["Docs", "Components", "Examples", "Layering", "*", "Lab"] },
+      storySort: {
+        order: ["Docs", "Foundations", "Components", "Examples", "Layering", "*", "Lab"],
+      },
     },
   },
   decorators: [
     withAgent,
     withTooltipProvider,
+    withSurfaceBackdrop,
     withBrand,
     withThemeByClassName<ReactRenderer>({
       themes: { light: "", dark: "dark" },
