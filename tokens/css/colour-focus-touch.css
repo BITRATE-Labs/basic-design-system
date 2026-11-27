@@ -211,9 +211,14 @@
     [data-slot="table-container"]
   )
   :focus-visible,
-[data-slot="scroll-area-viewport"]:focus-visible,
-[data-slot="calendar-day"]:focus-visible {
+[data-slot="scroll-area-viewport"]:focus-visible {
   outline-offset: var(--focus-ring-offset-inset);
+}
+
+/* A calendar day outlines outward, above its neighbours: a selected day is filled with
+   --primary, which an inset --ring outline would vanish into. */
+[data-slot="calendar-day"]:focus-visible {
+  outline-offset: 1px;
 }
 
 /* UI SDK fields (src/components/ui-sdk) draw the stock ring on focus-within or on the active
