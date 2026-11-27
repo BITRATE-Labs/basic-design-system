@@ -16,12 +16,9 @@ const indicatorClassName =
   "h-[3px] w-(--active-tab-width) translate-x-(--active-tab-left) translate-y-[calc(var(--active-tab-top)+var(--active-tab-height)-3px)] " +
   "group-data-vertical/tabs:h-(--active-tab-height) group-data-vertical/tabs:w-[3px] group-data-vertical/tabs:translate-x-0 group-data-vertical/tabs:translate-y-(--active-tab-top)"
 
-// Brighter and semibold on hover and selection. Hidden copies in both weights keep
-// the item at the wider of the two (hinted text is not always wider when bolder),
-// so the weight change never shifts its neighbours.
-const itemClassName =
-  "font-medium text-muted-foreground transition-colors hover:font-semibold hover:text-foreground"
-
+// The selected item is semibold. Hidden copies in both weights keep the item at the
+// wider of the two (hinted text is not always wider when bolder), so selection never
+// shifts its neighbours.
 function ItemLabel({ children }: { children: React.ReactNode }) {
   return (
     <span className="grid *:col-start-1 *:row-start-1 *:inline-flex *:items-center *:justify-center *:gap-1.5">
@@ -63,11 +60,7 @@ function SlidingTabsTrigger({
 }: React.ComponentProps<typeof TabsTrigger>) {
   return (
     <TabsTrigger
-      className={cn(
-        itemClassName,
-        "flex-none data-active:font-semibold dark:text-muted-foreground",
-        className
-      )}
+      className={cn("flex-none data-active:font-semibold", className)}
       {...props}
     >
       <ItemLabel>{children}</ItemLabel>
@@ -91,13 +84,18 @@ function SlidingNav({ className, children, ...props }: React.ComponentProps<"nav
       const current = nav.querySelector('[aria-current="page"]')
       const rect = current?.getBoundingClientRect()
       const frame = nav.getBoundingClientRect()
+      // Rects are in screen pixels; divide out any ancestor scale or zoom (a dialog's
+      // zoom-in, CSS zoom) to get the nav's own layout pixels.
+      const style = getComputedStyle(nav)
+      const sx = frame.width / parseFloat(style.width) || 1
+      const sy = frame.height / parseFloat(style.height) || 1
       const next =
         rect && rect.width > 0
           ? {
-              "--active-tab-left": `${rect.left - frame.left + nav.scrollLeft - nav.clientLeft}px`,
-              "--active-tab-top": `${rect.top - frame.top + nav.scrollTop - nav.clientTop}px`,
-              "--active-tab-width": `${rect.width}px`,
-              "--active-tab-height": `${rect.height}px`,
+              "--active-tab-left": `${(rect.left - frame.left) / sx + nav.scrollLeft - nav.clientLeft}px`,
+              "--active-tab-top": `${(rect.top - frame.top) / sy + nav.scrollTop - nav.clientTop}px`,
+              "--active-tab-width": `${rect.width / sx}px`,
+              "--active-tab-height": `${rect.height / sy}px`,
             }
           : null
       setBox((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next))
@@ -148,9 +146,9 @@ function SlidingNavLink({
     props: mergeProps<"a">(
       {
         "aria-current": active ? "page" : undefined,
+        // Colours match the stock tabs trigger: hover only brightens the label.
         className: cn(
-          itemClassName,
-          "relative inline-flex min-h-11 shrink-0 items-center justify-center rounded-md px-3 text-sm whitespace-nowrap no-underline outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-inset focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-ring aria-[current=page]:font-semibold aria-[current=page]:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "relative inline-flex min-h-11 shrink-0 items-center justify-center rounded-md px-3 text-sm whitespace-nowrap no-underline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary font-medium text-foreground/60 transition-colors hover:text-foreground aria-[current=page]:font-semibold aria-[current=page]:text-foreground dark:text-muted-foreground dark:hover:text-foreground dark:aria-[current=page]:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
           className
         ),
         children: <ItemLabel>{children}</ItemLabel>,

@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { BookOpen, CreditCard, LayoutGrid, MessagesSquare } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { expect, waitFor } from "storybook/test";
+import { DirectionProvider } from "@/components/ui/direction";
 import {
   SlidingNav,
   SlidingNavLink,
@@ -131,7 +132,8 @@ function NavigationBar({ dir }: { dir?: "rtl" }) {
   const [current, setCurrent] = useState(links[0].href);
   return (
     <div dir={dir} className="bg-background text-foreground">
-      <header className="flex items-stretch gap-6 border-b border-border px-4">
+      {/* The hairline is an inset shadow, not a border, so the indicator paints over it. */}
+      <header className="flex items-stretch gap-6 px-4 shadow-[inset_0_-1px_0_var(--color-border)]">
         <span className="flex items-center text-sm font-semibold">Sample Workspace</span>
         <SlidingNav aria-label="Sections">
           {links.map((link) => (
@@ -153,22 +155,9 @@ function NavigationBar({ dir }: { dir?: "rtl" }) {
   );
 }
 
-// The header is always dark, as in the product; the brand still comes from the toolbar.
-function DarkSurface({ brand, children }: { brand: string; children: ReactNode }) {
-  return (
-    <div data-brand={brand} className="dark">
-      {children}
-    </div>
-  );
-}
-
 export const NavigationBarStory: Story = {
   name: "Navigation bar",
-  render: (_, { globals }) => (
-    <DarkSurface brand={globals.brand ?? "basic"}>
-      <NavigationBar />
-    </DarkSurface>
-  ),
+  render: () => <NavigationBar />,
   play: async ({ canvas, canvasElement, userEvent }) => {
     const nav = canvas.getByRole("navigation", { name: "Sections" });
     await expect(canvas.getByRole("link", { name: "Listings" })).toHaveAttribute(
@@ -277,13 +266,13 @@ export const DisabledItem: Story = {
 };
 
 export const RightToLeft: Story = {
-  render: (_, { globals }) => (
-    <div dir="rtl" className="grid gap-6">
-      <SlidingSample />
-      <DarkSurface brand={globals.brand ?? "basic"}>
+  render: () => (
+    <DirectionProvider direction="rtl">
+      <div dir="rtl" className="grid gap-6">
+        <SlidingSample />
         <NavigationBar dir="rtl" />
-      </DarkSurface>
-    </div>
+      </div>
+    </DirectionProvider>
   ),
   play: async ({ canvas, userEvent }) => {
     const tabs = canvas.getAllByRole("tab");
@@ -294,6 +283,9 @@ export const RightToLeft: Story = {
     await userEvent.click(tabs[1]);
     await expect(tabs[1]).toHaveAttribute("aria-selected", "true");
     await expectIndicatorUnder(canvas.getByRole("tablist"), tabs[1]);
+    // ArrowLeft moves to the tab on the visual left, the next one in reading order.
+    await userEvent.keyboard("{ArrowLeft}");
+    await expect(tabs[2]).toHaveFocus();
     const guides = canvas.getByRole("link", { name: "Guides" });
     await userEvent.click(guides);
     await expectIndicatorUnder(canvas.getByRole("navigation"), guides);
