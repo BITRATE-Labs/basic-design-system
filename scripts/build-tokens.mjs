@@ -17,7 +17,7 @@
 // Outputs:
 //   dist/tokens.css         scales + default brand on :root / .dark
 //   dist/tokens.js          scales and role names as JS constants (+ .d.ts)
-//   dist/theme.css          Tailwind v4 `@theme inline` mapping
+//   dist/theme.css          Tailwind v4 `@theme inline` mapping, then theme/motion.css
 //   dist/brands/<name>.css  roles scoped to [data-brand="<name>"]
 //   dist/brands/<name>.js   concrete hex/rgba values for JS theme objects (Mantine, MUI), + .d.ts
 //   dist/brands.css         imports every brand CSS file (Storybook)
@@ -140,6 +140,25 @@ const themeLines = (roleNames) => [
   "  --radius-4xl: calc(var(--radius) * 2.6);",
 ];
 
+// ---- Motion -------------------------------------------------------------------------------
+// Every duration and the motion scales collapse under prefers-reduced-motion, or under
+// data-motion="reduce" (an in-app setting). 1ms, not 0, so animationend and transitionend still
+// fire for code that waits on them. The rules that apply the tokens are in theme/motion.css,
+// appended to dist/theme.css.
+const reducedMotionValue = (t) =>
+  t.path[0] === "duration" ? "1ms" : t.path.at(-1) === "rise-distance" ? "0px" : "0ms";
+function reducedMotionCss(scales) {
+  const tokens = scales.filter((t) => t.path[0] === "duration" || t.path[0] === "motion");
+  const lines = tokens.map((t) => `${varName(t.path)}: ${reducedMotionValue(t)};`);
+  const indent = (n) => lines.map((l) => " ".repeat(n) + l).join("\n");
+  return (
+    `@media (prefers-reduced-motion: reduce) {\n  :root {\n${indent(4)}\n  }\n}\n` +
+    `[data-motion="reduce"] {\n${indent(2)}\n}\n`
+  );
+}
+const motionCss = () => readFile(path.join(root, "theme/motion.css"), "utf8");
+// ---- End motion ---------------------------------------------------------------------------
+
 async function main() {
   await rm(dist, { recursive: true, force: true });
   await mkdir(path.join(dist, "brands"), { recursive: true });
@@ -174,7 +193,8 @@ async function main() {
     path.join(dist, "tokens.css"),
     header +
       block(":root", [...scales, ...def.light.colors, ...def.light.shared]) +
-      block(".dark", def.dark.colors),
+      block(".dark", def.dark.colors) +
+      reducedMotionCss(scales),
   );
 
   const roleNames = def.light.colors.map((t) => t.path.slice(1).join("-"));
@@ -187,12 +207,15 @@ async function main() {
 
   const scaleTheme = scales
     .filter((t) => t.path[0] !== "duration") // Tailwind v4 has no duration namespace
+    .filter((t) => t.path[0] !== "motion") // nor one for the motion scales
     .map((t) => `  ${varName(t.path)}: var(${varName(t.path)});`);
   await writeFile(
     path.join(dist, "theme.css"),
     header +
       "@custom-variant dark (&:is(.dark *));\n\n" +
-      `@theme inline {\n${[...themeLines(roleNames), ...scaleTheme].join("\n")}\n}\n`,
+      `@theme inline {\n${[...themeLines(roleNames), ...scaleTheme].join("\n")}\n}\n` +
+      "\n" +
+      (await motionCss()),
   );
 
   console.log(`tokens: built ${brandNames.length} brand(s): ${brandNames.join(", ")}`);

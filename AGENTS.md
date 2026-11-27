@@ -18,6 +18,7 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 | `tokens/`                  | Shared scales and role names (DTCG JSON)                                                       |
 | `brands/`                  | One DTCG file per brand: every role in light and dark, fonts, radius                           |
 | `scripts/build-tokens.mjs` | Style Dictionary build into `dist/` (git-ignored)                                              |
+| `theme/motion.css`         | Hand-written motion rules, appended to `dist/theme.css` by the token build                     |
 | `src/components/ui/`       | Stock shadcn as the CLI wrote it, except the changes listed below, plus the UI SDK items       |
 | `src/lib/utils.ts`         | `cn`                                                                                           |
 | `registry.json`            | shadcn registry: every installable item                                                        |
@@ -40,6 +41,10 @@ Every change to a file in `src/components/ui/` is listed here with its reason. R
 - `alert`: the destructive description uses `text-destructive`, not `text-destructive/90`, because the 90% tint fails WCAG AA on the card in the basic brand (4.49:1).
 
 The CLI writes `font-heading` on the dialog, sheet, card, alert-dialog and empty titles only when `src/index.css` itself contains `--font-heading:`. It does not, so titles use `font-sans`; adding that variable there changes all five at once.
+
+## Motion
+
+Perkcord's motion tokens are the system's motion for every brand: `--duration-fast` 160ms, `--duration-base` 240ms, `--duration-slow` 420ms, `--ease-standard`, `--ease-emphasized`, `--motion-rise-distance` 18px and `--motion-delay-step` 70ms, in `tokens/scales.tokens.json` beside the sliding indicator's `--duration-indicator` and `--ease-indicator`. `prefers-reduced-motion: reduce` and `data-motion="reduce"` (an in-app setting; put it on `<html>`, since popups portal to `<body>`) collapse every duration to 1ms and the rise and step to 0. `theme/motion.css` points the stock components at them through their `data-slot` attributes, with no change to `src/components/ui`: menu, popover, select, combobox and tooltip fast and standard; dialog and alert dialog base and emphasised in, fast and standard out; sheet slow and emphasised in, base and standard out; toast slow and emphasised in, fast out. To retime one popup use `animation-duration-*` and `ease-*` (`duration-*` no longer changes its animation); one sheet needs `!duration-*`. It also ships the `.motion-enter`, `.motion-enter-soft` and `.motion-delay-1` to `-4` section entrance (first paint of key sections only) and the `.motion-arrival` deep-link highlight. Storybook **Foundations / Motion** plays each one beside stock's timing.
 
 ## Layers
 

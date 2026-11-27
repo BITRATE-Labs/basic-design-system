@@ -1,0 +1,193 @@
+/*
+ * Motion: Perkcord's motion tokens applied to the stock components, plus the section-entrance
+ * and arrival-highlight utilities. scripts/build-tokens.mjs appends this file to dist/theme.css.
+ * The tokens themselves (--duration-*, --ease-*, --motion-*) and their reduced-motion collapse
+ * are generated into dist/tokens.css from tokens/scales.tokens.json.
+ *
+ * Mapping (Storybook: Foundations / Motion):
+ *   menu, popover, select, combobox, tooltip   in and out: fast, standard
+ *   dialog and alert dialog, with overlay      in: base, emphasised; out: fast, standard
+ *   sheet, with overlay                        in: slow, emphasised; out: base, standard
+ *   toast                                      in: slow, emphasised; out: fast, standard
+ * The stock keyframe shapes (fade, 95% zoom, 8px slide) are unchanged.
+ */
+
+/* ---- Popups (tw-animate-css) --------------------------------------------------------------
+   tw-animate reads --tw-animation-duration before --tw-duration, and no stock class sets it or
+   --tw-ease, so these zero-specificity base rules win over the stock duration-100 without
+   competing with utilities. A product retimes one instance with animation-duration-* and
+   ease-* classes; duration-* no longer changes a popup's animation. */
+@layer base {
+  :where(
+    [data-slot="dropdown-menu-content"],
+    [data-slot="dropdown-menu-sub-content"],
+    [data-slot="popover-content"],
+    [data-slot="select-content"],
+    [data-slot="combobox-content"],
+    [data-slot="tooltip-content"]
+  ) {
+    --tw-animation-duration: var(--duration-fast);
+    --tw-ease: var(--ease-standard);
+  }
+
+  :where(
+    [data-slot="dialog-content"],
+    [data-slot="dialog-overlay"],
+    [data-slot="alert-dialog-content"],
+    [data-slot="alert-dialog-overlay"]
+  ) {
+    --tw-animation-duration: var(--duration-base);
+    --tw-ease: var(--ease-emphasized);
+  }
+
+  /* Exits are quicker and use the standard curve, so a dismissed popup gets out of the way. */
+  :where(
+    [data-slot="dialog-content"],
+    [data-slot="dialog-overlay"],
+    [data-slot="alert-dialog-content"],
+    [data-slot="alert-dialog-overlay"]
+  ):where([data-closed]) {
+    --tw-animation-duration: var(--duration-fast);
+    --tw-ease: var(--ease-standard);
+  }
+}
+
+/* ---- Sheet (CSS transition) ---------------------------------------------------------------
+   Stock sets transition-duration and -timing-function with utilities (duration-200
+   ease-in-out, overlay duration-150), so this sits in the utilities layer, after Tailwind's
+   own, at the same specificity. A product retimes one sheet with !duration-* classes. */
+@layer utilities {
+  :is([data-slot="sheet-content"], [data-slot="sheet-overlay"]) {
+    transition-duration: var(--duration-slow);
+    transition-timing-function: var(--ease-emphasized);
+  }
+
+  :is([data-slot="sheet-content"], [data-slot="sheet-overlay"])[data-ending-style] {
+    transition-duration: var(--duration-base);
+    transition-timing-function: var(--ease-standard);
+  }
+}
+
+/* ---- Toast (sonner) -----------------------------------------------------------------------
+   sonner injects its stylesheet unlayered at the top of <head>, so these are unlayered too and
+   win by coming later at the same specificity. sonner unmounts a dismissed toast after 200ms
+   whatever the CSS says, so the exit is the fast step. Its stacked, collapsed toasts
+   ([data-front="false"] removal, specificity 0,5,0) and its own reduced-motion rule
+   (transition: none !important) are left as sonner ships them. */
+[data-sonner-toast] {
+  transition-duration: var(--duration-slow);
+  transition-timing-function: var(--ease-emphasized);
+}
+
+[data-sonner-toast][data-removed="true"] {
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-standard);
+}
+
+/* ---- Section entrance ---------------------------------------------------------------------
+   Perkcord's .motion-enter: a fade-up for the first paint of a key section, with
+   .motion-delay-1 to -4 staggering its children by --motion-delay-step. .motion-enter-soft
+   fades without the rise. Use them on first paint of key sections only; staggered fade-ups on
+   every page become noise. Under reduced motion the tokens collapse, so both are instant. */
+@keyframes motion-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-rise-distance));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motion-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* The arrival keyframe ends on the 8% resting tint. Perkcord's ends transparent, and its
+   fill-mode both holds that last frame, so its resting tint never showed. */
+@keyframes motion-arrival {
+  from {
+    translate: 0 18px;
+    opacity: 0.25;
+    background-color: color-mix(in srgb, var(--primary) 22%, transparent);
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+    background-color: color-mix(in srgb, var(--primary) 8%, transparent);
+  }
+}
+
+@layer utilities {
+  .motion-enter {
+    animation: motion-fade-up var(--duration-slow) var(--ease-emphasized) both;
+    animation-delay: var(--motion-delay, 0ms);
+  }
+
+  .motion-enter-soft {
+    animation: motion-fade-in var(--duration-base) var(--ease-standard) both;
+    animation-delay: var(--motion-delay, 0ms);
+  }
+
+  /* Children do not inherit their section's delay, so a nested .motion-enter starts at 0ms.
+     :where() keeps this at zero specificity, so a .motion-delay-N on the child still wins. */
+  :where(.motion-enter, .motion-enter-soft) > * {
+    --motion-delay: 0ms;
+  }
+
+  .motion-delay-1 {
+    --motion-delay: calc(var(--motion-delay-step) * 1);
+  }
+
+  .motion-delay-2 {
+    --motion-delay: calc(var(--motion-delay-step) * 2);
+  }
+
+  .motion-delay-3 {
+    --motion-delay: calc(var(--motion-delay-step) * 3);
+  }
+
+  .motion-delay-4 {
+    --motion-delay: calc(var(--motion-delay-step) * 4);
+  }
+
+  /* ---- Arrival highlight ------------------------------------------------------------------
+     Perkcord's discussion arrival: the item a URL hash points at (the element itself, or a
+     direct child anchor) rises 18px from 25% opacity in 520ms while a 22% primary tint fades
+     to an 8% resting tint, which stays. Reduced motion gets the resting tint with no
+     animation. :target changes only on a real navigation, so a client router that rewrites
+     the hash with history.pushState does not trigger it. */
+  .motion-arrival:is(:target, :has(> :target)) {
+    scroll-margin-top: 1rem;
+    background-color: color-mix(in srgb, var(--primary) 8%, transparent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :not([data-motion="reduce"], [data-motion="reduce"] *).motion-arrival:is(
+        :target,
+        :has(> :target)
+      ) {
+      animation: motion-arrival 520ms cubic-bezier(0.18, 0.75, 0.28, 1) both;
+    }
+  }
+
+  /* The 8% tint is faint by design. With more contrast, or forced colours (which drop the
+     tint), an outline keeps the arrival visible. */
+  @media (prefers-contrast: more) {
+    .motion-arrival:is(:target, :has(> :target)) {
+      outline: 2px solid var(--primary);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .motion-arrival:is(:target, :has(> :target)) {
+      outline: 2px solid Highlight;
+    }
+  }
+}
