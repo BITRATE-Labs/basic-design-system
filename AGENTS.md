@@ -13,19 +13,22 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 
 ## Where things live
 
-| Path                       | What                                                                 |
-| -------------------------- | -------------------------------------------------------------------- |
-| `tokens/`                  | Shared scales and role names (DTCG JSON)                             |
-| `brands/`                  | One DTCG file per brand: every role in light and dark, fonts, radius |
-| `scripts/build-tokens.mjs` | Style Dictionary build into `dist/` (git-ignored)                    |
-| `src/components/ui/`       | Stock shadcn components, exactly as the CLI wrote them               |
-| `src/lib/utils.ts`         | `cn`                                                                 |
-| `registry.json`            | shadcn registry: every installable item                              |
-| `src/stories/`             | One stories file per component, plus `Examples/`                     |
-| `src/docs/`                | Storybook docs pages (Tokens, Trying variants)                       |
-| `src/lab/`                 | Throwaway option stories; see the lab convention below               |
-| `eslint/`                  | The lint preset that products extend                                 |
-| `tests/`                   | Vitest checks for tokens and the registry                            |
+| Path                       | What                                                                                           |
+| -------------------------- | ---------------------------------------------------------------------------------------------- |
+| `tokens/`                  | Shared scales and role names (DTCG JSON)                                                       |
+| `brands/`                  | One DTCG file per brand: every role in light and dark, fonts, radius                           |
+| `scripts/build-tokens.mjs` | Style Dictionary build into `dist/` (git-ignored)                                              |
+| `src/components/ui/`       | Stock shadcn components, exactly as the CLI wrote them                                         |
+| `src/lib/utils.ts`         | `cn`                                                                                           |
+| `registry.json`            | shadcn registry: every installable item                                                        |
+| `src/stories/`             | One stories file per component, plus `Examples/`                                               |
+| `src/docs/`                | Storybook docs pages (Tokens, Trying variants)                                                 |
+| `src/lab/`                 | Throwaway option stories; see the lab convention below                                         |
+| `eslint/`                  | The lint preset that products extend                                                           |
+| `tests/`                   | Vitest checks: token build, every role in every brand, WCAG AA contrast, registry, lint preset |
+| `tests/visual/`            | Playwright screenshots of the built Storybook (Linux only; baselines from CI)                  |
+| `docs/`                    | Repository docs, such as the lint preset                                                       |
+| `.github/workflows/`       | CI, Pages deploy, baseline regeneration, PR reviewer caller                                    |
 
 ## Lab convention
 
@@ -43,5 +46,5 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 ## Workflow
 
 - This is a non-live repository. Work on a branch and open a PR. CI must pass before merge.
-- Before committing, run `npm run lint`, `npm run typecheck`, `npm test`, `npm run registry:check` and `npm run build-storybook`.
+- Before committing, run `npm run lint`, `npm run typecheck`, `npm test`, `npm run registry:check` and `npm run build-storybook`. Screenshot baselines change only through the Update visual baselines workflow.
 - Commit messages and PR text follow the public-repo rule above.

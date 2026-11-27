@@ -15,7 +15,7 @@ Shared design tokens, UI components and one Storybook, used across BASIC's produ
 
 The repository is a [shadcn GitHub registry](https://ui.shadcn.com/docs/registry/github): `registry.json` at the root lists every item.
 
-1. The product needs a `components.json`. If it has none, run `npx shadcn@latest init -b base`. The components expect the aliases `@/components/ui` and `@/lib/utils`. A public GitHub registry needs no `registries` entry.
+1. The product needs a `components.json`. If it has none, run `npx shadcn@latest init -b base`. The components import each other through the `@/components/ui` alias and merge classes with the `cn` package (shadcn's), which the CLI installs; `utils` adds `@/lib/utils` re-exporting it. A public GitHub registry needs no `registries` entry.
 2. Add a component at a pinned tag:
 
    ```sh
@@ -45,6 +45,10 @@ In the product's main CSS file, after `@import "tailwindcss";`:
 
 Then set the brand on the root element: `<html data-brand="vrdex">`. Dark mode is the `dark` class on the same element. Products without Tailwind (Mantine, MUI) can read concrete values from `@bitrate-labs/design-system/brands/<name>`.
 
+### Lint preset
+
+`@bitrate-labs/design-system/eslint` is a flat ESLint config that keeps product code on the shared components and role colours. It can be installed from a pinned Git tag before npm publishing; see [docs/lint-preset.md](docs/lint-preset.md).
+
 ## Work on this repository
 
 Needs Node 24 and npm 11.
@@ -57,7 +61,10 @@ npm run typecheck
 npm test
 npm run registry:check
 npm run build-storybook
+npm run test:visual      # screenshots; skipped off Linux
 ```
+
+The screenshot check covers every non-Lab story in every brand, light and dark. Baselines live in `tests/visual/__screenshots__` and are made only on Linux in CI: run the **Update visual baselines** workflow on your branch to regenerate them.
 
 Use the toolbar to switch brand and light or dark.
 
