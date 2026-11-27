@@ -16,6 +16,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
+  Combobox,
+  ComboboxContent,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
+import {
   Command,
   CommandDialog,
   CommandDialogTrigger,
@@ -45,6 +52,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Toaster } from "@/components/ui/sonner";
 import {
   Sheet,
@@ -66,7 +80,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import {
   expectCovered,
   expectOnTop,
+  findCombobox,
   findPopover,
+  findSelect,
   findToasts,
   hoverTooltip,
   openModal,
@@ -77,12 +93,13 @@ import {
 // children, opens the popup, and checks with the browser's hit test that the popup is
 // painted on top of everything and not clipped. See Docs / Layers for the rule.
 
-type Kind = "tooltip" | "popover" | "menu";
+type Kind = "tooltip" | "popover" | "menu" | "select" | "combobox";
 type Side = "top" | "bottom";
 type Container = RefObject<HTMLElement | null>;
 
 const TIP = "Sample tooltip text";
 const POPOVER = "Sample popover body";
+const CHOICES = ["Sample one", "Sample two", "Sample three", "Sample four"];
 
 function Probe({
   kind,
@@ -101,6 +118,39 @@ function Probe({
           {TIP}
         </TooltipContent>
       </Tooltip>
+    );
+  }
+  if (kind === "select") {
+    // alignItemWithTrigger off, so the list opens below the trigger instead of over it.
+    return (
+      <Select items={CHOICES.map((c) => ({ label: c, value: c }))}>
+        <SelectTrigger size="sm" aria-label="Sample choice" className="w-48">
+          <SelectValue placeholder="Choose a sample" />
+        </SelectTrigger>
+        <SelectContent side={side} alignItemWithTrigger={false} container={container}>
+          {CHOICES.map((c) => (
+            <SelectItem key={c} value={c}>
+              {c}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    );
+  }
+  if (kind === "combobox") {
+    return (
+      <Combobox items={CHOICES}>
+        <ComboboxInput placeholder="Search samples" aria-label="Sample search" className="w-48" />
+        <ComboboxContent side={side} container={container}>
+          <ComboboxList>
+            {(item: string) => (
+              <ComboboxItem key={item} value={item}>
+                {item}
+              </ComboboxItem>
+            )}
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>
     );
   }
   if (kind === "menu") {
@@ -147,6 +197,12 @@ async function openProbe(
     popup = await screen.findByRole("menu");
     await waitFor(() => expect(popup).toHaveAttribute("data-open"));
     await Promise.all(popup.getAnimations().map((a) => a.finished));
+  } else if (kind === "select") {
+    await user.click(await screen.findByRole("combobox", { name: "Sample choice" }));
+    popup = await findSelect(CHOICES[3]);
+  } else if (kind === "combobox") {
+    await user.click(await screen.findByRole("combobox", { name: "Sample search" }));
+    popup = await findCombobox(CHOICES[3]);
   } else {
     await user.click(await screen.findByRole("button", { name: "Open popover" }));
     popup = await findPopover(new RegExp(POPOVER));
@@ -494,6 +550,14 @@ export const NativeDialogPopover: Story = {
 export const NativeDialogDropdownMenu: Story = {
   render: () => <NativeDialog kind="menu" useContainer />,
   play: inDialog("menu", "Open native dialog"),
+};
+export const NativeDialogSelect: Story = {
+  render: () => <NativeDialog kind="select" useContainer />,
+  play: inDialog("select", "Open native dialog"),
+};
+export const NativeDialogCombobox: Story = {
+  render: () => <NativeDialog kind="combobox" useContainer />,
+  play: inDialog("combobox", "Open native dialog"),
 };
 
 // Without `container`, the popup portals into the body, which paints below the top layer.
