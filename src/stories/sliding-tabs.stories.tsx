@@ -289,5 +289,6 @@ export const RightToLeft: Story = {
     const guides = canvas.getByRole("link", { name: "Guides" });
     await userEvent.click(guides);
     await expectIndicatorUnder(canvas.getByRole("navigation"), guides);
+    guides.blur();
   },
 };
