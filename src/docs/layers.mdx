@@ -1,0 +1,55 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Docs/Layers" />
+
+# Layers
+
+Tooltip, Popover, DropdownMenu and Dialog render their popups in a portal at the end of `<body>`. That lets them leave any container that clips, scrolls or stacks its children. Four rules keep them on top with no z-index in product code.
+
+## 1. Put `isolate` on the app root
+
+Wrap the whole app in one element with Tailwind's `isolate` class (`isolation: isolate`). The page then forms a single stacking context, so no z-index inside it can rise above the portaled popups. This is the setup [Base UI recommends](https://base-ui.com/react/overview/quick-start).
+
+## 2. Wrap the app root in `TooltipProvider` once
+
+The stock tooltip expects it, as the [shadcn tooltip docs](https://ui.shadcn.com/docs/components/base/tooltip) say. It groups tooltips, so moving from one trigger to the next opens the next tooltip at once.
+
+```tsx
+<body>
+  <div className="isolate">
+    <TooltipProvider>{children}</TooltipProvider>
+  </div>
+</body>
+```
+
+## 3. No z-index in product code
+
+The shared popups already stack in the right order. Each one uses the same `z-50`, and a popup opened from inside another popup or a Dialog is portaled inside that one, so it paints above it. Product code never needs a z-index to put something over a page or under a popup. The lint preset reports `z-[...]`, `z-(...)` and numeric `z-*` classes outside `components/ui`.
+
+## 4. Inside a native modal `<dialog>`, pass `container`
+
+A `<dialog>` opened with `showModal()` is in the browser's top layer, which paints above every z-index. A popup portaled into the body renders behind it and its backdrop. Pass the dialog to the popup's `container` prop and give the dialog `overflow-visible`, so the popup is portaled into the dialog and is not clipped by it. If the dialog's content must scroll, scroll an inner element.
+
+```tsx
+const ref = useRef<HTMLDialogElement>(null);
+
+<dialog ref={ref} className="overflow-visible">
+  <Tooltip>
+    <TooltipTrigger render={<Button />}>Save</TooltipTrigger>
+    <TooltipContent container={ref}>Saves without publishing</TooltipContent>
+  </Tooltip>
+</dialog>;
+```
+
+`TooltipContent`, `PopoverContent` and `DropdownMenuContent` take `container`. The shared Dialog needs none of this, so prefer it to a native `<dialog>`.
+
+## What the Layering stories check
+
+Each story under **Layering** opens a tooltip or popover and checks with the browser's own hit test that the popup is painted on top and not clipped:
+
+- inside an `overflow: hidden` container, at its edge
+- inside a scrolling container, also after it scrolls
+- inside a `z-index: 1` stacking context next to a `z-index: 9999` sibling
+- inside a `transform`ed ancestor that holds a `contain: paint` box
+- inside the shared Dialog
+- inside a native modal `<dialog>` with `container`; the `BodyPortal` stories show the popup hidden behind the dialog without it
