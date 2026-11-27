@@ -41,9 +41,10 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Every animated shared component, one row each: stock shadcn's timing ("before", for
-// reference only) beside the system's (theme/motion.css reading the motion tokens). Play
-// replays one row. The theme retimes every instance, so the before column sets stock's
-// values inline.
+// reference only) beside the system's (theme/motion.css reading the motion tokens). Each row
+// plays one column at a time or both together. The theme retimes every instance, so the
+// before column sets stock's values inline; its surfaces are the brand's, since only the
+// timing is compared here.
 
 const meta = {
   title: "Foundations/Motion",
@@ -89,10 +90,10 @@ const slowBy = ({ slow }: Settings) => (slow ? SLOW : 1);
 const afterMs = (d: TokenDuration, s: Settings) =>
   s.reduce ? 1 : ms(scales[`--duration-${d}`]) * slowBy(s);
 
-function enterMs(row: Row, s: Settings) {
-  const before = typeof row.before === "string" ? 0 : row.before.ms * slowBy(s);
-  const after = typeof row.after === "string" ? 0 : afterMs(row.after.in[0], s);
-  return Math.max(before, after);
+function enterMs(row: Row, side: CellProps["side"], s: Settings) {
+  if (side === "before") return typeof row.before === "string" ? 0 : row.before.ms * slowBy(s);
+  if (row.id === "arrival") return s.reduce ? 0 : ARRIVAL_MS * slowBy(s);
+  return typeof row.after === "string" ? 0 : afterMs(row.after.in[0], s);
 }
 
 // Inline stock timing for the before column: tw-animate popups read these two variables.
@@ -234,7 +235,7 @@ function SectionCell({ side, play }: CellProps) {
   const after = side === "after";
   return (
     <section key={play} className={after ? "motion-enter w-full" : "w-full"}>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid gap-2 sm:grid-cols-2">
         {["One", "Two", "Three", "Four"].map((n, i) => (
           <Card key={n} size="sm" className={after ? `motion-enter motion-delay-${i + 1}` : ""}>
             <CardHeader>
@@ -251,14 +252,21 @@ function SectionCell({ side, play }: CellProps) {
 const tabs = ["Overview", "Activity", "Files"];
 
 // Play moves the selection between the first and last tab; clicking a tab works as usual.
-function TabsCell({ side, play }: CellProps) {
+function TabsCell({ side, play, settings }: CellProps) {
   const [state, setState] = useState({ play, value: tabs[0] });
   if (state.play !== play) setState({ play, value: tabs[play % 2 ? 2 : 0] });
   const onValueChange = (value: unknown) => setState({ play, value: value as string });
   return (
-    <Tabs value={state.value} onValueChange={onValueChange}>
+    <Tabs value={state.value} onValueChange={onValueChange} className="max-w-full">
       {side === "before" ? (
-        <TabsList variant="line">
+        // Stock's fade uses Tailwind's default transition duration, so slow motion scales it.
+        <TabsList
+          variant="line"
+          className="max-w-full justify-start overflow-x-auto"
+          style={
+            { "--default-transition-duration": `${150 * slowBy(settings)}ms` } as CSSProperties
+          }
+        >
           {tabs.map((t) => (
             <TabsTrigger key={t} value={t}>
               {t}
@@ -283,15 +291,19 @@ const ARRIVAL_MS = 520;
 
 // Only one element can be :target, and stock has no highlight, so only the after column's
 // reply carries the id.
-function ArrivalCell({ side, settings }: CellProps) {
+function ArrivalCell({ side, play, settings }: CellProps) {
   const after = side === "after";
+  // The duration is taken when Play runs: changing it on a finished animation replays it.
+  const slowNow = settings.slow && !settings.reduce;
+  const [timing, setTiming] = useState({ play, slow: slowNow });
+  if (timing.play !== play) setTiming({ play, slow: slowNow });
   useEffect(
     () => () => {
       if (after && window.location.hash) window.location.hash = "";
     },
     [after],
   );
-  const slow = settings.slow && !settings.reduce;
+  const slow = timing.slow;
   return (
     <div className="flex w-full flex-col gap-1 rounded-lg border p-1">
       <p className="p-2 text-sm">Placeholder reply one.</p>
@@ -360,7 +372,8 @@ const rows: Row[] = [
     id: "arrival",
     label: "Arrival highlight",
     before: "None: the linked item only scrolls into view.",
-    after: `${ARRIVAL_MS}ms cubic-bezier(0.18, 0.75, 0.28, 1): rises 18px from 25% opacity while a 22% primary tint fades to an 8% resting tint.`,
+    after:
+      "cubic-bezier(0.18, 0.75, 0.28, 1): rises 18px from 25% opacity while a 22% primary tint fades to an 8% resting tint.",
     render: (p) => <ArrivalCell {...p} />,
     // :target changes only on a real hash change, so clear it first.
     onPlay: () => {
@@ -376,7 +389,9 @@ function readout(row: Row, side: CellProps["side"], s: Settings) {
       ? row.before
       : `In and out: ${row.before.ms * slowBy(s)}ms ${row.before.ease}. No reduced-motion path.`;
   if (typeof row.after === "string")
-    return s.reduce ? "Reduced motion: the resting tint, no animation." : row.after;
+    return s.reduce
+      ? "Reduced motion: the resting tint, no animation."
+      : `${ARRIVAL_MS * slowBy(s)}ms ${row.after}`;
   const phase = ([d, e]: [TokenDuration, TokenEase]) =>
     `${afterMs(d, s)}ms ${scales[`--ease-${e}`]} (--duration-${d}, --ease-${e})`;
   const { in: enter, out } = row.after;
@@ -420,7 +435,7 @@ function MotionPage() {
     };
   }, [settings]);
 
-  const play = (row: Row) => {
+  const play = (row: Row, sides: CellProps["side"][]) => {
     setPins(
       Object.fromEntries(
         [...document.querySelectorAll<HTMLElement>("[data-pin]")].map((el) => [
@@ -429,14 +444,17 @@ function MotionPage() {
         ]),
       ),
     );
-    setPlays((p) => ({ ...p, [row.id]: (p[row.id] ?? 0) + 1 }));
-    setHeld((h) => ({ ...h, [row.id]: true }));
-    clearTimeout(timers.current[row.id]);
-    timers.current[row.id] = setTimeout(
-      () => setHeld((h) => ({ ...h, [row.id]: false })),
-      enterMs(row, settings) + HOLD_MS * slowBy(settings),
-    );
-    row.onPlay?.();
+    for (const side of sides) {
+      const key = `${row.id}-${side}`;
+      setPlays((p) => ({ ...p, [key]: (p[key] ?? 0) + 1 }));
+      setHeld((h) => ({ ...h, [key]: true }));
+      clearTimeout(timers.current[key]);
+      timers.current[key] = setTimeout(
+        () => setHeld((h) => ({ ...h, [key]: false })),
+        enterMs(row, side, settings) + HOLD_MS * slowBy(settings),
+      );
+    }
+    if (sides.includes("after")) row.onPlay?.();
   };
   const toggle = (key: keyof Settings) => (value: boolean) =>
     setSettings((s) => ({ ...s, [key]: value }));
@@ -457,27 +475,40 @@ function MotionPage() {
         </div>
       </div>
       <p className="max-w-3xl text-sm text-muted-foreground">
-        Play runs one row in both columns at once: popups open, hold, then close. Reduced motion
-        applies the system&apos;s collapse (every duration 1ms, no rise, no stagger). Stock has no
+        Before and After play one column; Both plays the row in both columns at once. Popups open,
+        hold, then close, and each trigger also opens its own popup. Reduced motion applies the
+        system&apos;s collapse (every duration 1ms, no rise, no stagger). Stock has no
         reduced-motion path, so the before column keeps moving.
       </p>
-      <div className="grid grid-cols-[8rem_1fr_1fr] items-start gap-x-6 gap-y-8">
+      <div className="grid grid-cols-[5.5rem_minmax(0,1fr)_minmax(0,1fr)] items-start gap-x-3 gap-y-8 sm:grid-cols-[8rem_minmax(0,1fr)_minmax(0,1fr)] sm:gap-x-6">
         <span />
         <h3 className="text-sm font-medium text-muted-foreground">
-          Before: stock shadcn, for reference
+          Before: stock shadcn timing, for reference
         </h3>
         <h3 className="text-sm font-medium">After: the system</h3>
         {rows.map((row) => (
           <div key={row.id} className="contents">
             <div className="flex flex-col items-start gap-2">
               <span className="text-sm font-medium">{row.label}</span>
-              <Button
-                size="sm"
-                aria-label={`Play ${row.label.toLowerCase()}`}
-                onClick={() => play(row)}
-              >
-                Play
-              </Button>
+              <div className="flex flex-wrap gap-1">
+                {(
+                  [
+                    ["Before", ["before"]],
+                    ["After", ["after"]],
+                    ["Both", ["before", "after"]],
+                  ] as const
+                ).map(([name, sides]) => (
+                  <Button
+                    key={name}
+                    size="xs"
+                    variant={name === "Both" ? "default" : "outline"}
+                    aria-label={`Play ${row.label.toLowerCase()} ${name.toLowerCase()}`}
+                    onClick={() => play(row, [...sides])}
+                  >
+                    {name}
+                  </Button>
+                ))}
+              </div>
             </div>
             {(["before", "after"] as const).map((side) => (
               <div key={side} className="flex min-h-36 min-w-0 flex-col items-start gap-2">
@@ -486,8 +517,8 @@ function MotionPage() {
                   row,
                   side,
                   settings,
-                  play: plays[row.id] ?? 0,
-                  held: held[row.id] ?? false,
+                  play: plays[`${row.id}-${side}`] ?? 0,
+                  held: held[`${row.id}-${side}`] ?? false,
                   pin: pins[`${row.id}-${side}`],
                 })}
               </div>
@@ -506,6 +537,13 @@ const wait = (msValue: number) => new Promise((resolve) => setTimeout(resolve, m
 export const Default: Story = {
   name: "Motion",
   render: () => <MotionPage />,
+};
+
+// The interaction check, kept off the page above so nothing opens or closes there by itself
+// while someone is using it.
+export const ClickCheck: Story = {
+  name: "Motion click check",
+  render: () => <MotionPage />,
   // The lab comparison this page replaces closed a menu the moment it was clicked: both of
   // its columns shared one open state, so one column's dismissal closed both. Here each popup
   // owns its state, so a click opens it and it stays open. Then Play opens and closes both
@@ -522,7 +560,12 @@ export const Default: Story = {
         await waitFor(() => expect(isOpen(`${kind}-${side}`)).toBe(false));
       }
     }
-    await userEvent.click(canvas.getByRole("button", { name: "Play menu" }));
+    // One column plays alone, then both together.
+    await userEvent.click(canvas.getByRole("button", { name: "Play menu after" }));
+    await waitFor(() => expect(isOpen("menu-after")).toBe(true));
+    await expect(isOpen("menu-before")).toBe(false);
+    await waitFor(() => expect(isOpen("menu-after")).toBe(false), { timeout: 3000 });
+    await userEvent.click(canvas.getByRole("button", { name: "Play menu both" }));
     await waitFor(() => expect(isOpen("menu-before") && isOpen("menu-after")).toBe(true));
     await waitFor(() => expect(isOpen("menu-before") || isOpen("menu-after")).toBe(false), {
       timeout: 3000,

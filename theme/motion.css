@@ -69,17 +69,19 @@
 }
 
 /* ---- Toast (sonner) -----------------------------------------------------------------------
-   sonner injects its stylesheet unlayered at the top of <head>, so these are unlayered too and
-   win by coming later at the same specificity. sonner unmounts a dismissed toast after 200ms
-   whatever the CSS says, so the exit is the fast step. Its stacked, collapsed toasts
-   ([data-front="false"] removal, specificity 0,5,0) and its own reduced-motion rule
-   (transition: none !important) are left as sonner ships them. */
-[data-sonner-toast] {
+   sonner's own [data-sonner-toast] { transition: ... } can come later in the cascade (its
+   stylesheet is injected at runtime), so these are unlayered and one attribute more specific
+   (the toast always sits in its [data-sonner-toaster] list). Under reduced motion the tokens
+   collapse to 1ms, data-motion="reduce" included. sonner unmounts a dismissed toast after
+   200ms whatever the CSS says, so the exit is the fast step. Its stacked, collapsed toasts
+   ([data-front="false"] removal, specificity 0,5,0), its swipe (transition: none) and its own
+   reduced-motion rule (transition: none !important) are left as sonner ships them. */
+[data-sonner-toaster] [data-sonner-toast] {
   transition-duration: var(--duration-slow);
   transition-timing-function: var(--ease-emphasized);
 }
 
-[data-sonner-toast][data-removed="true"] {
+[data-sonner-toaster] [data-sonner-toast][data-removed="true"] {
   transition-duration: var(--duration-fast);
   transition-timing-function: var(--ease-standard);
 }

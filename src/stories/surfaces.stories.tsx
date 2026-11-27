@@ -143,7 +143,7 @@ function Page({ children }: { children?: ReactNode }) {
   return (
     <div className="flex min-h-svh flex-col gap-6 p-6">
       <PageHeading />
-      <div className="grid grid-cols-2 items-start gap-6">
+      <div className="grid items-start gap-6 md:grid-cols-2">
         <ProjectCard />
         <ListCard />
       </div>
@@ -152,26 +152,30 @@ function Page({ children }: { children?: ReactNode }) {
   );
 }
 
-// Cards, an open menu, popover and tooltip, side by side over the backdrop and the cards.
+// Cards, an open menu, popover and tooltip over the backdrop. Each popup opens below its own
+// trigger inside a slot as wide and tall as the popup, so none collide; the slots wrap into
+// rows on narrow screens.
 function Overview() {
   return (
     <Page>
-      <div className="flex gap-6">
-        <DropdownMenu open modal={false}>
-          <DropdownMenuTrigger render={<Button variant="secondary" size="sm" />}>
-            Actions
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-48">
-            <DropdownMenuGroup>
-              <DropdownMenuItem>Rename</DropdownMenuItem>
-              <DropdownMenuItem>Duplicate</DropdownMenuItem>
-              <DropdownMenuItem>Move to folder</DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <div className="ml-40">
+      <div className="flex flex-wrap gap-6">
+        <div className="h-48 w-48">
+          <DropdownMenu open modal={false}>
+            <DropdownMenuTrigger render={<Button variant="secondary" size="sm" />}>
+              Actions
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-48">
+              <DropdownMenuGroup>
+                <DropdownMenuItem>Rename</DropdownMenuItem>
+                <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                <DropdownMenuItem>Move to folder</DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="h-40 w-64">
           <Popover open>
             <PopoverTrigger render={<Button variant="secondary" size="sm" />}>
               Details
@@ -186,10 +190,12 @@ function Overview() {
             </PopoverContent>
           </Popover>
         </div>
-        <div className="ml-56 self-end">
+        <div className="h-20 w-52">
           <Tooltip open>
             <TooltipTrigger render={<Button variant="outline" size="sm" />}>Help</TooltipTrigger>
-            <TooltipContent side="bottom">Opens the sample help page</TooltipContent>
+            <TooltipContent side="bottom" align="start">
+              Opens the sample help page
+            </TooltipContent>
           </Tooltip>
         </div>
       </div>
