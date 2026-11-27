@@ -167,6 +167,69 @@ describe.each(brandNames)("brand %s indicators", (brand) => {
   });
 });
 
+// ---- Ruled list --------------------------------------------------------------------------
+// The ruled list (tokens/css/ruled-list.css) washes hovered, selected and checked rows, and
+// mixes the muted description toward --foreground there. That text must reach 4.5:1 on each
+// wash over each surface the list sits on (--card standalone, --background in a glass panel
+// or a uniform-fill card), in every brand. The percentages are read from the CSS, so the test
+// follows any change to them.
+describe("ruled list", () => {
+  const css = readFileSync(path.join(root, "tokens/css/ruled-list.css"), "utf8");
+  const focusCss = readFileSync(path.join(root, "tokens/css/colour-focus-touch.css"), "utf8");
+  const pct = (source: string, re: RegExp) => {
+    const match = source.match(re);
+    expect(match, String(re)).not.toBeNull();
+    return Number(match![1]) / 100;
+  };
+  const selected = pct(
+    css,
+    /--ruled-wash-selected: color-mix\(in srgb, var\(--foreground\) (\d+)%/,
+  );
+  const checkedLight = pct(css, /variant="ruled"\] \{[^}]*--ruled-checked-share: (\d+)%/);
+  const checkedDark = pct(css, /\.dark [^{]*\{[^}]*--ruled-checked-share: (\d+)%/);
+  const mixLight = pct(css, /variant="ruled"\] \{[^}]*--ruled-muted-mix: (\d+)%/);
+  const mixDark = pct(css, /\.dark [^{]*\{[^}]*--ruled-muted-mix: (\d+)%/);
+  const hover = pct(focusCss, /--wash-hover: (\d+)%/);
+
+  it.each(brandNames.flatMap((b) => ["light", "dark"].map((m) => [b, m])))(
+    "%s %s keeps the washed-row description at 4.5:1",
+    (brand, mode) => {
+      const blocks = parseBlocks(readFileSync(path.join(root, `dist/brands/${brand}.css`), "utf8"));
+      const vars =
+        blocks.get(
+          mode === "light"
+            ? `[data-brand="${brand}"]`
+            : `[data-brand="${brand}"].dark, .dark [data-brand="${brand}"]`,
+        ) ?? {};
+      const fg = painted(vars["--foreground"]);
+      const primary = painted(vars["--primary"]);
+      const text = painted(vars["--muted-foreground"]).mix(
+        fg,
+        mode === "light" ? mixLight : mixDark,
+        {
+          space: "oklab",
+        },
+      );
+      const failures: string[] = [];
+      for (const surface of ["card", "background"]) {
+        const under = painted(vars[`--${surface}`]);
+        const washes = {
+          hover: under.mix(primary, hover, { space: "srgb" }),
+          selected: under.mix(fg, selected, { space: "srgb" }),
+          checked: under.mix(primary, mode === "light" ? checkedLight : checkedDark, {
+            space: "srgb",
+          }),
+        };
+        for (const [name, wash] of Object.entries(washes)) {
+          const ratio = wash.contrast(text, "WCAG21");
+          if (ratio < 4.5) failures.push(`${surface}/${name} ${ratio.toFixed(2)}:1`);
+        }
+      }
+      expect(failures).toEqual([]);
+    },
+  );
+});
+
 // ---- Motion ------------------------------------------------------------------------------
 // Reduced motion collapses every motion token, under the media query and data-motion="reduce".
 it("collapses every motion token under reduced motion", () => {
