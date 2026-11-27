@@ -48,11 +48,6 @@ const delivery = [
 function ListingForm() {
   return (
     <form className="mx-auto flex max-w-xl flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
-      <div>
-        <h1 className="font-display text-2xl font-semibold">New listing</h1>
-        <p className="text-sm text-muted-foreground">Sample listing, for review only.</p>
-      </div>
-
       <FieldSet>
         <FieldLegend>Item</FieldLegend>
         <FieldGroup>
@@ -120,8 +115,6 @@ function ListingForm() {
           ))}
         </RadioGroup>
       </FieldSet>
-
-      <FieldSeparator />
 
       <FieldGroup>
         <Field orientation="horizontal">
