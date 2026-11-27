@@ -2,11 +2,11 @@
 
 `@bitrate-labs/design-system/eslint` is an ESLint flat config. It keeps product code on the shared components and the colour role tokens. Everything under `**/components/ui/**` is exempt, because that is where the stock shadcn components live.
 
-| Rule                                       | Reports                                                                                                                                                                                                    |
-| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `no-restricted-syntax`                     | Raw `<button>`, `<dialog>`, `<input>`, `<select>` and `<textarea>` JSX; the `title` attribute on `<a>`, `<button>` and `<Button>`; a `TooltipTrigger` rendering an icon-size `Button` with no `aria-label` |
-| `no-restricted-imports`                    | Imports from `@base-ui/*`, `@radix-ui/*` and `radix-ui`                                                                                                                                                    |
-| `better-tailwindcss/no-restricted-classes` | Tailwind palette colour classes (`bg-red-500`, `hover:text-neutral-400`, `bg-black/10`), arbitrary colour values (`bg-[#fff]`, `text-[rgb(0,0,0)]`, `fill-[oklch(...)]`)                                   |
+| Rule                                       | Reports                                                                                                                                                                                                               |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `no-restricted-syntax`                     | Raw `<button>`, `<dialog>`, `<input>`, `<select>`, `<table>` and `<textarea>` JSX; the `title` attribute on `<a>`, `<button>` and `<Button>`; a `TooltipTrigger` rendering an icon-size `Button` with no `aria-label` |
+| `no-restricted-imports`                    | Imports from `@base-ui/*`, `@radix-ui/*` and `radix-ui`                                                                                                                                                               |
+| `better-tailwindcss/no-restricted-classes` | Tailwind palette colour classes (`bg-red-500`, `hover:text-neutral-400`, `bg-black/10`), arbitrary colour values (`bg-[#fff]`, `text-[rgb(0,0,0)]`, `fill-[oklch(...)]`)                                              |
 
 Role classes such as `bg-primary`, `text-muted-foreground` and `border-border` pass. Classes are read from `className`, `class` and the class helpers that eslint-plugin-better-tailwindcss knows by default, including `cn` and `cva`.
 
