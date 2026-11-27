@@ -15,7 +15,7 @@ Shared design tokens, UI components and one Storybook, used across BASIC's produ
 
 The repository is a [shadcn GitHub registry](https://ui.shadcn.com/docs/registry/github): `registry.json` at the root lists every item.
 
-1. The product needs a `components.json`. If it has none, run `npx shadcn@latest init -b base`. The components import each other through the `@/components/ui` alias and merge classes with the `cn` package (shadcn's), which the CLI installs; `utils` adds `@/lib/utils` re-exporting it. A public GitHub registry needs no `registries` entry.
+1. The product needs a `components.json`. If it has none, run `npx shadcn@latest init -b base -p nova`, which writes the `base-nova` style this registry uses (`-p base-nova` is rejected, and without `-p` init stops at a preset prompt). The components import each other through the `@/components/ui` alias and merge classes with the `cn` package (shadcn's), which the CLI installs; `utils` adds `@/lib/utils` re-exporting it. A public GitHub registry needs no `registries` entry.
 2. Add a component at a pinned tag:
 
    ```sh
@@ -26,6 +26,15 @@ The repository is a [shadcn GitHub registry](https://ui.shadcn.com/docs/registry
 
 3. Refs are not inherited by dependencies, so `registry.json` pins every dependency inside this repo (`dialog` needs `button`, `field` needs `label` and `separator`) to the release tag, `v` plus the `package.json` version. A test fails if the two disagree; bump both when cutting a release.
 4. To see whether a copied component has drifted from the tag, run `npx shadcn@latest add BITRATE-Labs/basic-design-system/button#v0.1.0 --diff`.
+
+Before a tag exists, or to test an unreleased change, build the registry into local files from this repository and install those:
+
+```sh
+npm run registry:build-local -- ../built ../my-product   # output dir, then the product's dir
+cd ../my-product && npx shadcn@latest add ../built/combobox.json
+```
+
+The script rewrites the tag-pinned same-repo dependencies to the built files, as paths relative to the product's directory: the CLI cannot resolve a local dependency given as an absolute Windows path ("unknown scheme").
 
 Items: `utils`, `button`, `input`, `label`, `separator`, `field`, `dialog`, `dropdown-menu`, `tabs`, `kbd`, `tooltip`, `popover`, `textarea`, `select`, `checkbox`, `switch`, `radio-group`, `input-group`, `combobox`, `alert`, `sonner` (toasts), `skeleton`, `spinner`, `empty`, `badge`, `progress`, `card`, `avatar`, `table`, `scroll-area`, `sheet`, `alert-dialog`.
 
@@ -60,11 +69,13 @@ A Git install builds `dist/` on install (the `prepare` script). The package brin
 }
 ```
 
+The package ships no `@font-face` rules, so the product loads its brand's fonts itself, for example with a `@fontsource` package or the Google Fonts `css2` family spec given in the brand file's `$extensions`; otherwise the font stack falls back to system fonts. After deleting init's font import, `npm uninstall @fontsource-variable/geist` removes the font it installed.
+
 Then set the brand on the root element: `<html data-brand="vrdex">`. Dark mode is the `dark` class on the same element. Products without Tailwind (Mantine, MUI) can import concrete hex and rgba values from `@bitrate-labs/design-system/brands/<name>` (plain JavaScript with type declarations).
 
 ### Layers
 
-Tooltips, popovers, menus and dialogs portal to the end of `<body>`. Wrap the app in one element with the `isolate` class and, inside it, `TooltipProvider`; then popups always sit above the page, whatever z-index the page uses. Anything else portaled to `<body>` goes inside that element or stays below z-index 50. Mount the shared `Toaster` inside it too: it renders in place at a z-index far above 50. Inside a top-layer element (a modal `<dialog>`, or an element with the `popover` attribute), pass it as the popup's `container` and give it `overflow-visible`. Tooltip text is visual only, so an icon-only trigger needs an `aria-label`. The rule and its checks are in Storybook under **Docs / Layers**.
+Tooltips, popovers, menus and dialogs portal to the end of `<body>`. Wrap the app in one element with the `isolate` class and, inside it, `TooltipProvider`; then popups always sit above the page, whatever z-index the page uses. Anything else portaled to `<body>` goes inside that element or stays below z-index 50. Mount the shared `Toaster` inside it too: it renders in place at a z-index far above 50. An open dialog or sheet covers toasts with its overlay, so show success toasts after it closes. Inside a top-layer element (a modal `<dialog>`, or an element with the `popover` attribute), pass it as the popup's `container` and give it `overflow-visible`. Tooltip text is visual only, so an icon-only trigger needs an `aria-label`. The rule and its checks are in Storybook under **Docs / Layers**.
 
 ### Lint preset
 

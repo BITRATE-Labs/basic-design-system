@@ -1,4 +1,4 @@
-import { expect, waitFor } from "storybook/test";
+import { expect, screen, waitFor } from "storybook/test";
 
 // Shared play-function helpers for popup stories. Popups render in a
 // portal outside the story canvas, so they are queried from the whole page.
@@ -34,6 +34,22 @@ export async function hoverTooltip(
     expect(document.querySelector("[data-slot=tooltip-content][data-open]")).not.toBeNull();
   });
   return findTooltip(text);
+}
+
+// Clicks the button named `name` and waits for the modal it opens (a Dialog, Sheet or
+// AlertDialog) to finish its open transition, so checks and screenshots see the final box.
+export async function openModal(
+  within: { getByRole: typeof screen.getByRole },
+  name: string,
+  role: "dialog" | "alertdialog" = "dialog",
+) {
+  within.getByRole("button", { name }).click();
+  const modal = await screen.findByRole(role);
+  await waitFor(() => expect(modal).toHaveAttribute("data-open"));
+  await waitFor(() => expect(modal).not.toHaveAttribute("data-starting-style"));
+  await Promise.all(modal.getAnimations().map((a) => a.finished));
+  await waitFor(() => expect(modal).toBeVisible());
+  return modal;
 }
 
 export async function expectClosed(slot: "tooltip-content" | "popover-content") {

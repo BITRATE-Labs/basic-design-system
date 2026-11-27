@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { openModal } from "./popup-test-utils";
 
 const meta = {
   title: "Components/Dialog",
@@ -21,14 +22,6 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
-
-// The dialog renders in a portal outside the story canvas, so open states query the whole page.
-// toBeVisible is retried because the popup starts its fade-in at opacity 0.
-async function expectOpen(canvas: { getByRole: typeof screen.getByRole }, name = "Open dialog") {
-  canvas.getByRole("button", { name }).click();
-  const dialog = await screen.findByRole("dialog");
-  await waitFor(() => expect(dialog).toBeVisible());
-}
 
 function BasicDialog() {
   return (
@@ -55,7 +48,7 @@ export const Closed: Story = { render: () => <BasicDialog /> };
 export const Open: Story = {
   render: () => <BasicDialog />,
   play: async ({ canvas }) => {
-    await expectOpen(canvas);
+    await openModal(canvas, "Open dialog");
   },
 };
 
@@ -89,7 +82,7 @@ export const WithForm: Story = {
     </Dialog>
   ),
   play: async ({ canvas }) => {
-    await expectOpen(canvas, "Edit details");
+    await openModal(canvas, "Edit details");
   },
 };
 
@@ -122,7 +115,7 @@ export const LongContent: Story = {
     </Dialog>
   ),
   play: async ({ canvas }) => {
-    await expectOpen(canvas);
+    await openModal(canvas, "Open dialog");
   },
 };
 

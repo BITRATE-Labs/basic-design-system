@@ -46,6 +46,7 @@ import {
   findPopover,
   findToasts,
   hoverTooltip,
+  openModal,
   toasterTheme,
 } from "./popup-test-utils";
 
@@ -534,10 +535,7 @@ export const ToastPopover: Story = {
 const inSheet =
   (kind: Kind): Play =>
   async (context) => {
-    await context.userEvent.click(context.canvas.getByRole("button", { name: "Open sheet" }));
-    const sheet = screen.getByRole("dialog");
-    await waitFor(() => expect(sheet).toBeVisible());
-    await Promise.all(sheet.getAnimations().map((a) => a.finished));
+    await openModal(context.canvas, "Open sheet");
     await expectOnTop(await openProbe(kind, context.userEvent));
   };
 
@@ -556,7 +554,8 @@ export const SheetDropdownMenu: Story = {
 
 // The alert dialog's buttons are hit-testable at their centres, so it paints above the dialog
 // it was opened from (expectOnTop samples near the corners, which the popup's rounded
-// corners leave out), its backdrop covers that dialog, and Escape closes only the alert.
+// corners leave out), and Escape closes only the alert. Base UI does not render a nested
+// dialog's backdrop, so the parent dialog stays undimmed around the alert (Docs / Layers).
 async function expectButtonsOnTop(alert: HTMLElement) {
   for (const button of alert.querySelectorAll("button")) {
     const r = button.getBoundingClientRect();
@@ -568,23 +567,46 @@ async function expectButtonsOnTop(alert: HTMLElement) {
 export const DialogAlertDialog: Story = {
   render: () => <AlertFromDialog />,
   play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole("button", { name: "Open dialog" }));
-    const dialog = screen.getByRole("dialog");
-    await waitFor(() => expect(dialog).toBeVisible());
-    await userEvent.click(screen.getByRole("button", { name: "Delete item" }));
-    const alert = await screen.findByRole("alertdialog");
-    await waitFor(() => expect(alert).toBeVisible());
-    await Promise.all(alert.getAnimations().map((a) => a.finished));
+    const dialog = await openModal(canvas, "Open dialog");
+    const alert = await openModal(screen, "Delete item", "alertdialog");
     await expectButtonsOnTop(alert);
-    await expectCovered(dialog);
+    await expect(document.querySelector("[data-slot=alert-dialog-overlay]")).toBeNull();
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument());
     await expect(dialog).toBeVisible();
     // Reopen so the screenshot shows the stacked state.
-    await userEvent.click(screen.getByRole("button", { name: "Delete item" }));
-    const reopened = await screen.findByRole("alertdialog");
-    await waitFor(() => expect(reopened).toBeVisible());
-    await Promise.all(reopened.getAnimations().map((a) => a.finished));
-    await expectButtonsOnTop(reopened);
+    await expectButtonsOnTop(await openModal(screen, "Delete item", "alertdialog"));
   },
+};
+
+// A toast shown while a modal is open is painted under the modal's overlay: the Toaster
+// stays inside the isolated app root, and the modal portals to the body (Docs / Layers).
+// If this starts failing, the rule changed and Docs / Layers needs updating.
+const toastUnderModal =
+  (open: string): Play =>
+  async ({ canvas }) => {
+    await openModal(canvas, open);
+    toast.dismiss();
+    toast("Sample toast message", { duration: Infinity });
+    const [shown] = await findToasts();
+    await expectCovered(shown);
+  };
+
+export const DialogToast: Story = {
+  render: (_, { globals }) => (
+    <>
+      <InsideDialog kind="tooltip" />
+      <Toaster theme={toasterTheme(globals)} position="top-center" offset={56} />
+    </>
+  ),
+  play: toastUnderModal("Open dialog"),
+};
+export const SheetToast: Story = {
+  render: (_, { globals }) => (
+    <>
+      <InsideSheet kind="tooltip" />
+      <Toaster theme={toasterTheme(globals)} position="top-center" offset={56} />
+    </>
+  ),
+  play: toastUnderModal("Open sheet"),
 };
