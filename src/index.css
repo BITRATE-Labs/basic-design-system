@@ -1,5 +1,6 @@
 /* Storybook and local development stylesheet. Consumers import the dist files instead. */
-@layer ui-sdk; /* ui-sdk injects behaviour CSS here; must be declared before Tailwind */
+/* UI SDK adds a little behavioural CSS in this layer; it must be declared before Tailwind. */
+@layer ui-sdk;
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";

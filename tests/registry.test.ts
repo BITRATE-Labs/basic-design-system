@@ -27,3 +27,22 @@ it("pins every same-repo registry dependency to the release tag", () => {
   expect(deps.length).toBeGreaterThan(0);
   expect(deps.filter((d) => !d.endsWith(`#v${version}`))).toEqual([]);
 });
+
+// UI SDK is a beta whose patch releases change behaviour, so registry items pin it to
+// the exact version this repository installs and tests (package.json devDependencies).
+it("pins every @ui-sdk registry dependency to the installed exact version", () => {
+  const { devDependencies } = JSON.parse(
+    readFileSync(path.resolve(import.meta.dirname, "../package.json"), "utf8"),
+  ) as { devDependencies: Record<string, string> };
+  const deps = (registry.items as { dependencies?: string[] }[])
+    .flatMap((item) => item.dependencies ?? [])
+    .filter((d) => d.startsWith("@ui-sdk/"));
+  expect(deps.length).toBeGreaterThan(0);
+  const wrong = deps.filter((d) => {
+    const at = d.lastIndexOf("@");
+    const name = d.slice(0, at);
+    return at <= 0 || d.slice(at + 1) !== devDependencies[name];
+  });
+  expect(wrong).toEqual([]);
+  expect(devDependencies["@ui-sdk/core"]).toBe(devDependencies["@ui-sdk/react"]);
+});
