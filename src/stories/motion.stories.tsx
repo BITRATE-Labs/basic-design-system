@@ -49,6 +49,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 const meta = {
   title: "Foundations/Motion",
   parameters: { layout: "padded" },
+  // The page is the docs; an autodocs page would only repeat it.
+  tags: ["!autodocs"],
 } satisfies Meta;
 
 export default meta;
@@ -542,6 +544,7 @@ export const Default: Story = {
 // The interaction check, kept off the page above so nothing opens or closes there by itself
 // while someone is using it.
 export const ClickCheck: Story = {
+  tags: ["!dev", "!autodocs"],
   name: "Motion click check",
   render: () => <MotionPage />,
   // The lab comparison this page replaces closed a menu the moment it was clicked: both of

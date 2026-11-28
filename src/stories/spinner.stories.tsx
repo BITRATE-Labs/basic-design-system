@@ -47,6 +47,7 @@ export const InButton: Story = {
 };
 
 export const WithText: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <div className="flex items-center gap-2 text-sm text-muted-foreground">
       <Spinner />

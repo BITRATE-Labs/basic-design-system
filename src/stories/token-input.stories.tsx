@@ -13,7 +13,7 @@ import {
 } from "@/components/ui-sdk/token-input";
 
 const meta = {
-  title: "Components/TokenInput",
+  title: "Components/Token input",
   component: TokenInput,
   decorators: [
     (Story) => (
@@ -96,9 +96,13 @@ export const Empty: Story = { render: () => <Composer /> };
 
 export const WithTokens: Story = { render: () => <Composer defaultValue={sample} /> };
 
-export const Disabled: Story = { render: () => <Composer defaultValue={sample} disabled /> };
+export const Disabled: Story = {
+  tags: ["!dev", "!autodocs"],
+  render: () => <Composer defaultValue={sample} disabled />,
+};
 
 export const MentionMenuOpen: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <Composer />,
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("textbox", { name: "Message" }));
@@ -110,6 +114,7 @@ export const MentionMenuOpen: Story = {
 };
 
 export const InsertAndRemove: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <Composer />,
   play: async ({ canvas, userEvent }) => {
     const editor = canvas.getByRole("textbox", { name: "Message" });

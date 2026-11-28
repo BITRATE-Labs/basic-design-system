@@ -48,7 +48,7 @@ function SampleAlertDialog({
 }
 
 const meta = {
-  title: "Components/Alert Dialog",
+  title: "Components/Alert dialog",
   component: SampleAlertDialog,
   args: { size: "default", media: false },
   argTypes: { size: { control: "select", options: ["default", "sm"] } },
@@ -61,14 +61,21 @@ const open: Story["play"] = async ({ canvas }) => {
   await openModal(canvas, "Delete item", "alertdialog");
 };
 
-export const Closed: Story = {};
-export const Open: Story = { play: open };
-export const Small: Story = { args: { size: "sm" }, play: open };
-export const WithMedia: Story = { args: { media: true }, play: open };
-export const SmallWithMedia: Story = { args: { size: "sm", media: true }, play: open };
+export const Default: Story = {};
+
+// Interaction checks below are tagged !dev and !autodocs: hidden from the sidebar and the
+// docs page, still run by the story render check.
+export const Small: Story = { tags: ["!dev", "!autodocs"], args: { size: "sm" }, play: open };
+export const WithMedia: Story = { tags: ["!dev", "!autodocs"], args: { media: true }, play: open };
+export const SmallWithMedia: Story = {
+  tags: ["!dev", "!autodocs"],
+  args: { size: "sm", media: true },
+  play: open,
+};
 
 // Focus starts inside the popup; Escape closes it and returns focus to the trigger.
 export const KeyboardOpenAndEscape: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole("button", { name: "Delete item" });
     await userEvent.tab();
@@ -85,6 +92,7 @@ export const KeyboardOpenAndEscape: Story = {
 
 // Clicking the backdrop does not dismiss an alert dialog; the user must choose.
 export const BackdropClickKeepsOpen: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ canvas, userEvent }) => {
     const dialog = await openModal(canvas, "Delete item", "alertdialog");
     const backdrop = document.querySelector<HTMLElement>("[data-slot=alert-dialog-overlay]")!;

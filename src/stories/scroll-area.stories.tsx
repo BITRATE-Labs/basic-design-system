@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { coverImage } from "./placeholder-images";
 
 const meta = {
-  title: "Components/Scroll Area",
+  title: "Components/Scroll area",
   component: ScrollArea,
   parameters: { layout: "centered" },
 } satisfies Meta<typeof ScrollArea>;
@@ -37,6 +37,7 @@ const viewport = (root: HTMLElement) =>
 export const Vertical: Story = { render: () => <TagList /> };
 
 export const Scrolled: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <TagList />,
   play: async ({ canvasElement }) => {
     const el = viewport(canvasElement);
@@ -69,6 +70,7 @@ export const Horizontal: Story = {
 
 // The viewport takes keyboard focus, so arrow keys and Page Down scroll it, and shows a ring.
 export const KeyboardFocus: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <TagList />,
   play: async ({ canvasElement, userEvent }) => {
     // Base UI makes the viewport focusable once it has measured the overflow.

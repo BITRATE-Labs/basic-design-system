@@ -103,11 +103,13 @@ const keyboard: Story["play"] = async ({ canvas, userEvent }) => {
 };
 
 export const StockKeyboardNavigation: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SampleTabs lib="stock" />,
   play: keyboard,
 };
 
 export const SdkKeyboardNavigation: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SampleTabs lib="sdk" />,
   play: keyboard,
 };
@@ -115,6 +117,7 @@ export const SdkKeyboardNavigation: Story = {
 // The agent bridge lists only UI SDK parts: it can read and change the SDK tabs and
 // cannot see the stock ones on the same page.
 export const AgentBridge: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <div className="grid grid-cols-2 gap-8">
       <SampleTabs lib="stock" />

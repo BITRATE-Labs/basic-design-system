@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const meta = {
-  title: "Components/DropdownMenu",
+  title: "Components/Dropdown menu",
   component: DropdownMenu,
 } satisfies Meta<typeof DropdownMenu>;
 
@@ -61,9 +61,13 @@ function SampleMenu() {
   );
 }
 
-export const Closed: Story = { render: () => <SampleMenu /> };
+export const Default: Story = { render: () => <SampleMenu /> };
+
+// Interaction checks below are tagged !dev and !autodocs: hidden from the sidebar and the
+// docs page, still run by the story render check.
 
 export const Open: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SampleMenu />,
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("button", { name: "Actions" }));
@@ -73,6 +77,7 @@ export const Open: Story = {
 };
 
 export const KeyboardNavigation: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SampleMenu />,
   play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole("button", { name: "Actions" });

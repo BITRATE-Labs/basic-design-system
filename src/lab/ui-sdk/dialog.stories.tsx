@@ -65,6 +65,7 @@ async function openDialog(lib: Lib) {
 }
 
 export const StockDialog: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SampleDialog lib="stock" />,
   play: async () => {
     await openDialog("stock");
@@ -72,6 +73,7 @@ export const StockDialog: Story = {
 };
 
 export const SdkDialog: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SampleDialog lib="sdk" />,
   play: async () => {
     await openDialog("sdk");
@@ -103,11 +105,13 @@ const keyboard =
   };
 
 export const StockKeyboardOpenAndEscape: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SampleDialog lib="stock" />,
   play: keyboard("stock"),
 };
 
 export const SdkKeyboardOpenAndEscape: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SampleDialog lib="sdk" />,
   play: keyboard("sdk"),
 };
@@ -241,7 +245,7 @@ function Probe({ kind, container }: { kind: Kind; container?: HTMLElement | null
 }
 
 // Probe inside the dialog; with `contained`, the popup takes the dialog as its container
-// and the dialog gets overflow-visible, as Docs / Layers asks for top-layer hosts.
+// and the dialog gets overflow-visible, as Foundations / Layers asks for top-layer hosts.
 function ProbeInDialog({ lib, kind, contained }: { lib: Lib; kind: Kind; contained: boolean }) {
   const D = libs[lib];
   const [content, setContent] = useState<HTMLElement | null>(null);
@@ -330,6 +334,7 @@ function NameField({ lib }: { lib: Lib }) {
 }
 
 export const AgentBridge: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <div className="flex gap-4">
       <SampleDialog lib="stock">

@@ -52,33 +52,44 @@ const meta = {
     side: { control: "select", options: ["top", "right", "bottom", "left"] },
     align: { control: "select", options: ["start", "center", "end"] },
   },
-  // Every story opens its popover by clicking the first button on the canvas.
-  play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getAllByRole("button")[0]);
-    await findPopover();
-  },
 } satisfies Meta<typeof SamplePopover>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Closed: Story = { play: async () => {} };
+// The stories a reader sees render closed; clicking the trigger opens the popover.
+export const Default: Story = {};
 
-export const Bottom: Story = {};
-export const Top: Story = { args: { side: "top" } };
-export const Right: Story = { args: { side: "right" } };
-export const Left: Story = { args: { side: "left" } };
-export const AlignStart: Story = { args: { align: "start" } };
-export const AlignEnd: Story = { args: { align: "end" } };
+// Interaction checks below are tagged !dev and !autodocs: hidden from the sidebar and the
+// docs page, still run by the story render check. Each opens its popover by clicking the
+// first button on the canvas.
+const click: Story["play"] = async ({ canvas, userEvent }) => {
+  await userEvent.click(canvas.getAllByRole("button")[0]);
+  await findPopover();
+};
+
+export const Bottom: Story = { tags: ["!dev", "!autodocs"], play: click };
+export const Top: Story = { tags: ["!dev", "!autodocs"], args: { side: "top" }, play: click };
+export const Right: Story = { tags: ["!dev", "!autodocs"], args: { side: "right" }, play: click };
+export const Left: Story = { tags: ["!dev", "!autodocs"], args: { side: "left" }, play: click };
+export const AlignStart: Story = {
+  tags: ["!dev", "!autodocs"],
+  args: { align: "start" },
+  play: click,
+};
+export const AlignEnd: Story = { tags: ["!dev", "!autodocs"], args: { align: "end" }, play: click };
 
 export const LongText: Story = {
+  tags: ["!dev", "!autodocs"],
   args: {
     description:
       "Anyone with the link can view the sample item. Members of the sample workspace can also comment, and owners can change who has access at any time from the item's settings.",
   },
+  play: click,
 };
 
 export const IconOnly: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <div className="flex min-h-96 items-center justify-center">
       <Popover>
@@ -106,6 +117,7 @@ export const IconOnly: Story = {
 };
 
 export const DisabledTrigger: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <div className="flex min-h-96 items-center justify-center">
       <Popover>
@@ -123,6 +135,7 @@ export const DisabledTrigger: Story = {
 };
 
 export const KeyboardOpenAndEscape: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole("button", { name: "Share" });
     await userEvent.tab();
@@ -136,3 +149,6 @@ export const KeyboardOpenAndEscape: Story = {
     await waitFor(() => expect(trigger).toHaveFocus());
   },
 };
+
+// A closed version of the check above, for reading.
+export const IconOnlyClosed: Story = { ...IconOnly, name: "Icon only", tags: [], play: undefined };

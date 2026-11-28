@@ -20,7 +20,7 @@ import { tabsListVariants } from "@/components/ui/tabs";
 
 // The bridge sees only ui-sdk parts, so these stories use them directly, styled with the
 // same role tokens as the stock components. tests/agent drives each one through window.agent.
-const meta = { title: "Agents" } satisfies Meta;
+const meta = { title: "Agents (UI SDK beta)/Agent bridge" } satisfies Meta;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

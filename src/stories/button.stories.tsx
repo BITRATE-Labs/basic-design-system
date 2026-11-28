@@ -97,6 +97,7 @@ export const WithIcons: Story = {
 };
 
 export const Disabled: Story = {
+  tags: ["!dev", "!autodocs"],
   render: (args) => (
     <div className="flex flex-wrap items-center gap-2">
       <Button {...args} disabled>
@@ -116,10 +117,12 @@ export const Disabled: Story = {
 };
 
 export const Invalid: Story = {
+  tags: ["!dev", "!autodocs"],
   args: { variant: "outline", "aria-invalid": true, children: "Choose a file" },
 };
 
 export const KeyboardActivation: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ args, canvas, userEvent }) => {
     const button = canvas.getByRole("button", { name: "Save draft" });
     await userEvent.tab();

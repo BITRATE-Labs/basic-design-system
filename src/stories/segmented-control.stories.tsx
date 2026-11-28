@@ -68,6 +68,7 @@ export const Default: Story = {
 };
 
 export const Small: Story = {
+  tags: ["!dev", "!autodocs"],
   args: {
     legend: "Listing view",
     options: views,
@@ -87,6 +88,7 @@ export const WithIcons: Story = {
 };
 
 export const Weights: Story = {
+  tags: ["!dev", "!autodocs"],
   args: { legend: "Billing cadence", options: cadence, defaultValue: "monthly" },
   render: (args) => (
     <div className="grid max-w-md gap-6">
@@ -114,6 +116,7 @@ export const Weights: Story = {
 };
 
 export const DisabledOption: Story = {
+  tags: ["!dev", "!autodocs"],
   args: {
     legend: "Listing view",
     options: views.map((v) => ({ ...v, disabled: v.value === "archived" })),
@@ -178,6 +181,7 @@ function InFormSample() {
 }
 
 export const InForm: Story = {
+  tags: ["!dev", "!autodocs"],
   args: { legend: "Billing cadence", options: cadence },
   render: () => <InFormSample />,
   play: async ({ canvas }) => {
@@ -189,6 +193,7 @@ export const InForm: Story = {
 };
 
 export const Keyboard: Story = {
+  tags: ["!dev", "!autodocs"],
   args: { legend: "Listing view", options: views, defaultValue: "active", className: "max-w-md" },
   play: async ({ canvas, canvasElement }) => {
     const root = canvasElement.querySelector<HTMLElement>("[data-slot=segmented-control]")!;
@@ -222,6 +227,7 @@ export const Keyboard: Story = {
 };
 
 export const RightToLeft: Story = {
+  tags: ["!dev", "!autodocs"],
   args: { legend: "Billing cadence", options: cadence, defaultValue: "monthly" },
   render: (args) => (
     <DirectionProvider direction="rtl">

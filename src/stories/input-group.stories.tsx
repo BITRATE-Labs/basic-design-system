@@ -13,7 +13,7 @@ import { Kbd } from "@/components/ui/kbd";
 import { Label } from "@/components/ui/label";
 
 const meta = {
-  title: "Components/Input Group",
+  title: "Components/Input group",
   component: InputGroup,
   decorators: [
     (Story) => (
@@ -91,6 +91,7 @@ export const Textarea: Story = {
 };
 
 export const BlockStartLabel: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <InputGroup>
       <InputGroupInput id="input-group-title" defaultValue="Sample item" />
@@ -102,6 +103,7 @@ export const BlockStartLabel: Story = {
 };
 
 export const Disabled: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <InputGroup>
       <InputGroupInput disabled defaultValue="Locked value" aria-label="Locked value" />
@@ -113,6 +115,7 @@ export const Disabled: Story = {
 };
 
 export const Invalid: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <InputGroup>
       <InputGroupInput aria-invalid defaultValue="not-an-email" aria-label="Email" />
@@ -125,6 +128,7 @@ export const Invalid: Story = {
 
 // The focus ring is drawn on the group, not the input, once the control has keyboard focus.
 export const KeyboardFocus: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <InputGroup>
       <InputGroupInput placeholder="Search items" aria-label="Search items" />

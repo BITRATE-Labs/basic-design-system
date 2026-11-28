@@ -20,9 +20,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Off: Story = {};
 
-export const On: Story = { args: { defaultChecked: true } };
+export const On: Story = { tags: ["!dev", "!autodocs"], args: { defaultChecked: true } };
 
 export const Sizes: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <div className="flex items-center gap-4">
       <Switch aria-label="Small" size="sm" defaultChecked />
@@ -32,6 +33,7 @@ export const Sizes: Story = {
 };
 
 export const Disabled: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <div className="flex gap-4">
       <Switch aria-label="Disabled, off" disabled />
@@ -53,6 +55,7 @@ export const InField: Story = {
 };
 
 export const Invalid: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Field orientation="horizontal" data-invalid="true" className="max-w-sm">
       <FieldContent>
@@ -65,6 +68,7 @@ export const Invalid: Story = {
 };
 
 export const ToggleWithLabel: Story = {
+  tags: ["!dev", "!autodocs"],
   render: InField.render,
   play: async ({ canvas, userEvent }) => {
     const control = canvas.getByRole("switch", { name: "Away mode" });

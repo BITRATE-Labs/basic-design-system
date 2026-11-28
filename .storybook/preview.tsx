@@ -1,3 +1,11 @@
+import {
+  ArgTypes,
+  Description,
+  Primary,
+  Stories,
+  Subtitle,
+  Title,
+} from "@storybook/addon-docs/blocks";
 import { withThemeByClassName } from "@storybook/addon-themes";
 import type { Decorator, Preview, ReactRenderer } from "@storybook/react-vite";
 import { brands } from "../dist/tokens";
@@ -12,7 +20,7 @@ const withBrand: Decorator = (Story, context) => {
 };
 
 // Glass brands paint their page backdrop behind every story, as the product does, so the
-// surfaces are judged over it. Flat brands ignore the attribute (Docs / Surfaces).
+// surfaces are judged over it. Flat brands ignore the attribute (Foundations / Surfaces).
 const withSurfaceBackdrop: Decorator = (Story) => {
   document.body.dataset.surfaceBackdrop = "";
   return <Story />;
@@ -52,7 +60,7 @@ const loadBrandFonts = async (brand: string) => {
 
 // Every story has the bridge. It sees only the ui-sdk parts a story renders (stock Base UI
 // components are invisible to it), and window.agent lets the browser console and
-// tests/agent drive it (Docs / Agents).
+// tests/agent drive it (Agents (UI SDK beta) / Agent bridge).
 const withAgent: Decorator = (Story) => {
   (window as { agent?: typeof agent }).agent = agent;
   return (
@@ -62,7 +70,22 @@ const withAgent: Decorator = (Story) => {
   );
 };
 
+// Every component gets a docs page: the main story, then the variants, then the props table.
+// Interaction checks carry the !dev and !autodocs tags, so they stay out of the sidebar and
+// off these pages; the story render check still runs them from index.json.
+const DocsPage = () => (
+  <>
+    <Title />
+    <Subtitle />
+    <Description />
+    <Primary />
+    <Stories includePrimary={false} title="Variants" />
+    <ArgTypes />
+  </>
+);
+
 const preview: Preview = {
+  tags: ["autodocs"],
   loaders: [({ globals }) => loadBrandFonts(globals.brand ?? "basic")],
   globalTypes: {
     brand: {
@@ -77,10 +100,34 @@ const preview: Preview = {
   },
   initialGlobals: { brand: "basic" },
   parameters: {
-    // Lab/ holds throwaway options (src/lab/README.md), so it always sorts last.
+    docs: { page: DocsPage },
+    // Start here, Foundations in reading order, Components alphabetical, Examples, Agents,
+    // and Lab last (throwaway options, src/lab/README.md). Stories inside one component keep
+    // their file order, so the main story comes first. Storybook parses storySort as plain
+    // JavaScript, so it takes no type annotations.
     options: {
-      storySort: {
-        order: ["Docs", "Foundations", "Components", "Examples", "Layering", "*", "Lab"],
+      storySort: (a, b) => {
+        const roots = [
+          "Start here",
+          "Foundations",
+          "Components",
+          "Examples",
+          "Agents (UI SDK beta)",
+          "Lab",
+        ];
+        const foundations = ["Tokens", "Surfaces", "Motion", "Layers"];
+        const rank = (title) => {
+          const [root, child] = title.split("/");
+          const r = roots.indexOf(root);
+          return [
+            r < 0 ? roots.length - 1 : r,
+            root === "Foundations" ? foundations.indexOf(child) : 0,
+          ];
+        };
+        if (a.title === b.title) return 0;
+        const [ra, ca] = rank(a.title);
+        const [rb, cb] = rank(b.title);
+        return ra - rb || ca - cb || a.title.localeCompare(b.title);
       },
     },
   },

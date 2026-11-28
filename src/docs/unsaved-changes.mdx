@@ -1,10 +1,17 @@
-import { Meta } from "@storybook/addon-docs/blocks";
+import { Meta, Primary, Stories } from "@storybook/addon-docs/blocks";
+import * as UnsavedStories from "../stories/unsaved-changes.stories";
 
-<Meta title="Docs/Unsaved changes" />
+<Meta of={UnsavedStories} />
 
 # Unsaved changes
 
-Perkcord's refuse-to-dismiss nudge, for the shared `Dialog` and `Sheet` (registry item `use-dirty-dismiss`). While a form inside has unsaved changes, Escape and a press outside do not close it. The popup shakes instead, focus moves to its action row and a polite status says why. Stories: **Components / Unsaved changes**.
+<Primary />
+
+<Stories includePrimary={false} title="Variants" />
+
+## Use
+
+Perkcord's refuse-to-dismiss nudge, for the shared `Dialog` and `Sheet` (registry item `use-dirty-dismiss`). While a form inside has unsaved changes, Escape and a press outside do not close it. The popup shakes instead, focus moves to its action row and a polite status says why.
 
 ```tsx
 const [dirty, setDirty] = useState(false);
@@ -37,7 +44,7 @@ Destructure the result: the React Compiler lint treats an object whose member is
 
 ## Native `<dialog>`
 
-Give the dialog `ref={popup}` and call `nudge()` from its `cancel` event after `preventDefault()` when dirty. The browser honours that `preventDefault` only while the page holds a user activation, so repeated Escapes with no input between still close a native dialog; it can never trap anyone. The **Native dialog** story shows the wiring.
+Give the dialog `ref={popup}` and call `nudge()` from its `cancel` event after `preventDefault()` when dirty. The browser honours that `preventDefault` only while the page holds a user activation, so repeated Escapes with no input between still close a native dialog; it can never trap anyone. The `NativeDialog` check in `src/stories/unsaved-changes.stories.tsx` shows the wiring.
 
 ## Not covered
 

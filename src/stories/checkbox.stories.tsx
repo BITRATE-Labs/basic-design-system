@@ -23,11 +23,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Unchecked: Story = {};
 
-export const Checked: Story = { args: { defaultChecked: true } };
+export const Checked: Story = { tags: ["!dev", "!autodocs"], args: { defaultChecked: true } };
 
-export const Indeterminate: Story = { args: { indeterminate: true } };
+export const Indeterminate: Story = { tags: ["!dev", "!autodocs"], args: { indeterminate: true } };
 
 export const Disabled: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <div className="flex gap-4">
       <Checkbox aria-label="Disabled, off" disabled />
@@ -49,6 +50,7 @@ export const InField: Story = {
 };
 
 export const Invalid: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Field orientation="horizontal" data-invalid="true" className="max-w-sm">
       <Checkbox id="checkbox-rules" aria-invalid aria-describedby="checkbox-rules-error" />
@@ -85,6 +87,7 @@ export const Group: Story = {
 };
 
 export const ToggleWithLabel: Story = {
+  tags: ["!dev", "!autodocs"],
   render: InField.render,
   play: async ({ canvas, userEvent }) => {
     const checkbox = canvas.getByRole("checkbox", { name: "Show the item in search" });

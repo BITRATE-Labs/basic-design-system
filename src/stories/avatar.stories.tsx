@@ -53,6 +53,7 @@ export const WithImage: Story = {
 
 // The image fails to load, so the initials stay.
 export const BrokenImage: Story = {
+  tags: ["!dev", "!autodocs"],
   render: (args) => (
     <Avatar {...args}>
       <AvatarImage src={brokenImage} alt="Sample user" />
@@ -65,6 +66,7 @@ export const BrokenImage: Story = {
 };
 
 export const Sizes: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <div className="flex items-center gap-4">
       {(["sm", "default", "lg"] as const).map((size) => (
@@ -84,6 +86,7 @@ export const Sizes: Story = {
 };
 
 export const WithBadge: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <div className="flex items-center gap-4">
       {(["sm", "default", "lg"] as const).map((size) => (
@@ -114,6 +117,7 @@ export const Group: Story = {
 };
 
 export const GroupWithIcon: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <AvatarGroup>
       <Avatar size="lg">

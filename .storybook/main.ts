@@ -32,6 +32,17 @@ const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(ts|tsx)"],
   addons: ["@storybook/addon-docs", "@storybook/addon-a11y", "@storybook/addon-themes"],
   framework: "@storybook/react-vite",
+  // The props tables on the docs pages. The default react-docgen cannot follow the Base UI
+  // prop types the stock components spread, so most tables came out empty. Keep the
+  // components' own and Base UI's props; leave out the DOM attributes from @types/react.
+  typescript: {
+    reactDocgen: "react-docgen-typescript",
+    reactDocgenTypescriptOptions: {
+      shouldExtractLiteralValuesFromEnum: true,
+      propFilter: (prop) =>
+        !prop.parent || !/node_modules[\\/](@types[\\/]react|csstype)/.test(prop.parent.fileName),
+    },
+  },
   previewHead: (head) => `${head ?? ""}
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

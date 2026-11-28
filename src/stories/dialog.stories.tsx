@@ -43,9 +43,13 @@ function BasicDialog() {
   );
 }
 
-export const Closed: Story = { render: () => <BasicDialog /> };
+export const Default: Story = { render: () => <BasicDialog /> };
+
+// Interaction checks below are tagged !dev and !autodocs: hidden from the sidebar and the
+// docs page, still run by the story render check.
 
 export const Open: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <BasicDialog />,
   play: async ({ canvas }) => {
     await openModal(canvas, "Open dialog");
@@ -53,6 +57,7 @@ export const Open: Story = {
 };
 
 export const WithForm: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Dialog>
       <DialogTrigger render={<Button />}>Edit details</DialogTrigger>
@@ -93,6 +98,7 @@ const paragraphs = Array.from(
 );
 
 export const LongContent: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Dialog>
       <DialogTrigger render={<Button variant="outline" />}>Open dialog</DialogTrigger>
@@ -120,6 +126,7 @@ export const LongContent: Story = {
 };
 
 export const KeyboardOpenAndEscape: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <BasicDialog />,
   play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole("button", { name: "Open dialog" });
@@ -133,3 +140,6 @@ export const KeyboardOpenAndEscape: Story = {
     await waitFor(() => expect(trigger).toHaveFocus());
   },
 };
+
+// A closed version of the check above, for reading.
+export const WithFormClosed: Story = { ...WithForm, name: "With form", tags: [], play: undefined };

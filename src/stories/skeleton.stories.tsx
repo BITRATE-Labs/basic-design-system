@@ -32,6 +32,7 @@ export const Card: Story = {
 };
 
 export const List: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <div className="grid w-80 gap-3">
       {Array.from({ length: 4 }, (_, i) => (

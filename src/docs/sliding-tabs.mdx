@@ -1,10 +1,19 @@
-import { Meta } from "@storybook/addon-docs/blocks";
+import { ArgTypes, Meta, Primary, Stories } from "@storybook/addon-docs/blocks";
+import * as SlidingTabsStories from "../stories/sliding-tabs.stories";
 
-<Meta title="Docs/Sliding tabs" />
+<Meta of={SlidingTabsStories} />
 
 # Sliding tabs
 
-A selection line that slides to the chosen item. Two components share it:
+A selection line that slides to the chosen item.
+
+<Primary />
+
+<Stories includePrimary={false} title="Variants" />
+
+<ArgTypes />
+
+## Two components
 
 - **`SlidingTabsList` and `SlidingTabsTrigger`** go inside the stock `Tabs` in place of `TabsList` and `TabsTrigger`. They are the tabs pattern: `tablist`, `tab`, `tabpanel`, arrow keys.
 - **`SlidingNav` and `SlidingNavLink`** are a `<nav>` of links between pages. The current link gets `active`, which sets `aria-current="page"`. Pass a router link with `render`, for example `<SlidingNavLink active render={<Link href="/guides" />}>Guides</SlidingNavLink>`. Links are reached with Tab, not arrow keys.

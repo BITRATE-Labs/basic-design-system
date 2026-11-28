@@ -28,7 +28,7 @@ export const agent =
  * The data-agent-confirm, -hidden and -secret marks follow the DOM, not the React tree, so
  * they do not reach content portaled out of the marked element: the shared Popover,
  * Dialog, DropdownMenu and Tooltip contents, or any createPortal. Put the mark on the
- * portaled element itself (`<PopoverContent data-agent-hidden>`). See Docs / Agents.
+ * portaled element itself (`<PopoverContent data-agent-hidden>`). See Agents (UI SDK beta) / Agent bridge.
  */
 export function AgentProvider({
   confirm = askPerson,

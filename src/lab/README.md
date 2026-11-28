@@ -1,6 +1,6 @@
 # Lab
 
-Throwaway options for the owner to compare in Storybook. The workflow is in Storybook under **Docs / Trying variants**.
+Throwaway options for the owner to compare in Storybook. The workflow is in Storybook under **Lab / Trying variants**.
 
 - Put each comparison in its own folder: `src/lab/<topic>/`.
 - Give every story a title that starts with `Lab/`, for example `Lab/Dialog header`. Storybook sorts `Lab` last.

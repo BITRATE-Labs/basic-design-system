@@ -79,6 +79,7 @@ function InlineCommand() {
 export const Default: Story = { render: () => <InlineCommand /> };
 
 export const KeyboardRun: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <InlineCommand />,
   play: async ({ canvas, userEvent }) => {
     const input = canvas.getByRole("combobox", { name: "Search commands" });
@@ -94,6 +95,7 @@ export const KeyboardRun: Story = {
 };
 
 export const Filtered: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <InlineCommand />,
   play: async ({ canvas, userEvent }) => {
     await userEvent.type(canvas.getByRole("combobox", { name: "Search commands" }), "bil");
@@ -105,6 +107,7 @@ export const Filtered: Story = {
 };
 
 export const NoResults: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <InlineCommand />,
   play: async ({ canvas, userEvent }) => {
     await userEvent.type(canvas.getByRole("combobox", { name: "Search commands" }), "zzqx");
@@ -136,9 +139,10 @@ function Palette() {
   );
 }
 
-export const PaletteClosed: Story = { render: () => <Palette /> };
+export const PaletteClosed: Story = { name: "Palette", render: () => <Palette /> };
 
 export const PaletteOpen: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <Palette />,
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("button", { name: "Search commands" }));
@@ -151,6 +155,7 @@ export const PaletteOpen: Story = {
 };
 
 export const PaletteRunAndReturnFocus: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <Palette />,
   play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole("button", { name: "Search commands" });

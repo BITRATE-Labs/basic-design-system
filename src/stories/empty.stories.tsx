@@ -56,6 +56,7 @@ export const Outline: Story = {
 };
 
 export const TextOnly: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Empty>
       <EmptyHeader>

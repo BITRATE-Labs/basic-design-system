@@ -22,6 +22,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const WithValue: Story = {
+  tags: ["!dev", "!autodocs"],
   args: {
     defaultValue:
       "The sample item ships in a plain box.\nPick-up is possible on weekdays after five.",
@@ -29,6 +30,7 @@ export const WithValue: Story = {
 };
 
 export const Disabled: Story = {
+  tags: ["!dev", "!autodocs"],
   args: { disabled: true, defaultValue: "Notes are locked for this item." },
 };
 
@@ -43,6 +45,7 @@ export const InField: Story = {
 };
 
 export const Invalid: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Field data-invalid="true">
       <FieldLabel htmlFor="textarea-reason">Reason</FieldLabel>
@@ -58,6 +61,7 @@ export const Invalid: Story = {
 };
 
 export const Typing: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ canvas, userEvent }) => {
     const textarea = canvas.getByRole("textbox", { name: "Note" });
     await userEvent.tab();

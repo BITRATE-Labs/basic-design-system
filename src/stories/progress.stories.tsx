@@ -38,7 +38,7 @@ export const WithLabel: Story = {
   },
 };
 
-export const Complete: Story = { args: { value: 100 } };
+export const Complete: Story = { tags: ["!dev", "!autodocs"], args: { value: 100 } };
 
 export const Indeterminate: Story = {
   args: { value: null },

@@ -44,19 +44,20 @@ const meta = {
       }
     />
   ),
-  play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole("button", { name: "Show toast" }));
-    await findToasts();
-  },
 } satisfies Meta<typeof Toaster>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Closed: Story = { play: async () => {} };
+// The stories a reader sees show nothing until the button is pressed.
+export const Default: Story = {};
+
+// Interaction checks below are tagged !dev and !autodocs: hidden from the sidebar and the
+// docs page, still run by the story render check.
 
 // theme/motion.css retimes the toast; sonner's own transition must not win the cascade.
-export const Default: Story = {
+export const MotionTiming: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("button", { name: "Show toast" }));
     const [shown] = await findToasts();
@@ -68,6 +69,7 @@ export const Default: Story = {
 };
 
 export const Types: Story = {
+  tags: ["!dev", "!autodocs"],
   parameters: { expand: true },
   render: () => (
     <ShowToast
@@ -87,6 +89,7 @@ export const Types: Story = {
 };
 
 export const WithAction: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <ShowToast
       onClick={() =>
@@ -105,7 +108,15 @@ export const WithAction: Story = {
 };
 
 export const Loading: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <ShowToast onClick={() => toast.loading("Publishing sample item", { duration: Infinity })} />
   ),
+  play: async ({ canvas, userEvent }) => {
+    await userEvent.click(canvas.getByRole("button", { name: "Show toast" }));
+    await findToasts();
+  },
 };
+
+// A closed version of the check above, for reading.
+export const TypesClosed: Story = { ...Types, name: "Types", tags: [], play: undefined };

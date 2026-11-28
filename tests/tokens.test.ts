@@ -255,7 +255,7 @@ it("collapses every motion token under reduced motion", () => {
 });
 
 // ---- Surfaces ----------------------------------------------------------------------------
-// Surface styles (Docs / Surfaces): glass brands get every --surface-* value in light and dark
+// Surface styles (Foundations / Surfaces): glass brands get every --surface-* value in light and dark
 // and the glass rules in theme.css; flat brands get neither.
 const brandFile = (name: string) =>
   JSON.parse(readFileSync(path.join(root, `brands/${name}.tokens.json`), "utf8")) as {
@@ -299,7 +299,7 @@ describe("surfaces", () => {
 // "incomplete"), so the backdrop's extreme points are composited here from its known stops
 // and checked against the roles used as page text. Each point names the literal it is built
 // from, and the first test fails if the backdrop stops using it. Perkcord's own scene values
-// that fall short stay as the product has them, listed with their ratio (Docs / Surfaces).
+// that fall short stay as the product has them, listed with their ratio (Foundations / Surfaces).
 const backdropAllowlist: Record<string, string> = {
   "perkcord:light:sky-top/destructive": "product destructive red over the sky, 2.88:1",
   "perkcord:light:tree-line/destructive": "product destructive red over the tree line, 2.72:1",

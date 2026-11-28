@@ -63,7 +63,7 @@ function Delivery({
 }
 
 const meta = {
-  title: "Components/RadioGroup",
+  title: "Components/Radio group",
   component: Delivery,
   args: { defaultValue: "post" },
 } satisfies Meta<typeof Delivery>;
@@ -73,15 +73,22 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const NoSelection: Story = { args: { defaultValue: undefined } };
+export const NoSelection: Story = {
+  tags: ["!dev", "!autodocs"],
+  args: { defaultValue: undefined },
+};
 
-export const DisabledItem: Story = { args: { disabledItem: "courier" } };
+export const DisabledItem: Story = {
+  tags: ["!dev", "!autodocs"],
+  args: { disabledItem: "courier" },
+};
 
-export const Disabled: Story = { args: { disabled: true } };
+export const Disabled: Story = { tags: ["!dev", "!autodocs"], args: { disabled: true } };
 
 export const Invalid: Story = { args: { defaultValue: undefined, invalid: true } };
 
 export const KeyboardSelection: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByText("Pick-up"));
     await expect(canvas.getByRole("radio", { name: "Pick-up" })).toBeChecked();

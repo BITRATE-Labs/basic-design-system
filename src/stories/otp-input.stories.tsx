@@ -10,7 +10,7 @@ import {
 } from "@/components/ui-sdk/otp-input";
 
 const meta = {
-  title: "Components/OTPInput",
+  title: "Components/OTP input",
   component: OTPInput,
   decorators: [
     (Story) => (
@@ -49,7 +49,10 @@ export const Empty: Story = { render: () => <SixDigits /> };
 
 export const Filled: Story = { render: () => <SixDigits defaultValue="482913" /> };
 
-export const Disabled: Story = { render: () => <SixDigits defaultValue="482" disabled /> };
+export const Disabled: Story = {
+  tags: ["!dev", "!autodocs"],
+  render: () => <SixDigits defaultValue="482" disabled />,
+};
 
 export const Invalid: Story = {
   render: () => (
@@ -63,6 +66,7 @@ export const Invalid: Story = {
 };
 
 export const FocusedEmpty: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SixDigits />,
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByLabelText("Verification code"));
@@ -81,6 +85,7 @@ function Verify() {
 }
 
 export const TypeAndPaste: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <Verify />,
   play: async ({ canvas, userEvent }) => {
     const input = canvas.getByLabelText("Verification code");

@@ -1,9 +1,9 @@
 import { Canvas, Meta } from "@storybook/addon-docs/blocks";
 import * as AgentStories from "../stories/agents.stories";
 
-<Meta title="Docs/Agents" />
+<Meta of={AgentStories} />
 
-# Agents
+# Agent bridge (UI SDK beta)
 
 An AI agent can read and operate a page through the [ui-sdk](https://ui-sdk.dev/docs/agents) agent bridge: `snapshot()` lists the components with their state and actions, `act({ steps })` runs actions in order, and `query()` finds components and list items. Every change an agent makes reaches the component's normal change callback, marked as the agent's.
 
@@ -15,7 +15,7 @@ ui-sdk is in beta (`0.1.0-beta.17`, pinned exactly) and allowed in products. Beh
 
 ## Set up the app root
 
-Add the `sdk-agent` registry item and wrap the app root in `AgentProvider`, next to the isolated root and `TooltipProvider` from **Docs / Layers**. It changes no layering.
+Add the `sdk-agent` registry item and wrap the app root in `AgentProvider`, next to the isolated root and `TooltipProvider` from **Foundations / Layers**. It changes no layering.
 
 ```tsx
 import { AgentProvider } from "@/components/ui-sdk/agent";

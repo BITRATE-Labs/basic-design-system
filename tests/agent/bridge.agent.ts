@@ -30,7 +30,7 @@ test("sees only ui-sdk parts, not the stock Base UI components", async ({ page }
 });
 
 test("opens a dialog, switches its tab, fills the form and submits it", async ({ page }) => {
-  await openStory(page, "agents--workspace-dialog");
+  await openStory(page, "agents-ui-sdk-beta-agent-bridge--workspace-dialog");
   expect(await snapshot(page)).toContainEqual(
     expect.objectContaining({ component: "dialog", open: false }),
   );
@@ -64,7 +64,7 @@ test("opens a dialog, switches its tab, fills the form and submits it", async ({
 });
 
 test("never performs a data-agent-confirm action without the person", async ({ page }) => {
-  await openStory(page, "agents--confirm-required");
+  await openStory(page, "agents-ui-sdk-beta-agent-bridge--confirm-required");
   expect(await snapshot(page)).toContainEqual(
     expect.objectContaining({ label: "Delete workspace", confirm: "Deletes the sample workspace" }),
   );
@@ -86,7 +86,7 @@ test("never performs a data-agent-confirm action without the person", async ({ p
 });
 
 test("leaves a data-agent-hidden region out of snapshot, query and act", async ({ page }) => {
-  await openStory(page, "agents--hidden-region");
+  await openStory(page, "agents-ui-sdk-beta-agent-bridge--hidden-region");
   const labels = (await snapshot(page)).map((c) => c.label);
   expect(labels).toContain("Backup email");
   expect(labels).not.toContain("Recovery code");
@@ -104,7 +104,7 @@ test("leaves a data-agent-hidden region out of snapshot, query and act", async (
 test("keeps portaled content marked only when the portaled element carries the mark", async ({
   page,
 }) => {
-  await openStory(page, "agents--portaled-marks");
+  await openStory(page, "agents-ui-sdk-beta-agent-bridge--portaled-marks");
   expect((await snapshot(page)).map((c) => c.label)).not.toContain("Portaled recovery code");
   const hidden = await act(page, [
     { ref: "Portaled recovery code", action: "setValue", args: ["x"] },
@@ -124,11 +124,11 @@ test("keeps portaled content marked only when the portaled element carries the m
 
 // Pins the ui-sdk beta behaviour that makes the rule above necessary: a component moved out
 // of a data-agent-hidden element in the DOM (as a portal does) is visible again. If this
-// starts failing, the marks follow the React tree and Docs / Agents can drop the rule.
+// starts failing, the marks follow the React tree and Agents (UI SDK beta) / Agent bridge can drop the rule.
 test("marks follow the DOM, so content moved out of a marked element loses the mark", async ({
   page,
 }) => {
-  await openStory(page, "agents--hidden-region");
+  await openStory(page, "agents-ui-sdk-beta-agent-bridge--hidden-region");
   await page.evaluate(() => {
     const field = document.querySelector("[data-agent-hidden] [data-slot=field]")!;
     document.body.append(field);
@@ -137,7 +137,7 @@ test("marks follow the DOM, so content moved out of a marked element loses the m
 });
 
 test("reports agent changes as source agent and lets the app cancel them", async ({ page }) => {
-  await openStory(page, "agents--agent-changes");
+  await openStory(page, "agents-ui-sdk-beta-agent-bridge--agent-changes");
   const notice = page.locator("[data-slot=agent-notice]");
   await expect(notice).toHaveText("");
   const moved = await act(page, [
@@ -169,7 +169,7 @@ test("offers the tools over WebMCP, and confirm steps still ask the person", asy
       modelContext: { registerTool: async (tool: Tool) => void w.__tools!.push(tool) },
     });
   });
-  await openStory(page, "agents--confirm-required");
+  await openStory(page, "agents-ui-sdk-beta-agent-bridge--confirm-required");
   expect(
     await page.evaluate(() => (window as unknown as Win).__tools!.map((t) => t.name).sort()),
   ).toEqual(["act", "query", "snapshot"]);
@@ -225,14 +225,14 @@ test("picks a calendar day", async ({ page }) => {
 });
 
 test("sets a date picker value", async ({ page }) => {
-  await openStory(page, "components-datepicker--empty");
+  await openStory(page, "components-date-picker--empty");
   const set = await act(page, [{ ref: "Due date", action: "setValue", args: ["2026-10-20"] }]);
   expect(set.ok, set.error?.message).toBe(true);
   await expect(text(page, "Value: 2026-10-20")).toBeVisible();
 });
 
 test("fills a one-time code, and the snapshot redacts it", async ({ page }) => {
-  await openStory(page, "components-otpinput--empty");
+  await openStory(page, "components-otp-input--empty");
   const filled = await act(page, [
     { ref: "Verification code", action: "setValue", args: ["482913"] },
   ]);
@@ -244,7 +244,7 @@ test("fills a one-time code, and the snapshot redacts it", async ({ page }) => {
 });
 
 test("inserts and removes a token", async ({ page }) => {
-  await openStory(page, "components-tokeninput--empty");
+  await openStory(page, "components-token-input--empty");
   const inserted = await act(page, [
     { ref: "Message", action: "insert", args: [{ type: "tag", value: "wanted", label: "wanted" }] },
   ]);

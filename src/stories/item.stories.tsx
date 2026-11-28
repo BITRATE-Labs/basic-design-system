@@ -95,6 +95,7 @@ function SelectableList() {
 }
 
 export const Selectable: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SelectableList />,
   play: async ({ canvas, userEvent }) => {
     const second = canvas.getByRole("link", { name: queue[1].title });
@@ -166,4 +167,12 @@ export const LongListInCard: Story = {
       </CardContent>
     </Card>
   ),
+};
+
+// The selectable list without the click check, for reading.
+export const SelectableRows: Story = {
+  ...Selectable,
+  name: "Selectable",
+  tags: [],
+  play: undefined,
 };

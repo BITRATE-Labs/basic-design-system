@@ -50,9 +50,13 @@ export const Line: Story = { render: () => <SampleTabs variant="line" /> };
 
 export const Vertical: Story = { render: () => <SampleTabs orientation="vertical" /> };
 
-export const DisabledTab: Story = { render: () => <SampleTabs disabled="files" /> };
+export const DisabledTab: Story = {
+  tags: ["!dev", "!autodocs"],
+  render: () => <SampleTabs disabled="files" />,
+};
 
 export const KeyboardNavigation: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SampleTabs />,
   play: async ({ canvas, userEvent }) => {
     await userEvent.tab();

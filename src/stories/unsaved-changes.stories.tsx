@@ -208,7 +208,15 @@ async function expectNudged(popup: HTMLElement) {
 
 const finished = (el: Element) => Promise.all(el.getAnimations().map((a) => a.finished));
 
+// Open one, type something, then press Escape or click outside.
+export const InDialog: Story = { name: "Dialog", render: () => <EditDialog /> };
+export const InSheet: Story = { name: "Sheet", render: () => <EditSheet /> };
+
+// Interaction checks below are tagged !dev and !autodocs: hidden from the sidebar and the
+// docs page, still run by the story render check (tests/agent drives some of them too).
+
 export const EscapeWhileDirty: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <EditDialog />,
   play: async () => {
     const popup = await openDirty();
@@ -222,6 +230,7 @@ export const EscapeWhileDirty: Story = {
 };
 
 export const OutsidePressWhileDirty: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <EditDialog />,
   play: async () => {
     const popup = await openDirty();
@@ -233,6 +242,7 @@ export const OutsidePressWhileDirty: Story = {
 };
 
 export const CleanDialogCloses: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <EditDialog />,
   play: async () => {
     await openModal(screen, "Edit item");
@@ -245,6 +255,7 @@ export const CleanDialogCloses: Story = {
 };
 
 export const ExplicitDiscardCloses: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <EditDialog />,
   play: async () => {
     await openDirty();
@@ -257,6 +268,7 @@ export const ExplicitDiscardCloses: Story = {
 };
 
 export const ReducedMotionOutline: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <ReducedMotion>
       <EditDialog />
@@ -276,6 +288,7 @@ export const ReducedMotionOutline: Story = {
 };
 
 export const OnASheet: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <EditSheet />,
   play: async () => {
     const popup = await openDirty();
@@ -289,6 +302,7 @@ export const OnASheet: Story = {
 };
 
 export const NativeDialog: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <NativeEditDialog />,
   play: async ({ canvas }) => {
     await userEvent.click(canvas.getByRole("button", { name: "Edit item" }));

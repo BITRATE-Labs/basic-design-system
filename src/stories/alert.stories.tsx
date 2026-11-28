@@ -33,6 +33,7 @@ export const Default: Story = {
 };
 
 export const Destructive: Story = {
+  tags: ["!dev", "!autodocs"],
   args: { variant: "destructive" },
   render: (args) => (
     <Alert {...args}>
@@ -76,6 +77,7 @@ export const Tones: Story = {
 };
 
 export const WithoutIcon: Story = {
+  tags: ["!dev", "!autodocs"],
   render: (args) => (
     <Alert {...args}>
       <AlertTitle>Read-only item</AlertTitle>
@@ -85,6 +87,7 @@ export const WithoutIcon: Story = {
 };
 
 export const TitleOnly: Story = {
+  tags: ["!dev", "!autodocs"],
   render: (args) => (
     <Alert {...args}>
       <InfoIcon />

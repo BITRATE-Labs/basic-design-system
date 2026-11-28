@@ -1,6 +1,7 @@
-import { Meta } from "@storybook/addon-docs/blocks";
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+import * as LayeringStories from "../stories/layering.stories";
 
-<Meta title="Docs/Layers" />
+<Meta title="Foundations/Layers" />
 
 # Layers
 
@@ -39,6 +40,18 @@ const ref = useRef<HTMLDivElement>(null);
 </div>;
 ```
 
+### Try it
+
+Open each dialog, then hover **Hover me**. Escape closes the dialog.
+
+With `container`, the tooltip is portaled into the dialog and shows above it:
+
+<Canvas of={LayeringStories.LiveNativeDialogWithContainer} />
+
+Without it, the tooltip is portaled into the body, and the dialog hides it:
+
+<Canvas of={LayeringStories.LiveNativeDialogWithoutContainer} />
+
 `TooltipContent`, `PopoverContent`, `DropdownMenuContent`, `SelectContent` and `ComboboxContent` take `container`. The shared Dialog needs none of this, so prefer it to a native `<dialog>`, which the lint preset reports.
 
 ## Modals: toasts and nested dialogs
@@ -47,9 +60,9 @@ An open Dialog, Sheet or AlertDialog covers the whole page with its overlay at `
 
 An AlertDialog opened from inside a Dialog, the usual confirmation flow, gets no backdrop of its own: Base UI [renders only the bottom-most backdrop](https://base-ui.com/react/components/dialog) when dialogs are nested, and the stock components add nothing for the nested case. The alert sits on top of the dialog and holds focus, and Escape closes only the alert, but the dialog stays undimmed around it.
 
-## What the Layering stories check
+## What the Layering checks cover
 
-Each story under **Layering** opens a tooltip or popover and checks with the browser's own hit test that the popup is painted on top and not clipped:
+The checks live in `src/stories/layering.stories.tsx`. They are hidden from the sidebar and run in CI with the story render check (`npm run test:stories`). Each one opens a tooltip or popover and checks with the browser's own hit test that the popup is painted on top and not clipped:
 
 - inside an `overflow: hidden` container, at its edge
 - inside a scrolling container, also after it scrolls

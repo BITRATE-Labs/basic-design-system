@@ -16,9 +16,9 @@ Stock shadcn structure, with these decisions shared by every product:
 - **Status:** success, warning, info and destructive each have soft, soft-foreground and line roles for a consistent callout (`<Alert data-tone="success">`).
 - **Wash:** hover and highlight are a faint tint of the brand's primary with the normal text colour.
 - **Touch:** icon buttons and other small controls get 44px targets on coarse pointers.
-- **Surfaces:** per brand. Flat stock surfaces by default; perkcord uses lit-edge glass. Storybook **Docs / Surfaces**.
+- **Surfaces:** per brand. Flat stock surfaces by default; perkcord uses lit-edge glass. Storybook **Foundations / Surfaces**.
 - **Selection:** the weighted segmented control and the sliding tabs.
-- **Lists:** drasil's one-surface ruled list on the stock Item (`<ItemGroup data-variant="ruled">`); tables stay stock. Storybook **Docs / List versus table**.
+- **Lists:** drasil's one-surface ruled list on the stock Item (`<ItemGroup data-variant="ruled">`); tables stay stock. Storybook **Components / Item**.
 
 Tokens live in `tokens/` and `brands/`; the rules that apply them ship in `theme.css`. `AGENTS.md` ("Look") lists the file behind each.
 
@@ -121,11 +121,11 @@ Then set the brand on the root element: `<html data-brand="vrdex">`. Dark mode i
 
 ### Layers
 
-Tooltips, popovers, menus and dialogs portal to the end of `<body>`. Wrap the app in one element with the `isolate` class and, inside it, `TooltipProvider`; then popups always sit above the page, whatever z-index the page uses. Anything else portaled to `<body>` goes inside that element or stays below z-index 50. Mount the shared `Toaster` inside it too: it renders in place at a z-index far above 50. An open dialog or sheet covers toasts with its overlay, so show success toasts after it closes. Inside a top-layer element (a modal `<dialog>`, or an element with the `popover` attribute), pass it as the popup's `container` and give it `overflow-visible`. Tooltip text is visual only, so an icon-only trigger needs an `aria-label`. The rule and its checks are in Storybook under **Docs / Layers**.
+Tooltips, popovers, menus and dialogs portal to the end of `<body>`. Wrap the app in one element with the `isolate` class and, inside it, `TooltipProvider`; then popups always sit above the page, whatever z-index the page uses. Anything else portaled to `<body>` goes inside that element or stays below z-index 50. Mount the shared `Toaster` inside it too: it renders in place at a z-index far above 50. An open dialog or sheet covers toasts with its overlay, so show success toasts after it closes. Inside a top-layer element (a modal `<dialog>`, or an element with the `popover` attribute), pass it as the popup's `container` and give it `overflow-visible`. Tooltip text is visual only, so an icon-only trigger needs an `aria-label`. The rule and its checks are in Storybook under **Foundations / Layers**.
 
 ### Agents
 
-An AI agent can operate ui-sdk components through ui-sdk's agent bridge. Add the `sdk-agent` item and wrap the app root in `AgentProvider`; steps on controls marked `data-agent-confirm` ask the person first. Only the UI SDK items are agent-drivable: the bridge does not see the stock Base UI components, so a page built from them shows the agent nothing. Marks do not cross portals, so a portaled element carries its own. Setup and known gaps are under UI SDK above; details in Storybook **Docs / Agents**.
+An AI agent can operate ui-sdk components through ui-sdk's agent bridge. Add the `sdk-agent` item and wrap the app root in `AgentProvider`; steps on controls marked `data-agent-confirm` ask the person first. Only the UI SDK items are agent-drivable: the bridge does not see the stock Base UI components, so a page built from them shows the agent nothing. Marks do not cross portals, so a portaled element carries its own. Setup and known gaps are under UI SDK above; details in Storybook **Agents (UI SDK beta) / Agent bridge**.
 
 ### Lint preset
 
@@ -147,17 +147,17 @@ npm run test:stories     # every story renders, every brand, light and dark
 npm run test:agent
 ```
 
-`npm run test:stories` loads every non-Lab story from the built Storybook in every brand, light and dark, and fails on a render or console error, a failed play function, a missing brand or mode, an empty story or a brand font that did not load. It runs on any platform and compares no images. Visual changes are reviewed by looking at the Storybook, not by CI.
+`npm run test:stories` loads every non-Lab story from the built Storybook in every brand, light and dark, and fails on a render or console error, a failed play function, a missing brand or mode, an empty story or a brand font that did not load. It includes the interaction checks hidden from the sidebar (tagged `!dev` and `!autodocs`), since it reads every story from `index.json`. It runs on any platform and compares no images. Visual changes are reviewed by looking at the Storybook, not by CI.
 
 Use the toolbar to switch brand and light or dark.
 
 ## Try variants
 
-When you want to compare options for a component, an agent adds them as lab stories under `src/lab/`. You look at them in Storybook, say what to change, and pick one. The winner becomes the real component and the lab stories are deleted. Lab stories never enter the registry or the story render check. The full steps are in Storybook under **Docs / Trying variants**, and the rules are in `src/lab/README.md`.
+When you want to compare options for a component, an agent adds them as lab stories under `src/lab/`. You look at them in Storybook, say what to change, and pick one. The winner becomes the real component and the lab stories are deleted. Lab stories never enter the registry or the story render check. The full steps are in Storybook under **Lab / Trying variants**, and the rules are in `src/lab/README.md`.
 
 ## Adding a brand
 
-Add `brands/<name>.tokens.json` and run `npm run build:tokens`. The build picks up every file in `brands/` and writes `dist/brands/<name>.css` (scoped to `[data-brand="<name>"]`, dark under `.dark`) and `dist/brands/<name>.js` with its `.d.ts`. Copy `brands/basic.tokens.json` for the shape: `color.light` and `color.dark` give a value for every role in `tokens/roles.tokens.json`, plus `font.sans`, `font.display`, `font.mono` and `radius`. A missing role fails the build. To load a font from Google Fonts in Storybook, give it `"$extensions": { "com.bitrate-labs.google-fonts": "<css2 family spec>" }`, for example `"Inter:wght@100..900"`; fonts without one use their fallback stack. An optional `surface` block turns on Perkcord's glass surfaces for the brand (see `brands/perkcord.tokens.json` and Storybook **Docs / Surfaces**). `npm test` checks WCAG AA contrast for every role and `-foreground` pair and for roles the components use as text; a real product colour that falls short goes in the commented allowlist in `tests/tokens.test.ts`.
+Add `brands/<name>.tokens.json` and run `npm run build:tokens`. The build picks up every file in `brands/` and writes `dist/brands/<name>.css` (scoped to `[data-brand="<name>"]`, dark under `.dark`) and `dist/brands/<name>.js` with its `.d.ts`. Copy `brands/basic.tokens.json` for the shape: `color.light` and `color.dark` give a value for every role in `tokens/roles.tokens.json`, plus `font.sans`, `font.display`, `font.mono` and `radius`. A missing role fails the build. To load a font from Google Fonts in Storybook, give it `"$extensions": { "com.bitrate-labs.google-fonts": "<css2 family spec>" }`, for example `"Inter:wght@100..900"`; fonts without one use their fallback stack. An optional `surface` block turns on Perkcord's glass surfaces for the brand (see `brands/perkcord.tokens.json` and Storybook **Foundations / Surfaces**). `npm test` checks WCAG AA contrast for every role and `-foreground` pair and for roles the components use as text; a real product colour that falls short goes in the commented allowlist in `tests/tokens.test.ts`.
 
 ## License
 

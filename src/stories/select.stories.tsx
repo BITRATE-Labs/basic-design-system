@@ -64,13 +64,20 @@ type Story = StoryObj<typeof meta>;
 
 export const Placeholder: Story = {};
 
-export const WithValue: Story = { args: { defaultValue: "medium" } };
+export const WithValue: Story = { tags: ["!dev", "!autodocs"], args: { defaultValue: "medium" } };
 
-export const Small: Story = { args: { size: "sm", defaultValue: "medium" } };
+export const Small: Story = {
+  tags: ["!dev", "!autodocs"],
+  args: { size: "sm", defaultValue: "medium" },
+};
 
-export const Disabled: Story = { args: { disabled: true, defaultValue: "medium" } };
+export const Disabled: Story = {
+  tags: ["!dev", "!autodocs"],
+  args: { disabled: true, defaultValue: "medium" },
+};
 
 export const Open: Story = {
+  tags: ["!dev", "!autodocs"],
   args: { defaultValue: "medium" },
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("combobox", { name: "Size" }));
@@ -86,6 +93,7 @@ const categories = [
 ];
 
 export const Groups: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Select items={categories}>
       <SelectTrigger className="w-48" aria-label="Category">
@@ -137,6 +145,7 @@ export const InField: Story = {
 };
 
 export const Invalid: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Field data-invalid="true" className="max-w-sm">
       <FieldLabel htmlFor="select-region">Region</FieldLabel>
@@ -165,6 +174,7 @@ export const Invalid: Story = {
 };
 
 export const ChooseOption: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole("combobox", { name: "Size" });
     await userEvent.click(trigger);
@@ -174,3 +184,6 @@ export const ChooseOption: Story = {
     await waitFor(() => expect(trigger).toHaveAttribute("aria-expanded", "false"));
   },
 };
+
+// A closed version of the check above, for reading.
+export const GroupsClosed: Story = { ...Groups, name: "Groups", tags: [], play: undefined };

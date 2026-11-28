@@ -73,13 +73,23 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const WithValue: Story = { args: { defaultValue: "Sample lamp" } };
+export const WithValue: Story = {
+  tags: ["!dev", "!autodocs"],
+  args: { defaultValue: "Sample lamp" },
+};
 
-export const WithClear: Story = { args: { defaultValue: "Sample lamp", showClear: true } };
+export const WithClear: Story = {
+  tags: ["!dev", "!autodocs"],
+  args: { defaultValue: "Sample lamp", showClear: true },
+};
 
-export const Disabled: Story = { args: { disabled: true, defaultValue: "Sample lamp" } };
+export const Disabled: Story = {
+  tags: ["!dev", "!autodocs"],
+  args: { disabled: true, defaultValue: "Sample lamp" },
+};
 
 export const Open: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("combobox", { name: "Item" }));
     await findCombobox("Sample shelf");
@@ -87,6 +97,7 @@ export const Open: Story = {
 };
 
 export const Filtered: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ canvas, userEvent }) => {
     await userEvent.type(canvas.getByRole("combobox", { name: "Item" }), "sh");
     const popup = await findCombobox("Sample shelf");
@@ -95,6 +106,7 @@ export const Filtered: Story = {
 };
 
 export const NoMatches: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ canvas, userEvent }) => {
     await userEvent.type(canvas.getByRole("combobox", { name: "Item" }), "sofa");
     await findCombobox("No items found.");
@@ -102,6 +114,7 @@ export const NoMatches: Story = {
 };
 
 export const ChooseWithKeyboard: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ canvas, userEvent }) => {
     const input = canvas.getByRole("combobox", { name: "Item" });
     await userEvent.type(input, "de");
@@ -126,6 +139,7 @@ export const InField: Story = {
 };
 
 export const Invalid: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Field data-invalid="true" className="max-w-sm">
       <FieldLabel htmlFor="combobox-replaces">Replaces</FieldLabel>
@@ -175,6 +189,7 @@ function TagCombobox() {
 export const Multiple: Story = { render: () => <TagCombobox /> };
 
 export const MultipleOpen: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <TagCombobox />,
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("combobox", { name: "Items" }));

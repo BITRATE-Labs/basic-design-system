@@ -108,7 +108,17 @@ function SlidingSample({
   );
 }
 
-export const Default: Story = {
+export const Default: Story = { render: () => <SlidingSample /> };
+
+export const NavigationBarExample: Story = {
+  name: "Navigation bar",
+  render: () => <NavigationBar />,
+};
+
+// Interaction checks below are tagged !dev and !autodocs: hidden from the sidebar and the
+// docs page, still run by the story render check.
+export const SelectionMoves: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SlidingSample />,
   play: async ({ canvas, canvasElement, userEvent }) => {
     const tabs = canvas.getAllByRole("tab");
@@ -156,6 +166,7 @@ function NavigationBar({ dir }: { dir?: "rtl" }) {
 }
 
 export const NavigationBarStory: Story = {
+  tags: ["!dev", "!autodocs"],
   name: "Navigation bar",
   render: () => <NavigationBar />,
   play: async ({ canvas, canvasElement, userEvent }) => {
@@ -210,6 +221,7 @@ export const StockVsSliding: Story = {
 };
 
 export const NarrowOverflow: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SlidingSample items={many} className="w-60" />,
   play: async ({ canvas, canvasElement, userEvent }) => {
     const list = canvas.getByRole("tablist");
@@ -224,6 +236,7 @@ export const NarrowOverflow: Story = {
 };
 
 export const ManyItems: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <SlidingSample
       items={many}
@@ -244,6 +257,7 @@ export const ManyItems: Story = {
 };
 
 export const WithIcons: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SlidingSample icons />,
   play: async ({ canvas, canvasElement, userEvent }) => {
     const target = canvas.getByRole("tab", { name: "Activity" });
@@ -253,6 +267,7 @@ export const WithIcons: Story = {
 };
 
 export const DisabledItem: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SlidingSample disabled="Files" />,
   play: async ({ canvas, canvasElement }) => {
     const first = canvas.getByRole("tab", { name: "Overview" });
@@ -266,6 +281,7 @@ export const DisabledItem: Story = {
 };
 
 export const RightToLeft: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <DirectionProvider direction="rtl">
       <div dir="rtl" className="grid gap-6">

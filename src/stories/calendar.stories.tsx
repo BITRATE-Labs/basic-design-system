@@ -22,6 +22,7 @@ export const Range: Story = {
 };
 
 export const MinMaxAndUnavailable: Story = {
+  tags: ["!dev", "!autodocs"],
   args: {
     defaultMonth: "2026-10",
     min: "2026-10-05",
@@ -30,7 +31,10 @@ export const MinMaxAndUnavailable: Story = {
   },
 };
 
-export const Disabled: Story = { args: { defaultValue: "2026-10-16", disabled: true } };
+export const Disabled: Story = {
+  tags: ["!dev", "!autodocs"],
+  args: { defaultValue: "2026-10-16", disabled: true },
+};
 
 function Picked() {
   const [value, setValue] = useState<string | null>("2026-10-16");
@@ -49,6 +53,7 @@ function Picked() {
 }
 
 export const KeyboardPick: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <Picked />,
   play: async ({ canvas, userEvent }) => {
     const selected = canvas.getByRole("gridcell", { name: /October 16, 2026/ });
@@ -64,6 +69,7 @@ export const KeyboardPick: Story = {
 };
 
 export const NextMonth: Story = {
+  tags: ["!dev", "!autodocs"],
   args: { defaultValue: "2026-10-16" },
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("button", { name: /next/i }));

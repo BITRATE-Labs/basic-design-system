@@ -55,14 +55,22 @@ const open: Story["play"] = async ({ canvas }) => {
   await openModal(canvas, "Open sheet");
 };
 
-export const Closed: Story = {};
-export const Right: Story = { play: open };
-export const Left: Story = { args: { side: "left" }, play: open };
-export const Top: Story = { args: { side: "top" }, play: open };
-export const Bottom: Story = { args: { side: "bottom" }, play: open };
-export const WithoutCloseButton: Story = { args: { showCloseButton: false }, play: open };
+export const Default: Story = {};
+
+// Interaction checks below are tagged !dev and !autodocs: hidden from the sidebar and the
+// docs page, still run by the story render check.
+export const Right: Story = { tags: ["!dev", "!autodocs"], play: open };
+export const Left: Story = { tags: ["!dev", "!autodocs"], args: { side: "left" }, play: open };
+export const Top: Story = { tags: ["!dev", "!autodocs"], args: { side: "top" }, play: open };
+export const Bottom: Story = { tags: ["!dev", "!autodocs"], args: { side: "bottom" }, play: open };
+export const WithoutCloseButton: Story = {
+  tags: ["!dev", "!autodocs"],
+  args: { showCloseButton: false },
+  play: open,
+};
 
 export const WithForm: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Sheet>
       <SheetTrigger render={<Button />}>Edit item</SheetTrigger>
@@ -96,6 +104,7 @@ export const WithForm: Story = {
 };
 
 export const KeyboardOpenAndEscape: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole("button", { name: "Open sheet" });
     await userEvent.tab();
@@ -108,3 +117,6 @@ export const KeyboardOpenAndEscape: Story = {
     await waitFor(() => expect(trigger).toHaveFocus());
   },
 };
+
+// A closed version of the check above, for reading.
+export const WithFormClosed: Story = { ...WithForm, name: "With form", tags: [], play: undefined };

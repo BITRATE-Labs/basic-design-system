@@ -51,6 +51,7 @@ export const Horizontal: Story = {
 };
 
 export const Disabled: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Field data-disabled="true">
       <FieldLabel htmlFor="field-workspace-id">Workspace ID</FieldLabel>
@@ -77,6 +78,7 @@ export const Invalid: Story = {
 };
 
 export const MultipleErrors: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Field data-invalid="true">
       <FieldLabel htmlFor="field-password">Password</FieldLabel>
@@ -96,6 +98,7 @@ export const MultipleErrors: Story = {
 };
 
 export const Group: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <FieldSet>
       <FieldLegend>Shipping address</FieldLegend>
@@ -116,6 +119,7 @@ export const Group: Story = {
 };
 
 export const LabelFocusesInput: Story = {
+  tags: ["!dev", "!autodocs"],
   render: Default.render,
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByText("Display name"));

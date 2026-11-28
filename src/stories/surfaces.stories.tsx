@@ -57,7 +57,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
 // Surfaces in a glass brand (perkcord) over its page backdrop, the same in a flat brand, and
 // the opaque fallback. Each story pins its brand; the theme toolbar switches light and dark.
-// See Docs / Surfaces.
+// See Foundations / Surfaces.
 const meta = {
   title: "Foundations/Surfaces",
   parameters: { layout: "fullscreen" },
@@ -239,6 +239,7 @@ export const GlassDialog: Story = {
 };
 
 export const GlassSheet: Story = {
+  tags: ["!dev", "!autodocs"],
   globals: { brand: "perkcord" },
   render: () => (
     <Page>

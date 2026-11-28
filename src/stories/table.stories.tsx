@@ -96,6 +96,7 @@ export const SelectedRow: Story = {
 };
 
 export const Empty: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Table>
       <Head />
@@ -112,6 +113,7 @@ export const Empty: Story = {
 
 // Cells do not wrap, so a narrow container scrolls the table sideways.
 export const Overflow: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <div className="w-80 rounded-md border">
       <Table>

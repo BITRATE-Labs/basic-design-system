@@ -65,6 +65,7 @@ export const WithIcon: Story = {
 };
 
 export const AsLink: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Badge render={<a href="#sample" />} variant="outline">
       3 new
@@ -80,6 +81,7 @@ const rows = [
 
 // The use the docs note allows: counts and compact status in a dense table.
 export const InTable: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <div className="w-full max-w-md">
       <Table>

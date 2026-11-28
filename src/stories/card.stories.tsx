@@ -47,7 +47,7 @@ export const Default: Story = {
   ),
 };
 
-export const Small: Story = { ...Default, args: { size: "sm" } };
+export const Small: Story = { tags: ["!dev", "!autodocs"], ...Default, args: { size: "sm" } };
 
 export const WithAction: Story = {
   render: () => (
@@ -69,6 +69,7 @@ export const WithAction: Story = {
 };
 
 export const HeaderOnly: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => (
     <Card>
       <CardHeader>

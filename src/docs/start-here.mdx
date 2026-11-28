@@ -1,0 +1,24 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Start here" />
+
+# Start here
+
+The BASIC Design System: shared tokens, stock shadcn/ui components on Base UI, and one Storybook for every product brand. Products install the components from the shadcn registry in this repository and the theme from `@bitrate-labs/design-system`.
+
+## Switch brand and mode
+
+- **Brand:** the paintbrush menu in the toolbar above the canvas. Every story and docs page follows it.
+- **Light or dark:** the theme menu next to it.
+
+## Where to look first
+
+- **Foundations:** Tokens (colours, type, spacing, radius, shadows), Surfaces (flat and glass), Motion (stock timing beside the system's, on demand) and Layers (how popups stay on top).
+- **Components:** one entry per component, in alphabetical order. Each Docs page shows the main story, then the variants, then the props table. Popups render closed: click or hover the trigger to open them.
+- **Examples:** composed forms built from the components.
+- **Agents (UI SDK beta):** the agent bridge for the UI SDK components. UI SDK is a pinned beta dependency.
+- **Lab:** options under comparison. Not in the registry.
+
+## Interaction checks
+
+Keyboard, hit-test and layering checks are stories tagged `!dev` and `!autodocs`, so they stay out of the sidebar and the docs pages. CI runs every one of them in every brand, light and dark (`npm run test:stories`). To watch one run, open it by id, for example `?path=/story/components-dialog--keyboard-open-and-escape`, and use the Interactions panel.

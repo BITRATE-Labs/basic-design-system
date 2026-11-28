@@ -21,6 +21,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const WithValue: Story = {
+  tags: ["!dev", "!autodocs"],
   args: { defaultValue: "Weekly sample report" },
 };
 
@@ -37,10 +38,12 @@ export const Types: Story = {
 };
 
 export const Disabled: Story = {
+  tags: ["!dev", "!autodocs"],
   args: { disabled: true, defaultValue: "Locked value" },
 };
 
 export const ReadOnly: Story = {
+  tags: ["!dev", "!autodocs"],
   args: { readOnly: true, defaultValue: "Read-only value" },
 };
 
@@ -61,6 +64,7 @@ export const Invalid: Story = {
 };
 
 export const Typing: Story = {
+  tags: ["!dev", "!autodocs"],
   play: async ({ canvas, userEvent }) => {
     const input = canvas.getByRole("textbox", { name: "Sample input" });
     await userEvent.tab();

@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 const today = "2026-10-14";
 
 const meta = {
-  title: "Components/DatePicker",
+  title: "Components/Date picker",
   component: DatePicker,
   decorators: [
     (Story) => (
@@ -57,10 +57,12 @@ export const Empty: Story = { render: () => <SamplePicker /> };
 export const WithValue: Story = { render: () => <SamplePicker defaultValue="2026-10-16" /> };
 
 export const Disabled: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SamplePicker defaultValue="2026-10-16" disabled />,
 };
 
 export const Open: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SamplePicker defaultValue="2026-10-16" />,
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(canvas.getByRole("button", { name: /Choose date/ }));
@@ -74,6 +76,7 @@ export const Open: Story = {
 };
 
 export const PickFromCalendar: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SamplePicker defaultValue="2026-10-16" />,
   play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole("button", { name: /Choose date/ });
@@ -87,6 +90,7 @@ export const PickFromCalendar: Story = {
 };
 
 export const TypedDate: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SamplePicker />,
   play: async ({ canvas, userEvent }) => {
     await userEvent.type(canvas.getByLabelText("Due date"), "11/02/2026{Enter}");
@@ -95,6 +99,7 @@ export const TypedDate: Story = {
 };
 
 export const Invalid: Story = {
+  tags: ["!dev", "!autodocs"],
   render: () => <SamplePicker />,
   play: async ({ canvas, userEvent }) => {
     const input = canvas.getByLabelText("Due date");

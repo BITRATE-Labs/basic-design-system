@@ -1,10 +1,11 @@
 import { Meta } from "@storybook/addon-docs/blocks";
+import * as SurfacesStories from "../stories/surfaces.stories";
 
-<Meta title="Docs/Surfaces" />
+<Meta of={SurfacesStories} />
 
 # Surfaces
 
-Each brand picks a surface style in its brand file. **Flat** (the default) keeps stock shadcn surfaces: a 1px ring at 10% foreground and, on popups, `shadow-md`. **Glass** is Perkcord's lit-edge glass, and the perkcord brand uses it. See **Foundations / Surfaces** for both, light and dark.
+Each brand picks a surface style in its brand file. **Flat** (the default) keeps stock shadcn surfaces: a 1px ring at 10% foreground and, on popups, `shadow-md`. **Glass** is Perkcord's lit-edge glass, and the perkcord brand uses it. The stories beside this page show both; switch light and dark from the toolbar.
 
 ## What glass changes
 
@@ -51,7 +52,7 @@ Give a Card `data-fill="uniform"` when it holds a long list or a table: an even,
 
 ## Fallbacks
 
-The translucent fill and blur turn on only where `backdrop-filter` is supported and the person has not asked for reduced transparency (`prefers-reduced-transparency`), more contrast (`prefers-contrast: more`) or forced colours. Otherwise every surface keeps the edge, sheen and shadow on an opaque fill. `data-transparency="reduce"` on `<html>` (or any ancestor of a surface) forces the same fallback, for an in-app setting; **Foundations / Surfaces / Glass Fallback** shows it. With more contrast the backdrop becomes the plain page colour, and in forced colours the sheen and backdrop go and the real border keeps every edge visible (stock's ring is a box-shadow, which forced colours removes).
+The translucent fill and blur turn on only where `backdrop-filter` is supported and the person has not asked for reduced transparency (`prefers-reduced-transparency`), more contrast (`prefers-contrast: more`) or forced colours. Otherwise every surface keeps the edge, sheen and shadow on an opaque fill. `data-transparency="reduce"` on `<html>` (or any ancestor of a surface) forces the same fallback, for an in-app setting; the **Glass Fallback** story shows it. With more contrast the backdrop becomes the plain page colour, and in forced colours the sheen and backdrop go and the real border keeps every edge visible (stock's ring is a box-shadow, which forced colours removes).
 
 ## Costs
 

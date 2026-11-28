@@ -91,7 +91,7 @@ import {
 
 // Each story puts a tooltip or popover trigger in a container that clips or layers its
 // children, opens the popup, and checks with the browser's hit test that the popup is
-// painted on top of everything and not clipped. See Docs / Layers for the rule.
+// painted on top of everything and not clipped. See Foundations / Layers for the rule.
 
 type Kind = "tooltip" | "popover" | "menu" | "select" | "combobox";
 type Side = "top" | "bottom";
@@ -368,7 +368,7 @@ function PopoverAttribute({ kind }: { kind: Kind }) {
 }
 
 // A third-party overlay portaled to <body>, outside the app root's `isolate`. Below
-// z-index 50 it stays under the shared popups (Docs / Layers, rule 1).
+// z-index 50 it stays under the shared popups (Foundations / Layers, rule 1).
 function BodyOverlay({ kind }: { kind: Kind }) {
   return (
     <div>
@@ -389,7 +389,7 @@ function BodyOverlay({ kind }: { kind: Kind }) {
 
 // The shared Toaster renders in place, not in a portal, at sonner's z-index 999999999.
 // Mounted inside the isolated app root (Storybook's root here), that z-index stays inside
-// the root, so a popup opened over a toast is painted above it (Docs / Layers, rule 1).
+// the root, so a popup opened over a toast is painted above it (Foundations / Layers, rule 1).
 // The toast is centred just below the centred trigger, so the popup has to cross it.
 function WithToast({ kind, theme }: { kind: Kind; theme: "light" | "dark" }) {
   return (
@@ -452,10 +452,21 @@ function AlertFromDialog() {
 const meta = {
   title: "Layering",
   parameters: { layout: "padded" },
+  // Every Layering story is a check, hidden from the sidebar and docs; the story render
+  // check runs them. A reader reads Foundations / Layers, which embeds the two live ones.
+  tags: ["!dev", "!autodocs"],
 } satisfies Meta;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+// Live examples for Foundations / Layers: the reader opens the dialog and hovers.
+export const LiveNativeDialogWithContainer: Story = {
+  render: () => <NativeDialog kind="tooltip" useContainer />,
+};
+export const LiveNativeDialogWithoutContainer: Story = {
+  render: () => <NativeDialog kind="tooltip" useContainer={false} />,
+};
 type Play = NonNullable<Story["play"]>;
 
 const onTop =
@@ -642,7 +653,7 @@ export const SheetDropdownMenu: Story = {
 // The alert dialog's buttons are hit-testable at their centres, so it paints above the dialog
 // it was opened from (expectOnTop samples near the corners, which the popup's rounded
 // corners leave out), and Escape closes only the alert. Base UI does not render a nested
-// dialog's backdrop, so the parent dialog stays undimmed around the alert (Docs / Layers).
+// dialog's backdrop, so the parent dialog stays undimmed around the alert (Foundations / Layers).
 async function expectButtonsOnTop(alert: HTMLElement) {
   for (const button of alert.querySelectorAll("button")) {
     const r = button.getBoundingClientRect();
@@ -667,8 +678,8 @@ export const DialogAlertDialog: Story = {
 };
 
 // A toast shown while a modal is open is painted under the modal's overlay: the Toaster
-// stays inside the isolated app root, and the modal portals to the body (Docs / Layers).
-// If this starts failing, the rule changed and Docs / Layers needs updating.
+// stays inside the isolated app root, and the modal portals to the body (Foundations / Layers).
+// If this starts failing, the rule changed and Foundations / Layers needs updating.
 const toastUnderModal =
   (open: string): Play =>
   async ({ canvas }) => {
