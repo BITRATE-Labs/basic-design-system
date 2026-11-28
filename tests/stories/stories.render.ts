@@ -110,17 +110,44 @@ async function waitForFonts(page: Page, families: string[]) {
         `font did not load: the stylesheet for ${families.join(", ")} never registered`,
       );
     });
-  const failed = await page.evaluate(async (declared) => {
-    const used = new Set<string>();
+  // Every family a drawn element renders in first must be a CSS generic or have a loaded
+  // face: document.fonts.check() is true for a family with no faces at all, so a renamed
+  // family in the CSS would otherwise pass while the page draws the fallback.
+  const failed = await page.evaluate(async () => {
+    const generic = new Set([
+      "serif",
+      "sans-serif",
+      "monospace",
+      "cursive",
+      "fantasy",
+      "system-ui",
+      "ui-serif",
+      "ui-sans-serif",
+      "ui-monospace",
+      "ui-rounded",
+      "math",
+      "emoji",
+      "fangsong",
+    ]);
+    const used = new Map<string, string>();
     for (const el of [document.body, ...document.body.querySelectorAll("*")]) {
+      // Skip what is not drawn, such as Storybook's hidden error panel and its own stack.
+      if (!el.checkVisibility()) continue;
       const s = getComputedStyle(el);
       const family = s.fontFamily.split(",")[0].trim().replace(/["']/g, "");
-      if (declared.includes(family)) used.add(`${s.fontStyle} ${s.fontWeight} 16px "${family}"`);
+      if (!generic.has(family)) used.set(`${s.fontStyle} ${s.fontWeight} 16px "${family}"`, family);
     }
-    await Promise.all([...used].map((font) => document.fonts.load(font)));
+    await Promise.all([...used.keys()].map((font) => document.fonts.load(font).catch(() => [])));
     await document.fonts.ready;
-    return [...used].filter((font) => !document.fonts.check(font));
-  }, families);
+    const loaded = new Set(
+      [...document.fonts]
+        .filter((f) => f.status === "loaded")
+        .map((f) => f.family.replace(/["']/g, "")),
+    );
+    return [...used]
+      .filter(([font, family]) => !loaded.has(family) || !document.fonts.check(font))
+      .map(([font]) => font);
+  });
   expect(failed, `font did not load: ${failed.join("; ")}`).toEqual([]);
 }
 
