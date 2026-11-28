@@ -155,8 +155,8 @@ A brand file's optional `surface` block picks the brand's surface style: flat (d
 - Before committing, run `npm run lint`, `npm run typecheck`, `npm test`, `npm run registry:check` and `npm run build-storybook`; after a story or component change also `npm run test:stories` (any platform). It checks that every story renders without errors in every brand and mode; it compares no images, so visual changes are reviewed by looking at the Storybook.
 - Commit messages and PR text follow the public-repo rule above.
 
-## Working branch
+## Working mode
 
-Day-to-day work is committed and pushed straight to the shared `next` branch; CI runs on every push to it. Open a pull request from `next` to `main` only when a large batch is ready. Cut a release tag from `main` after its CI is green.
+Work is committed and pushed straight to `main`; CI runs on every push. There are no pull requests unless the owner asks for one. Because nothing else reviews a push, run the full check suite first and have a second agent review anything non-trivial.
 
-The published Storybook shows both branches: `main` at https://bitrate-labs.github.io/basic-design-system/ and `next` at https://bitrate-labs.github.io/basic-design-system/next/.
+The published Storybook is https://bitrate-labs.github.io/basic-design-system/.

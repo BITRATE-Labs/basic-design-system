@@ -1,10 +1,7 @@
 name: Pages
-# Publishes two Storybooks to one site: main at the root and the shared
-# working branch at /next/. Pages serves a single artifact, so every run
-# builds both branches.
 on:
   push:
-    branches: [main, next]
+    branches: [main]
 permissions: {}
 concurrency:
   group: pages
@@ -12,41 +9,22 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 15
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: main
-          path: main
-          persist-credentials: false
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: next
-          path: next
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: |
-            main/package-lock.json
-            next/package-lock.json
-      - name: Build main
-        working-directory: main
-        run: npm ci && npm run build-storybook
-      - name: Build next
-        working-directory: next
-        run: npm ci && npm run build-storybook
-      - name: Assemble site
-        run: |
-          mkdir -p site/next
-          cp -r main/storybook-static/. site/
-          cp -r next/storybook-static/. site/next/
+      - run: npm ci
+      - run: npm run build-storybook
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
-          path: site
+          path: storybook-static
   deploy:
     needs: build
     runs-on: ubuntu-latest
