@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { findToasts, toasterTheme } from "./popup-test-utils";
 
 // Each story shows its toasts from a button, as a product would. They stay until dismissed
-// so the open state can be screenshotted.
+// so the open state can be reviewed.
 function ShowToast({ onClick }: { onClick: () => void }) {
   return (
     <Button variant="outline" onClick={onClick}>

@@ -661,7 +661,7 @@ export const DialogAlertDialog: Story = {
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument());
     await expect(dialog).toBeVisible();
-    // Reopen so the screenshot shows the stacked state.
+    // Reopen so the story ends showing the stacked state.
     await expectButtonsOnTop(await openModal(screen, "Delete item", "alertdialog"));
   },
 };

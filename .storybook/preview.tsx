@@ -27,7 +27,7 @@ const withTooltipProvider: Decorator = (Story) => (
 
 // Load the brand's fonts before the story renders: a play function that measures text
 // (scrolling a tab into view, say) otherwise measures the fallback font, and the swap
-// moves things afterwards. Offline the fallback stays; the visual test reports that.
+// moves things afterwards. Offline the fallback stays; the story render check reports that.
 const loadBrandFonts = async (brand: string) => {
   // The Google Fonts stylesheets declare the faces; fonts.load finds none before they arrive.
   await Promise.all(

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui-sdk/date-picker";
 import { Label } from "@/components/ui/label";
 
-// `today` is fixed so screenshots do not change from day to day.
+// `today` is fixed so the story does not change from day to day.
 const today = "2026-10-14";
 
 const meta = {

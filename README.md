@@ -80,7 +80,7 @@ Install:
 
 Known gaps, as measured in this repository: the bridge sees only UI SDK components; the `data-agent-*` marks do not reach portaled content unless placed on the portaled element; a refused confirm step can still switch tabs; `TokenInput` must not sit inside the shared Dialog; WebMCP is untested against a real browser implementation.
 
-To bump it, bump both packages together: read the changelog, run `npm install --save-exact @ui-sdk/core@<version> @ui-sdk/react@<version>`, change every `@ui-sdk/*` pin in `registry.json` to the same version, then run `npm test` (fails if any pin differs), `npm run build-storybook`, `npm run test:agent` and the visual check. A product bumps by taking the design system release that carries the new pin.
+To bump it, bump both packages together: read the changelog, run `npm install --save-exact @ui-sdk/core@<version> @ui-sdk/react@<version>`, change every `@ui-sdk/*` pin in `registry.json` to the same version, then run `npm test` (fails if any pin differs), `npm run build-storybook`, `npm run test:agent` and `npm run test:stories`. A product bumps by taking the design system release that carries the new pin.
 
 ### Tokens (after the first tag)
 
@@ -143,24 +143,17 @@ npm run typecheck
 npm test
 npm run registry:check
 npm run build-storybook
-npm run test:visual      # screenshots; skipped off Linux
+npm run test:stories     # every story renders, every brand, light and dark
+npm run test:agent
 ```
 
-The screenshot check covers every non-Lab story in every brand, light and dark. Baselines live in `tests/visual/__screenshots__` and are made only on Linux in the pinned Playwright image: run the **Update visual baselines** workflow on your branch to regenerate them. Its commit is pushed with the workflow token, which starts no CI run, so push an empty commit (`git commit --allow-empty -m "Re-run CI"`) afterwards to get checks on the new head.
-
-GitHub can only dispatch that workflow once it is on the default branch. Until then, or to bootstrap, make baselines in the same image locally (Docker):
-
-```sh
-docker run --rm -v "$PWD:/src:ro" -v "$PWD/tests/visual:/out" mcr.microsoft.com/playwright:v1.65.1-noble   bash -c 'git clone -q /src /w && cd /w && npm ci && npm run build-storybook && rm -rf tests/visual/__screenshots__ && npm run test:visual -- --update-snapshots=all; rm -rf /out/__screenshots__ && cp -r tests/visual/__screenshots__ /out/'
-```
-
-It clones the committed tree, so commit first. In a git worktree `.git` is a pointer file the container cannot follow, so bundle the branch instead (`git bundle create ../branch.bundle HEAD`), mount the bundle and clone it inside.
+`npm run test:stories` loads every non-Lab story from the built Storybook in every brand, light and dark, and fails on a render or console error, a failed play function, a missing brand or mode, an empty story or a brand font that did not load. It runs on any platform and compares no images. Visual changes are reviewed by looking at the Storybook, not by CI.
 
 Use the toolbar to switch brand and light or dark.
 
 ## Try variants
 
-When you want to compare options for a component, an agent adds them as lab stories under `src/lab/`. You look at them in Storybook, say what to change, and pick one. The winner becomes the real component and the lab stories are deleted. Lab stories never enter the registry or the screenshot checks. The full steps are in Storybook under **Docs / Trying variants**, and the rules are in `src/lab/README.md`.
+When you want to compare options for a component, an agent adds them as lab stories under `src/lab/`. You look at them in Storybook, say what to change, and pick one. The winner becomes the real component and the lab stories are deleted. Lab stories never enter the registry or the story render check. The full steps are in Storybook under **Docs / Trying variants**, and the rules are in `src/lab/README.md`.
 
 ## Adding a brand
 

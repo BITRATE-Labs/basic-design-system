@@ -3,7 +3,7 @@ import { useState } from "react";
 import { expect } from "storybook/test";
 import { Calendar } from "@/components/ui-sdk/calendar";
 
-// `today` is fixed so screenshots do not change from day to day.
+// `today` is fixed so the story does not change from day to day.
 const today = "2026-10-14";
 
 const meta = {

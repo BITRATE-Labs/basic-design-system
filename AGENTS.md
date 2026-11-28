@@ -30,9 +30,9 @@ Shared tokens, stock shadcn/ui components on Base UI, and one Storybook for ever
 | `src/lab/`                 | Throwaway option stories; see the lab convention below                                         |
 | `eslint/`                  | The lint preset that products extend                                                           |
 | `tests/`                   | Vitest checks: token build, every role in every brand, WCAG AA contrast, registry, lint preset |
-| `tests/visual/`            | Playwright screenshots of the built Storybook (Linux only; baselines from CI)                  |
+| `tests/stories/`           | Playwright render check of every story in the built Storybook (no screenshots)                 |
 | `docs/`                    | Repository docs, such as the lint preset                                                       |
-| `.github/workflows/`       | CI, Pages deploy, baseline regeneration, PR reviewer caller                                    |
+| `.github/workflows/`       | CI, Pages deploy, PR reviewer caller                                                           |
 
 ## Changes from stock
 
@@ -122,7 +122,7 @@ A brand file's optional `surface` block picks the brand's surface style: flat (d
 - UI SDK is allowed in products as a pinned beta (owner decision, 2026-11-27). UI SDK's README refers to Vercel's public beta terms; check them before shipping it in a commercial product.
 - `src/components/ui-sdk/` holds `command`, `calendar`, `date-picker`, `otp-input` and `token-input` (which also exports the Trigger Menu parts for its `@` and `#` suggestions), wrapping UI SDK's starter components (`@ui-sdk/react` and `@ui-sdk/core`, Apache-2.0), and `agent`. Their registry items are `sdk-command`, `sdk-calendar`, `sdk-date-picker`, `sdk-otp-input`, `sdk-token-input` and `sdk-agent`: the `sdk-` prefix keeps them from colliding with a stock shadcn item added later, and each file installs to `@components/ui-sdk/`, so it never overwrites a stock file in `components/ui`. A new UI SDK item follows the same scheme; `tests/registry.test.ts` checks it. Everything in `src/components/ui/` is stock shadcn on Base UI.
 - The lint preset allows `@ui-sdk/*` imports only in `components/ui-sdk/`, so product code uses the shared wrappers. The repo's own `eslint.config.js` exempts the lab trials, the Agents stories and the agent tests, which use raw parts on purpose.
-- UI SDK is a **beta dependency, pinned exactly** to `0.1.0-beta.17` in `package.json` and in each UI SDK item's `dependencies`; `tests/registry.test.ts` fails if they drift or if core and react differ. Its patch releases change behaviour, so upgrade on purpose: bump both packages and every registry pin together, read the changelog, and re-run `npm test`, `npm run test:agent` and the visual suite. The pin does not carry into a product on its own: the shadcn CLI installs dependencies with the product's save settings, npm writes `^0.1.0-beta.17` unless the product sets `save-exact=true`, and `@ui-sdk/react` declares `@ui-sdk/core` as a `^` peer. Products set `save-exact=true` and run `npx check-ui-sdk-pin` (`scripts/check-ui-sdk-pin.mjs`, shipped in the package) in CI; it fails unless both packages are declared and installed at this release's pin.
+- UI SDK is a **beta dependency, pinned exactly** to `0.1.0-beta.17` in `package.json` and in each UI SDK item's `dependencies`; `tests/registry.test.ts` fails if they drift or if core and react differ. Its patch releases change behaviour, so upgrade on purpose: bump both packages and every registry pin together, read the changelog, and re-run `npm test`, `npm run test:agent` and `npm run test:stories`. The pin does not carry into a product on its own: the shadcn CLI installs dependencies with the product's save settings, npm writes `^0.1.0-beta.17` unless the product sets `save-exact=true`, and `@ui-sdk/react` declares `@ui-sdk/core` as a `^` peer. Products set `save-exact=true` and run `npx check-ui-sdk-pin` (`scripts/check-ui-sdk-pin.mjs`, shipped in the package) in CI; it fails unless both packages are declared and installed at this release's pin.
 - Why these come from UI SDK: shadcn's command, calendar and input-otp sit on third-party libraries (cmdk, react-day-picker with date-fns, input-otp), shadcn has no date picker field or token input, and UI SDK parts are visible to its agent bridge. Stock shadcn first still holds for everything else. This is an exception to "never hand-write a primitive that shadcn ships" for command, calendar and input-otp. The export names differ from shadcn's (`OTPInput`/`OTPInputSlot`, not `InputOTP`/`InputOTPSlot`; `CommandGroupLabel`, not a `heading` on `CommandGroup`).
 - Style them by copying the class patterns of the matching stock file (radius, border, ring, spacing, role tokens). UI SDK sets each part's `data-slot` itself and replaces one you pass, so do not pass it. Animate exits on `data-ending-style`, not `data-closed:animate-out`. shadcn's `tailwind.css` redefines `data-selected:` to match only `data-selected="true"`, and UI SDK writes it empty, so use `data-[selected]:`. Wrap `buttonVariants(...)` in `cn` when you use it on a UI SDK part, or `border-transparent` beats the variant's border. Wrapper `className` takes a string, not UI SDK's state function.
 - UI SDK closes its popup on Escape but lets the key bubble, and the shared Base UI Dialog closes on any Escape that reaches it. So `DatePickerContent` and `CommandDialog`'s content stop the Escape they used, and one press closes only the popup; any new UI SDK popup wrapper whose content holds focus does the same, and the `Layering / Dialog * Escape` stories check it. **Known gap:** `TokenInput`'s trigger menu keeps focus in the editor and closes from a document listener that runs after Base UI's Dialog has closed, so one Escape closes both and no wrapper can stop it without also stopping UI SDK. Do not put `TokenInput` inside the shared Dialog; `Layering / Dialog Token Input Escape Known Gap` pins the behaviour.
@@ -140,7 +140,7 @@ A brand file's optional `surface` block picks the brand's surface style: flat (d
 
 - Options for the owner to compare go in `src/lab/<topic>/`, with titles starting `Lab/`. Storybook sorts them last.
 - One story per option, plus one story showing them side by side.
-- Lab files are never listed in `registry.json` (a test enforces this), never imported from outside `src/lab/`, and never screenshotted.
+- Lab files are never listed in `registry.json` (a test enforces this), never imported from outside `src/lab/`, and left out of the story render check.
 - When the owner picks an option, move it into the real component and delete the lab folder in the same PR.
 
 ## Proposing a new shared component
@@ -152,7 +152,7 @@ A brand file's optional `surface` block picks the brand's surface style: flat (d
 ## Workflow
 
 - This is a non-live repository. Work on a branch and open a PR. CI must pass before merge.
-- Before committing, run `npm run lint`, `npm run typecheck`, `npm test`, `npm run registry:check` and `npm run build-storybook`. Screenshot baselines change only through the Update visual baselines workflow (or, before it can be dispatched, the Docker bootstrap in the README).
+- Before committing, run `npm run lint`, `npm run typecheck`, `npm test`, `npm run registry:check` and `npm run build-storybook`; after a story or component change also `npm run test:stories` (any platform). It checks that every story renders without errors in every brand and mode; it compares no images, so visual changes are reviewed by looking at the Storybook.
 - Commit messages and PR text follow the public-repo rule above.
 
 ## Working branch

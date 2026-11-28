@@ -37,7 +37,7 @@ export async function hoverTooltip(
 }
 
 // Clicks the button named `name` and waits for the modal it opens (a Dialog, Sheet or
-// AlertDialog) to finish its open transition, so checks and screenshots see the final box.
+// AlertDialog) to finish its open transition, so checks see the final box.
 export async function openModal(
   within: { getByRole: typeof screen.getByRole },
   name: string,

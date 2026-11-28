@@ -7,7 +7,7 @@ Throwaway options for the owner to compare in Storybook. The workflow is in Stor
 - Add one story per option, plus one that shows all options side by side.
 - Build options from `src/components/ui` and the tokens. Do not hand-write primitives.
 - Nothing outside `src/lab/` imports from here, and `registry.json` never lists a file from here. A test enforces the registry rule.
-- Lab stories are excluded from the screenshot checks.
+- Lab stories are excluded from the story render check.
 - When the owner picks an option, move it into the real component and delete the folder in the same PR.
 
 The seed ships no lab stories.
