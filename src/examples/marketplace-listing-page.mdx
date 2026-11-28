@@ -1,0 +1,23 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import * as Stories from "./marketplace-listing-page.stories";
+
+<Meta of={Stories} />
+
+# Marketplace listing page
+
+This rebuilds one real Perkcord screen from the shared components only: the community header (brand, site search, the sliding navigation with its indicator on the header rule, member actions) over the marketplace browse results page (results heading, search and sort toolbar, applied filters, the glass filter rail and the listing card grid), on the perkcord brand's glass and backdrop, with invented content. The stories are the page with results, at phone width, with no results and while loading.
+
+## Gaps found
+
+- No site header shell: the brand mark, the three-column header grid and the rule the navigation indicator sits on are local.
+- No phone bottom navigation bar with a centred primary action.
+- No listing or product card: photo area, two-line title, price line and seller line are composed locally on Card.
+- No price display (amount, "Open to trades", parts-only line) and no star rating figure.
+- No Accordion or Collapsible, so the filter sections use a native `<details>`.
+- No single-choice list with a selected row for the category filter; ghost Buttons with a local selected wash stand in.
+- No range slider, so the price filter is two inputs instead of Perkcord's two-thumb slider.
+- No removable filter chip; ghost Buttons with a close icon stand in.
+- Button and Input stop at 36px and 32px; Perkcord's header and toolbar controls are 44px, so the rebuilt toolbar is visibly shorter.
+- SlidingNavLink has fixed padding and a 4px gap; Perkcord gives each link its own track width, so the navigation is a little wider.
+- Spinner stands in for Perkcord's three bouncing dots over loading results.
+- The stock outline Button has no primary-tinted variant, so Post item in the toolbar no longer reads as the page's second action.
